@@ -74,14 +74,9 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Implement serializer/deserializer with version envelope and stable IDs in `src/services/storage/serializer.ts`
-- [ ] T021 [US2] Add save action + UI trigger/hotkey using file IO helper in `src/ui/actions/save-map.ts`
-- [ ] T022 [US2] Add load action supporting picker + drag-drop with schema validation in `src/ui/actions/load-map.ts`
-- [ ] T023 [US2] Surface load/save errors and warnings through alert component in `src/ui/components/alert.tsx`
-- [ ] T024 [P] [US2] Add Vitest unit tests for serializer roundtrip and invalid file handling in `tests/unit/services/serializer.spec.ts`
-- [ ] T025 [P] [US2] Add integration test covering save/load flow with planning attributes in `tests/integration/save-load.spec.ts`
-
-**Checkpoint**: User Stories 1 and 2 independently functional
+[X] T021 [US2] Add save action + UI trigger/hotkey using file IO helper in `src/ui/actions/save-map.ts`. Use root node label to default filename e.g. `rootname-memorymap-dd-mm-yyyy.json`
+[X] T022 [US2] Add load action supporting picker + drag-drop with schema validation in `src/ui/actions/load-map.ts`
+[X] T023 [US2] Surface load/save errors and warnings through alert component in `src/ui/components/alert.tsx`
 
 ---
 

@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "root": {
+    "id": "root",
+    "topic": "Test Memory Map",
+    "children": [
+      {
+        "id": "node-1",
+        "topic": "Planning Task 1",
+        "children": [],
+        "extended": {
+          "plan": {
+            "status": "In Progress",
+            "dueDate": "2025-12-31",
+            "assignee": "John Doe",
+            "startDate": "2025-12-01",
+            "investedTimeHours": 5,
+            "elapsedTimeDays": 3
+          }
+        }
+      },
+      {
+        "id": "node-2",
+        "topic": "Planning Task 2",
+        "children": [
+          {
+            "id": "node-2-1",
+            "topic": "Subtask A",
+            "children": [],
+            "extended": {
+              "plan": {
+                "status": "Not Started",
+                "dueDate": "2026-01-15",
+                "assignee": "Jane Smith",
+                "startDate": null,
+                "investedTimeHours": null,
+                "elapsedTimeDays": null
+              }
+            }
+          }
+        ],
+        "extended": {
+          "plan": {
+            "status": "Completed",
+            "dueDate": "2025-12-20",
+            "assignee": "John Doe",
+            "startDate": "2025-11-15",
+            "investedTimeHours": 12,
+            "elapsedTimeDays": 10
+          }
+        }
+      }
+    ],
+    "extended": {
+      "plan": {
+        "status": "In Progress",
+        "dueDate": null,
+        "assignee": null,
+        "startDate": "2025-12-01",
+        "investedTimeHours": null,
+        "elapsedTimeDays": null
+      }
+    }
+  }
+}

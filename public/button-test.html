@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button Test</title>
+  <style>
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Button Test Page</h1>
+  
+  <button id="testSave">💾 Test Save</button>
+  <button id="testLoad">📂 Test Load</button>
+  <button id="testReset">🔄 Test Reset</button>
+  
+  <div id="output"></div>
+  
+  <script>
+    const output = document.getElementById('output');
+    
+    document.getElementById('testSave').addEventListener('click', () => {
+      console.log('Test Save clicked');
+      output.innerHTML = '<p>✅ Save button clicked!</p>';
+      
+      // Test actual save functionality
+      const json = JSON.stringify({ test: 'data', version: '1.0.0' }, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'test-save.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      output.innerHTML += '<p>✅ Download triggered!</p>';
+    });
+    
+    document.getElementById('testLoad').addEventListener('click', () => {
+      console.log('Test Load clicked');
+      output.innerHTML = '<p>✅ Load button clicked!</p>';
+      
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        output.innerHTML += `<p>✅ File selected: ${file.name}</p>`;
+      };
+      input.click();
+    });
+    
+    document.getElementById('testReset').addEventListener('click', () => {
+      console.log('Test Reset clicked');
+      if (confirm('Reset?')) {
+        output.innerHTML = '<p>✅ Reset confirmed!</p>';
+      } else {
+        output.innerHTML = '<p>❌ Reset cancelled</p>';
+      }
+    });
+  </script>
+</body>
+</html>

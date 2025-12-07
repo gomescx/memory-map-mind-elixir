@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import MindElixir from 'mind-elixir';
 import 'mind-elixir/style.css';
 import { AppStoreProvider, useAppStore } from '@state/store';
@@ -6,12 +6,15 @@ import { PlanPanel } from '@ui/panels/plan-panel';
 import { usePlanPanelHotkey, PlanPanelToggleButton } from '@ui/shortcuts/plan-panel';
 import { NodePlanBadges } from '@ui/badges/node-plan-badges';
 import { NodePlanTooltip } from '@ui/tooltips/node-plan-tooltip';
-import { saveMapToFile, loadMapFromFile, resetMapToRoot } from '@ui/actions/map-actions';
+import { saveMap } from '@ui/actions/save-map';
+import { loadMap } from '@ui/actions/load-map';
+import { resetMap } from '@ui/actions/reset-map';
+import { setupDragDrop } from '@services/storage/file-io';
 import type { MindMapNode } from '@core/types/node';
 import './App.css';
 
 /**
- * Mind Map Component - Integrates mind-elixir with User Story 1 & 2 features
+ * Mind Map Component - Integrates mind-elixir with User Story 1 features
  */
 function MindMapApp(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,8 +22,12 @@ function MindMapApp(): JSX.Element {
   const { setMap, setSelectedNodeId, getNode, selectedNodeId } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
-  const [badgePosition, setBadgePosition] = useState<{ top: number; left: number } | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(
+    null
+  );
+  const [badgePosition, setBadgePosition] = useState<{ top: number; left: number } | null>(
+    null
+  );
 
   // Helper to find DOM element for a node id
   const getNodeElement = (id: string): HTMLElement | null => {
@@ -55,83 +62,115 @@ function MindMapApp(): JSX.Element {
   // Register plan panel hotkey
   usePlanPanelHotkey();
 
-  // Save handler - directly accesses ref (not via closure)
-  const handleSave = () => {
-    const mind = mindElixirRef.current;
-    if (!mind) {
-      alert('❌ Save failed: Mind map not ready yet. Please wait.');
+  // Save/Load/Reset handlers
+  const handleSave = useCallback(() => {
+    console.log('handleSave called');
+    alert('Save button was clicked! mindElixirRef.current = ' + (mindElixirRef.current ? 'EXISTS' : 'NULL'));
+    if (!mindElixirRef.current) {
+      console.error('mindElixirRef.current is null');
+      alert('❌ Mind map not initialized yet');
       return;
     }
     try {
-      saveMapToFile(mind);
+      const data = mindElixirRef.current.getData();
+      console.log('Mind map data:', data);
+      saveMap(data.nodeData);
+      alert('✅ Map saved successfully!');
     } catch (error) {
+      console.error('Save error:', error);
       alert(`❌ Save failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-  };
+  }, []);
 
-  // Load handler - directly accesses ref
-  const handleLoad = async () => {
-    const mind = mindElixirRef.current;
-    if (!mind) {
-      alert('❌ Load failed: Mind map not ready yet. Please wait.');
-      return;
-    }
+  const handleLoad = useCallback(async () => {
+    console.log('handleLoad called');
+    alert('Load button was clicked!');
     try {
-      await loadMapFromFile(mind);
+      const envelope = await loadMap();
+      console.log('Loaded envelope:', envelope);
+      if (mindElixirRef.current) {
+        mindElixirRef.current.refresh({ nodeData: envelope.root, linkData: {} });
+        mindElixirRef.current.toCenter();
+        alert('✅ Map loaded successfully!');
+      }
     } catch (error) {
-      // Don't show error for user cancellation
-      if (error instanceof Error && (error.message.includes('cancelled') || error.message.includes('No file'))) {
+      console.error('Load error:', error);
+      if (error instanceof Error && error.message.includes('No file selected')) {
+        // User cancelled, don't show error
         return;
       }
       alert(`❌ Load failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-  };
+  }, []);
 
-  // Reset handler - directly accesses ref
-  const handleReset = () => {
-    const mind = mindElixirRef.current;
-    if (!mind) {
-      alert('❌ Reset failed: Mind map not ready yet. Please wait.');
+  const handleReset = useCallback(() => {
+    console.log('handleReset called');
+    alert('Reset button was clicked! mindElixirRef.current = ' + (mindElixirRef.current ? 'EXISTS' : 'NULL'));
+    if (!mindElixirRef.current) {
+      console.error('mindElixirRef.current is null');
+      alert('❌ Mind map not initialized yet');
       return;
     }
     if (!confirm('⚠️ Reset map? This will remove all nodes except root.')) return;
     try {
-      resetMapToRoot(mind);
+      const data = mindElixirRef.current.getData();
+      console.log('Current data before reset:', data);
+      const newRoot = resetMap({
+        id: data.nodeData.id || 'root',
+        topic: data.nodeData.topic || 'Memory Map Action Planner',
+        children: [],
+        extended: data.nodeData.extended,
+      } as any);
+      console.log('New root after reset:', newRoot);
+      mindElixirRef.current.refresh({ nodeData: newRoot, linkData: {} });
+      mindElixirRef.current.toCenter();
+      alert('✅ Map reset successfully!');
     } catch (error) {
+      console.error('Reset error:', error);
       alert(`❌ Reset failed: ${error instanceof Error ? error.message : String(error)}`);
     }
-  };
+  }, []);
 
   // Keyboard shortcuts for save (Ctrl+S) and load (Ctrl+O)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        // Access ref directly in event handler
-        const mind = mindElixirRef.current;
-        if (!mind) return;
-        try {
-          saveMapToFile(mind);
-        } catch (error) {
-          alert(`❌ Save failed: ${error instanceof Error ? error.message : String(error)}`);
-        }
+        handleSave();
       } else if ((e.ctrlKey || e.metaKey) && e.key === 'o') {
         e.preventDefault();
-        // Access ref directly in event handler
-        const mind = mindElixirRef.current;
-        if (!mind) return;
-        loadMapFromFile(mind).catch((error) => {
-          if (error instanceof Error && (error.message.includes('cancelled') || error.message.includes('No file'))) {
-            return;
-          }
-          alert(`❌ Load failed: ${error instanceof Error ? error.message : String(error)}`);
-        });
+        handleLoad();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleSave, handleLoad]);
+
+  // Setup drag-drop for loading files
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const cleanup = setupDragDrop(
+      containerRef.current,
+      async (files) => {
+        try {
+          const envelope = await import('@services/storage/serializer').then((m) =>
+            m.deserializeMap(files[0].content)
+          );
+          if (mindElixirRef.current) {
+            mindElixirRef.current.refresh({ nodeData: envelope.root });
+            alert('✅ Map loaded from dropped file!');
+          }
+        } catch (error) {
+          alert(`❌ Failed to load dropped file: ${error instanceof Error ? error.message : String(error)}`);
+        }
+      },
+      { accept: '.json' }
+    );
+
+    return cleanup;
+  }, [isInitialized]);
 
   // Initialize mind-elixir
   useEffect(() => {
@@ -142,7 +181,6 @@ function MindMapApp(): JSX.Element {
       nodeData: {
         id: 'root',
         topic: 'Memory Map Action Planner',
-        root: true,
         children: [
           {
             topic: 'Getting Started',
@@ -177,30 +215,14 @@ function MindMapApp(): JSX.Element {
             ],
           },
           {
-            topic: 'Save/Load',
+            topic: 'Sample Task',
             id: 'node-3',
             direction: 1 as 0 | 1,
             expanded: true,
             children: [
               {
                 id: 'node-3-1',
-                topic: 'Ctrl+S to save map as JSON',
-              },
-              {
-                id: 'node-3-2',
-                topic: 'Ctrl+O to load a saved map',
-              },
-            ],
-          },
-          {
-            topic: 'Example with Plan Data',
-            id: 'node-4',
-            direction: 0 as 0 | 1,
-            expanded: true,
-            children: [
-              {
-                id: 'node-4-1',
-                topic: 'Task with planning attributes',
+                topic: 'This has planning attributes',
                 extended: {
                   plan: {
                     startDate: '2025-12-01',
@@ -251,19 +273,24 @@ function MindMapApp(): JSX.Element {
 
     // Listen for selection changes
     const handleSelection = (nodes: any) => {
+      // mind-elixir fires 'selectNodes' with an array of selected nodes
       if (nodes && nodes.length > 0 && nodes[0].id) {
         setSelectedNodeId(nodes[0].id);
       }
     };
 
+    // Add event listeners (using any to work around mind-elixir typing)
+    // Note: mind-elixir uses 'selectNodes' event (plural)
     (mind.bus as any).addListener('selectNodes', handleSelection);
 
     setIsInitialized(true);
 
-    // Note: We don't clean up mindElixirRef here because the cleanup runs
-    // when dependencies change (including isInitialized going true->false),
-    // which would null the ref immediately after initialization.
-    // The mind-elixir instance will be garbage collected when component unmounts.
+    return () => {
+      // Cleanup
+      if (mindElixirRef.current) {
+        mindElixirRef.current = null;
+      }
+    };
   }, [isInitialized, setMap, setSelectedNodeId]);
 
   // Hover listeners for tooltip/badges
@@ -271,10 +298,11 @@ function MindMapApp(): JSX.Element {
     if (!isInitialized || !containerRef.current) return;
 
     const handleEnter = (e: Event) => {
-      const target = e.target as HTMLElement;
-      const nodeId = target.dataset.nodeid?.replace('me', '');
+      const target = e.currentTarget as HTMLElement | null;
+      const nodeId = target?.dataset.nodeid?.replace('me', '') || null;
       if (nodeId) {
         setHoveredNodeId(nodeId);
+        updateOverlayPositions(nodeId);
       }
     };
 
@@ -314,21 +342,30 @@ function MindMapApp(): JSX.Element {
         <div className="toolbar-actions">
           <button 
             className="toolbar-button" 
-            onClick={handleSave} 
+            onClick={() => {
+              console.log('Save button clicked!');
+              handleSave();
+            }} 
             title="Save map (Ctrl+S)"
           >
             💾 Save
           </button>
           <button 
             className="toolbar-button" 
-            onClick={handleLoad} 
+            onClick={() => {
+              console.log('Load button clicked!');
+              handleLoad();
+            }} 
             title="Load map (Ctrl+O)"
           >
             📂 Load
           </button>
           <button 
             className="toolbar-button" 
-            onClick={handleReset} 
+            onClick={() => {
+              console.log('Reset button clicked!');
+              handleReset();
+            }} 
             title="Reset map"
           >
             🔄 Reset

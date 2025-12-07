@@ -24,14 +24,29 @@ export interface FilePickerOptions {
  * @param fileName Name of the file to save as
  */
 export function downloadBlob(blob: Blob, fileName: string): void {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  console.log('downloadBlob called with:', { blobSize: blob.size, fileName });
+  // Prefer a data URL so that even restricted browsers can open/save
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result as string;
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = fileName;
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log('Download via data URL triggered');
+
+    // Fallback: open in new tab if download is blocked
+    setTimeout(() => {
+      const opened = window.open(dataUrl, '_blank');
+      if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+        console.warn('Download may be blocked; opened data URL in new tab');
+      }
+    }, 0);
+  };
+  reader.readAsDataURL(blob);
 }
 
 /**
