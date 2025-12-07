@@ -8,7 +8,7 @@ export interface PlanAttributes {
   startDate: string | null;
   dueDate: string | null;
   investedTimeHours: number | null;
-  elapsedTimeHours: number | null;
+  elapsedTimeDays: number | null;
   assignee: string | null;
   status: PlanStatus | null;
 }
@@ -52,7 +52,7 @@ export function createDefaultPlanAttributes(): PlanAttributes {
     startDate: null,
     dueDate: null,
     investedTimeHours: null,
-    elapsedTimeHours: null,
+    elapsedTimeDays: null,
     assignee: null,
     status: null,
   };

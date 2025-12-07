@@ -53,14 +53,14 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Extend mind-elixir node adapter to read/write `extended.plan` defaults in `src/core/node-adapter.ts`
-- [ ] T013 [P] [US1] Implement plan form schema + validation messages in `src/ui/forms/plan-form.ts`
-- [ ] T014 [US1] Build planning attribute side panel component with inputs for all six fields in `src/ui/panels/plan-panel.tsx`
-- [ ] T015 [US1] Wire selection + hotkey to open/close panel without breaking existing shortcuts in `src/ui/shortcuts/plan-panel.ts`
-- [ ] T016 [P] [US1] Render inline/badge summary for nodes with plan data in `src/ui/badges/node-plan-badges.tsx`
-- [ ] T017 [P] [US1] Add hover/selection tooltip summarizing plan fields in `src/ui/tooltips/node-plan-tooltip.tsx`
-- [ ] T018 [US1] Connect plan edit actions to state store setters and node updates in `src/state/store.ts`
-- [ ] T019 [P] [US1] Add Vitest unit tests for node adapter + plan form validation in `tests/unit/core/node-plan.spec.ts`
+- [X] T012 [P] [US1] Extend mind-elixir node adapter to read/write `extended.plan` defaults in `src/core/node-adapter.ts`
+- [X] T013 [P] [US1] Implement plan form schema + validation messages in `src/ui/forms/plan-form.ts`
+- [X] T014 [US1] Build planning attribute side panel component with inputs for all six fields in `src/ui/panels/plan-panel.tsx`
+- [X] T015 [US1] Wire selection + hotkey to open/close panel without breaking existing shortcuts in `src/ui/shortcuts/plan-panel.ts`
+- [X] T016 [P] [US1] Render inline/badge summary for nodes with plan data in `src/ui/badges/node-plan-badges.tsx`
+- [X] T017 [P] [US1] Add hover/selection tooltip summarizing plan fields in `src/ui/tooltips/node-plan-tooltip.tsx`
+- [X] T018 [US1] Connect plan edit actions to state store setters and node updates in `src/state/store.ts`
+- [X] T019 [P] [US1] Add Vitest unit tests for node adapter + plan form validation in `tests/unit/core/node-plan.spec.ts`
 
 **Checkpoint**: User Story 1 fully functional and testable independently
 

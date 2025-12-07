@@ -165,9 +165,9 @@ export function validatePlanAttributes(
     );
   }
 
-  if (plan.elapsedTimeHours !== undefined) {
-    results.elapsedTimeHours = validateNumber(
-      plan.elapsedTimeHours,
+  if (plan.elapsedTimeDays !== undefined) {
+    results.elapsedTimeDays = validateNumber(
+      plan.elapsedTimeDays,
       'Elapsed time'
     );
   }

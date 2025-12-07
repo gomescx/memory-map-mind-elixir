@@ -1,34 +1,61 @@
+/* Base styles for Memory Map Action Planner */
+
+* {
+  box-sizing: border-box;
+}
+
 :root {
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #213547;
+  background-color: #ffffff;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 #root {
   width: 100%;
-  margin: 0 auto;
-  text-align: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-#app {
-  padding: 2rem;
+/* Remove default margins/padding */
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+  padding: 0;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Keyboard focus styles */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
 }
 
-@media (prefers-color-scheme: light) {
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-color-scheme: dark) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
   }
 }
