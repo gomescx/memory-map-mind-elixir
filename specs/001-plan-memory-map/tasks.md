@@ -34,12 +34,12 @@ description: "Task list for Memory Map Action Planner MVP"
 
 **Purpose**: Core types, state, and utilities required by all stories
 
-- [ ] T006 [P] Define extended node types with `extended.plan` fields in `src/core/types/node.ts`
-- [ ] T007 [P] Add plan field validation helpers (dates, numbers, enums) in `src/utils/validation/plan.ts`
-- [ ] T008 Create lightweight state store with selection, history hooks, and plan field setters in `src/state/store.ts`
-- [ ] T009 [P] Add shared constants for schema version and ID handling in `src/core/constants.ts`
-- [ ] T010 [P] Implement browser file IO helpers (Blob download, file picker/drag-drop reader) in `src/services/storage/file-io.ts`
-- [ ] T011 Create reusable alert/toast component for errors/warnings in `src/ui/components/alert.tsx`
+- [x] T006 [P] Define extended node types with `extended.plan` fields in `src/core/types/node.ts`
+- [x] T007 [P] Add plan field validation helpers (dates, numbers, enums) in `src/utils/validation/plan.ts`
+- [x] T008 Create lightweight state store with selection, history hooks, and plan field setters in `src/state/store.ts`
+- [x] T009 [P] Add shared constants for schema version and ID handling in `src/core/constants.ts`
+- [x] T010 [P] Implement browser file IO helpers (Blob download, file picker/drag-drop reader) in `src/services/storage/file-io.ts`
+- [x] T011 Create reusable alert/toast component for errors/warnings in `src/ui/components/alert.tsx`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
