@@ -22,11 +22,11 @@ description: "Task list for Memory Map Action Planner MVP"
 
 **Purpose**: Align tooling with offline-first Vite + TypeScript plan
 
-- [ ] T001 Validate required deps (mind-elixir fork, Vite 5, TypeScript 5, Vitest, Playwright) in `package.json`
-- [ ] T002 Configure TypeScript target/paths for ES2020 + `src/*` aliases in `tsconfig.json`
-- [ ] T003 [P] Configure Vite for offline SPA (base path, asset inlining) in `vite.config.ts`
-- [ ] T004 [P] Add lint/format rules consistent with constitution (no telemetry, minimal deps) in `.eslintrc.cjs`
-- [ ] T005 Add npm scripts for dev, build, unit, and Playwright smoke per quickstart in `package.json`
+- [x] T001 Validate required deps (mind-elixir fork, Vite 5, TypeScript 5, Vitest, Playwright) in `package.json`
+- [x] T002 Configure TypeScript target/paths for ES2020 + `src/*` aliases in `tsconfig.json`
+- [x] T003 [P] Configure Vite for offline SPA (base path, asset inlining) in `vite.config.ts`
+- [x] T004 [P] Add lint/format rules consistent with constitution (no telemetry, minimal deps) in `.eslintrc.cjs`
+- [x] T005 Add npm scripts for dev, build, unit, and Playwright smoke per quickstart in `package.json`
 
 ---
 
