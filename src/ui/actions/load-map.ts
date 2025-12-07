@@ -1,6 +1,6 @@
 // Load action for mind map
 import { deserializeMap, MemoryMapEnvelope } from '../../services/storage/serializer';
-import { openFilePicker, FileReadResult } from '../../services/storage/file-io';
+import { openFilePicker } from '../../services/storage/file-io';
 
 export async function loadMap(): Promise<MemoryMapEnvelope> {
   try {

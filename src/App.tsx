@@ -7,6 +7,7 @@ import { usePlanPanelHotkey, PlanPanelToggleButton } from '@ui/shortcuts/plan-pa
 import { NodePlanBadges } from '@ui/badges/node-plan-badges';
 import { NodePlanTooltip } from '@ui/tooltips/node-plan-tooltip';
 import { saveMapToFile, loadMapFromFile, resetMapToRoot } from '@ui/actions/map-actions';
+import { exportToCSV, exportToHTML } from '@ui/actions/export-map';
 import type { MindMapNode } from '@core/types/node';
 import './App.css';
 
@@ -102,7 +103,35 @@ function MindMapApp(): JSX.Element {
     }
   };
 
-  // Keyboard shortcuts for save (Ctrl+S) and load (Ctrl+O)
+  // Export to CSV handler
+  const handleExportCSV = () => {
+    const mind = mindElixirRef.current;
+    if (!mind) {
+      alert('❌ Export failed: Mind map not ready yet. Please wait.');
+      return;
+    }
+    try {
+      exportToCSV(mind);
+    } catch (error) {
+      alert(`❌ Export to CSV failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  // Export to HTML handler
+  const handleExportHTML = () => {
+    const mind = mindElixirRef.current;
+    if (!mind) {
+      alert('❌ Export failed: Mind map not ready yet. Please wait.');
+      return;
+    }
+    try {
+      exportToHTML(mind);
+    } catch (error) {
+      alert(`❌ Export to HTML failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
+
+  // Keyboard shortcuts for save (Ctrl+S), load (Ctrl+O), and export (Ctrl+E)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -126,6 +155,16 @@ function MindMapApp(): JSX.Element {
           }
           alert(`❌ Load failed: ${error instanceof Error ? error.message : String(error)}`);
         });
+      } else if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+        e.preventDefault();
+        const mind = mindElixirRef.current;
+        if (!mind) return;
+        try {
+          exportToCSV(mind);
+          exportToHTML(mind);
+        } catch (error) {
+          alert(`❌ Export failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
       }
     };
 
@@ -333,9 +372,23 @@ function MindMapApp(): JSX.Element {
           >
             🔄 Reset
           </button>
+          <button 
+            className="toolbar-button" 
+            onClick={handleExportCSV} 
+            title="Export as CSV"
+          >
+            📊 CSV
+          </button>
+          <button 
+            className="toolbar-button" 
+            onClick={handleExportHTML} 
+            title="Export as HTML table (Ctrl+E for both)"
+          >
+            📄 HTML
+          </button>
           <PlanPanelToggleButton className="toolbar-button" />
           <span className="toolbar-hint">
-            Ctrl+S (save) • Ctrl+O (load) • Tab (child) • Enter (sibling) • Ctrl+P (plan)
+            Ctrl+S (save) • Ctrl+O (load) • Ctrl+E (export) • Tab (child) • Enter (sibling) • Ctrl+P (plan)
           </span>
         </div>
       </div>

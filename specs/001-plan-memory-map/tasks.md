@@ -88,12 +88,12 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Finalize tree flattening to `ExportRow` with parentPath in `src/services/export/flatten.ts`
-- [ ] T027 [P] [US3] Build CSV export generator using flatten output in `src/services/export/csv.ts`
-- [ ] T028 [US3] Build HTML table export (Word-friendly) with same columns in `src/services/export/html-table.ts`
-- [ ] T029 [US3] Add export UI action/hotkey (CSV + HTML table) in `src/ui/actions/export-map.ts`
-- [ ] T030 [P] [US3] Add contract regression test against `contracts/export-openapi.yaml` samples in `tests/contract/export-openapi.spec.ts`
-- [ ] T031 [P] [US3] Add integration test for multi-level export verifying stable IDs in `tests/integration/export-flow.spec.ts`
+- [X] T026 [P] [US3] Finalize tree flattening to `ExportRow` with parentPath in `src/services/export/flatten.ts`
+- [X] T027 [P] [US3] Build CSV export generator using flatten output in `src/services/export/csv.ts`
+- [X] T028 [US3] Build HTML table export (Word-friendly) with same columns in `src/services/export/html-table.ts`
+- [X] T029 [US3] Add export UI action/hotkey (CSV + HTML table) in `src/ui/actions/export-map.ts`
+- [X] T030 [P] [US3] Add contract regression test against `contracts/export-openapi.yaml` samples in `tests/contract/export-openapi.spec.ts`
+- [X] T031 [P] [US3] Add integration test for multi-level export verifying stable IDs in `tests/integration/export-flow.spec.ts`
 
 **Checkpoint**: User Stories 1–3 (all P1) independently functional
 

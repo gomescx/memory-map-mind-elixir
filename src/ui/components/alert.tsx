@@ -32,8 +32,6 @@ const Alert: React.FC<AlertProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
-    onError?: (error: string) => void;
-    onWarning?: (warning: string) => void;
   useEffect(() => {
     if (duration <= 0) return;
 
@@ -43,8 +41,6 @@ const Alert: React.FC<AlertProps> = ({
     }, duration);
 
     return () => clearTimeout(timer);
-    onError,
-    onWarning,
   }, [duration, onClose]);
 
   if (!isVisible) {
@@ -110,16 +106,6 @@ export const AlertContainer: React.FC<AlertContainerProps> = ({
     setAlerts([]);
   }, []);
 
-  // Expose methods via context provider
-  React.useContext = (context: React.Context<any>) => {
-    if (context === AlertContext) {
-      return { addAlert, removeAlert, clearAlerts };
-    }
-    return React.useContext(context);
-  };
-
-              onError={(error) => console.error(error)}
-              onWarning={(warning) => console.warn(warning)}
   return (
     <AlertProvider value={{ addAlert, removeAlert, clearAlerts }}>
       <div className="alert-container">

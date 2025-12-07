@@ -8,7 +8,7 @@ export function saveMap(root: MindMapNode): void {
   try {
     const json = serializeMap(root);
     console.log('Serialized JSON length:', json.length);
-    const rootLabel = root.topic || root.label || 'memorymap';
+    const rootLabel = root.topic || 'memorymap';
     const date = new Date();
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
