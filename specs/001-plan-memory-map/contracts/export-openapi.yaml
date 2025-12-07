@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+  title: Memory Map Export API (Offline Client-only)
+  version: 1.0.0
+paths:
+  /export/csv:
+    post:
+      summary: Flatten mind map to CSV (client-side only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MindMap'
+      responses:
+        '200':
+          description: CSV content
+          content:
+            text/csv:
+              schema:
+                type: string
+  /export/html-table:
+    post:
+      summary: Flatten mind map to an HTML table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MindMap'
+      responses:
+        '200':
+          description: HTML table content
+          content:
+            text/html:
+              schema:
+                type: string
+components:
+  schemas:
+    MindMap:
+      type: object
+      required: [id, title, version, root]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        version:
+          type: string
+        root:
+          $ref: '#/components/schemas/Node'
+    Node:
+      type: object
+      required: [id, topic, children]
+      properties:
+        id:
+          type: string
+        topic:
+          type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/Node'
+        extended:
+          $ref: '#/components/schemas/Extended'
+    Extended:
+      type: object
+      properties:
+        plan:
+          $ref: '#/components/schemas/Plan'
+    Plan:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        dueDate:
+          type: string
+          format: date-time
+          nullable: true
+        investedTimeHours:
+          type: number
+          nullable: true
+          minimum: 0
+        elapsedTimeHours:
+          type: number
+          nullable: true
+          minimum: 0
+        assignee:
+          type: string
+          nullable: true
+        status:
+          type: string
+          nullable: true
+          enum: [Not Started, In Progress, Completed]
