@@ -107,9 +107,9 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ### Implementation for User Story 4
 
-- [ ] T032 [P] [US4] Lock default shortcut map and upstream key handling compatibility in `src/core/shortcuts.ts`
-- [ ] T033 [US4] Wire undo/redo/delete/navigation handlers through state/history layer in `src/state/history.ts`
-- [ ] T034 [P] [US4] Add Playwright smoke test for keyboard-only map editing in `tests/integration/keyboard-shortcuts.spec.ts`
+- [X] T032 [P] [US4] Lock default shortcut map and upstream key handling compatibility in `src/core/shortcuts.ts`
+- [X] T033 [US4] Wire undo/redo/delete/navigation handlers through state/history layer in `src/state/history.ts`
+- [X] T034 [P] [US4] Add Playwright smoke test for keyboard-only map editing in `tests/integration/keyboard-shortcuts.spec.ts`
 
 **Checkpoint**: User Story 4 independently functional
 

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import MindElixir from 'mind-elixir';
 import 'mind-elixir/style.css';
 import { AppStoreProvider, useAppStore } from '@state/store';
+import { useUndoRedoShortcuts } from '@state/history';
 import { PlanPanel } from '@ui/panels/plan-panel';
 import { usePlanPanelHotkey, PlanPanelToggleButton } from '@ui/shortcuts/plan-panel';
 import { NodePlanBadges } from '@ui/badges/node-plan-badges';
@@ -16,7 +17,7 @@ import './App.css';
 function MindMapApp(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindElixirRef = useRef<any>(null);
-  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId } = useAppStore();
+  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
@@ -54,6 +55,9 @@ function MindMapApp(): JSX.Element {
 
   // Register plan panel hotkey
   usePlanPanelHotkey();
+
+  // Register undo/redo keyboard shortcuts (Ctrl+Z/Y, Cmd+Z/Shift+Z)
+  useUndoRedoShortcuts(undo, redo);
 
   // Save handler - directly accesses ref (not via closure)
   const handleSave = () => {
