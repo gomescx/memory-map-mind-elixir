@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { MindMapNode, MindMap } from '@core/types/node';
+import type { MindMap } from '@core/types/node';
 import { flattenTree, validateStableIds } from '@services/export/flatten';
 import { generateCSV } from '@services/export/csv';
 import { generateHTMLTable } from '@services/export/html-table';
@@ -194,7 +194,7 @@ describe('export flow integration', () => {
       const rows = flattenTree(testMap.root);
 
       // Find the deepest node
-      const deepest = rows.find((r) => r.title === 'Core implementation');
+      const deepest = rows.find((r: any) => r.title === 'Core implementation');
       expect(deepest?.depth).toBe(3);
       expect(deepest?.parentPath).toContain('Q2 Execution');
       expect(deepest?.parentPath).toContain('Development Workstream');
@@ -203,7 +203,7 @@ describe('export flow integration', () => {
     it('preserves all planning attributes in export', () => {
       const rows = flattenTree(testMap.root);
 
-      const q1 = rows.find((r) => r.title === 'Q1 Planning');
+      const q1 = rows.find((r: any) => r.title === 'Q1 Planning');
       expect(q1).toMatchObject({
         startDate: '2025-01-01',
         dueDate: '2025-03-31',
@@ -218,13 +218,13 @@ describe('export flow integration', () => {
       const rows = flattenTree(testMap.root);
 
       // Task with all nulls
-      const noData = rows.find((r) => r.title === 'Architecture design');
+      const noData = rows.find((r: any) => r.title === 'Architecture design');
       expect(noData?.startDate).toBeNull();
       expect(noData?.dueDate).toBeNull();
       expect(noData?.investedTimeHours).toBeNull();
 
       // Task with partial data
-      const partialData = rows.find((r) => r.title === 'Core implementation');
+      const partialData = rows.find((r: any) => r.title === 'Core implementation');
       expect(partialData?.startDate).toBeNull();
       expect(partialData?.dueDate).toBe('2025-05-15');
       expect(partialData?.investedTimeHours).toBe(80);
@@ -273,9 +273,9 @@ describe('export flow integration', () => {
       const html = generateHTMLTable(rows);
 
       // Find rows with different depths and verify indentation
-      const root = rows.find((r) => r.title === 'Strategic Initiative 2025');
-      const q1 = rows.find((r) => r.title === 'Q1 Planning');
-      const task = rows.find((r) => r.title === 'Set objectives');
+      const root = rows.find((r: any) => r.title === 'Strategic Initiative 2025');
+      const q1 = rows.find((r: any) => r.title === 'Q1 Planning');
+      const task = rows.find((r: any) => r.title === 'Set objectives');
 
       expect(root?.depth).toBe(0);
       expect(q1?.depth).toBe(1);
@@ -326,7 +326,7 @@ describe('export flow integration', () => {
 
     it('detects ID mismatch when validation fails', () => {
       const flatten1 = flattenTree(testMap.root);
-      const flatten2 = flatten1.map((row, idx) => ({
+      const flatten2 = flatten1.map((row: any, idx: number) => ({
         ...row,
         id: idx === 0 ? 'different-id' : row.id,
       }));
