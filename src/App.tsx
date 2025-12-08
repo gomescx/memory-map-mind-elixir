@@ -274,19 +274,25 @@ function MindMapApp(): JSX.Element {
     mind.init(data);
     mindElixirRef.current = mind;
 
-    // Sync to store
-    const rootNode: MindMapNode = {
-      id: data.nodeData.id,
-      topic: data.nodeData.topic,
-      children: data.nodeData.children as any as MindMapNode[],
+    // Helper to sync mind-elixir's nodeData back to store
+    const syncMapToStore = () => {
+      const currentData = mind.getData();
+      const rootNode: MindMapNode = {
+        id: currentData.nodeData.id,
+        topic: currentData.nodeData.topic,
+        children: currentData.nodeData.children as any as MindMapNode[],
+      };
+
+      setMap({
+        id: 'main-map',
+        title: 'Memory Map Action Planner',
+        version: '1.0.0',
+        root: rootNode,
+      });
     };
 
-    setMap({
-      id: 'main-map',
-      title: 'Memory Map Action Planner',
-      version: '1.0.0',
-      root: rootNode,
-    });
+    // Initial sync to store
+    syncMapToStore();
 
     // Listen for selection changes
     const handleSelection = (nodes: any) => {
@@ -295,7 +301,32 @@ function MindMapApp(): JSX.Element {
       }
     };
 
+    // Listen for operations that modify the node tree
+    const handleOperation = (operation: any) => {
+      // Sync store whenever nodes are added, modified, or removed
+      const operationsThatModifyTree = [
+        'addChild',
+        'insertSibling',
+        'insertParent',
+        'removeNodes',
+        'finishEdit',
+        'moveNodeBefore',
+        'moveNodeAfter',
+        'moveNodeIn',
+        'copyNode',
+        'copyNodes',
+      ];
+      
+      if (operationsThatModifyTree.includes(operation.name)) {
+        // Defer sync to next tick to ensure mind-elixir has updated its internal state
+        setTimeout(() => {
+          syncMapToStore();
+        }, 0);
+      }
+    };
+
     (mind.bus as any).addListener('selectNodes', handleSelection);
+    (mind.bus as any).addListener('operation', handleOperation);
 
     setIsInitialized(true);
 
