@@ -376,7 +376,7 @@ function MindMapApp(): JSX.Element {
           </button>
           <PlanPanelToggleButton className="toolbar-button" />
           <span className="toolbar-hint">
-            Ctrl+S (save) • Ctrl+O (load) • Ctrl+E (export) • Tab (child) • Enter (sibling) • Ctrl+P (plan)
+            Ctrl+S (save) • Ctrl+O (load) • Tab (child) • Enter (sibling) • Alt+↑/↓ (reorder) • Ctrl+P (plan)
           </span>
         </div>
       </div>

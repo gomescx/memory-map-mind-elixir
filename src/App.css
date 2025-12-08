@@ -103,6 +103,48 @@
   z-index: 50;
 }
 
+/* 
+ * Node reordering hint: For main branch nodes (direct children of root),
+ * use Alt+Up/Alt+Down or PageUp/PageDown to reorder them.
+ * Drag-and-drop works for nested nodes but has limitations for main branches.
+ */
+
+/* Make main branch nodes have a larger drop zone for better drag experience */
+me-main > me-wrapper > me-parent > me-tpc {
+  padding-block: 8px;
+}
+
+/* Ensure insert-preview indicator is visible */
+.insert-preview {
+  position: absolute;
+  height: 3px;
+  background: var(--selected, #4dc4ff);
+  border-radius: 2px;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.insert-preview.show {
+  opacity: 1;
+}
+
+.insert-preview.before {
+  top: -2px;
+}
+
+.insert-preview.after {
+  bottom: -2px;
+}
+
+.insert-preview.in {
+  inset: 0;
+  height: auto;
+  background: rgba(77, 196, 255, 0.2);
+  border: 2px dashed var(--selected, #4dc4ff);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .toolbar {
