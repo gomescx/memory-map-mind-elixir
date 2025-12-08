@@ -173,7 +173,6 @@ describe('export-openapi contracts', () => {
     it('handles null values gracefully', () => {
       const map = createSampleMap();
       const rows = flattenTree(map);
-      const csv = generateCSV(rows);
 
       // Find the row with null values
       const nullRow = rows.find((r) => r.title === 'Define requirements');
