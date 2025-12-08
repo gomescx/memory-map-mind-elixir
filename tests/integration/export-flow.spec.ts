@@ -3,12 +3,17 @@
  * Tests end-to-end export workflow with multi-level maps and stable ID verification
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { MindMapNode, MindMap } from '@core/types/node';
 import { flattenTree, validateStableIds } from '@services/export/flatten';
 import { generateCSV } from '@services/export/csv';
 import { generateHTMLTable } from '@services/export/html-table';
 import { exportToCSV, exportToHTML } from '@ui/actions/export-map';
+
+// Mock the downloadBlob function to avoid browser API issues in Node tests
+vi.mock('@services/storage/file-io', () => ({
+  downloadBlob: vi.fn(),
+}));
 
 describe('export flow integration', () => {
   let testMap: MindMap;
@@ -285,20 +290,26 @@ describe('export flow integration', () => {
 
   describe('action functions integration', () => {
     it('exportToCSV successfully calls underlying services', () => {
-      const root = testMap.root;
+      // Create a mock mind-elixir instance with getData
+      const mockMindElixir = {
+        getData: () => ({ nodeData: testMap.root }),
+      };
 
       // This should not throw
       expect(() => {
-        exportToCSV(root);
+        exportToCSV(mockMindElixir);
       }).not.toThrow();
     });
 
     it('exportToHTML successfully calls underlying services', () => {
-      const root = testMap.root;
+      // Create a mock mind-elixir instance with getData
+      const mockMindElixir = {
+        getData: () => ({ nodeData: testMap.root }),
+      };
 
       // This should not throw
       expect(() => {
-        exportToHTML(root);
+        exportToHTML(mockMindElixir);
       }).not.toThrow();
     });
   });

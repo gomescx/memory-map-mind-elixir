@@ -8,7 +8,6 @@ import { NodePlanBadges } from '@ui/badges/node-plan-badges';
 import { NodePlanTooltip } from '@ui/tooltips/node-plan-tooltip';
 import { saveMapToFile, loadMapFromFile, resetMapToRoot } from '@ui/actions/map-actions';
 import { exportToCSV, exportToHTML } from '@ui/actions/export-map';
-import type { MindMapNode } from '@core/types/node';
 import './App.css';
 
 /**
@@ -17,7 +16,7 @@ import './App.css';
 function MindMapApp(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindElixirRef = useRef<any>(null);
-  const { setMap, setSelectedNodeId, getNode, selectedNodeId } = useAppStore();
+  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
@@ -274,25 +273,8 @@ function MindMapApp(): JSX.Element {
     mind.init(data);
     mindElixirRef.current = mind;
 
-    // Helper to sync mind-elixir's nodeData back to store
-    const syncMapToStore = () => {
-      const currentData = mind.getData();
-      const rootNode: MindMapNode = {
-        id: currentData.nodeData.id,
-        topic: currentData.nodeData.topic,
-        children: currentData.nodeData.children as any as MindMapNode[],
-      };
-
-      setMap({
-        id: 'main-map',
-        title: 'Memory Map Action Planner',
-        version: '1.0.0',
-        root: rootNode,
-      });
-    };
-
-    // Initial sync to store
-    syncMapToStore();
+    // Register mind-elixir instance with store - this is the single source of truth
+    setMindElixirInstance(mind);
 
     // Listen for selection changes
     const handleSelection = (nodes: any) => {
@@ -301,32 +283,7 @@ function MindMapApp(): JSX.Element {
       }
     };
 
-    // Listen for operations that modify the node tree
-    const handleOperation = (operation: any) => {
-      // Sync store whenever nodes are added, modified, or removed
-      const operationsThatModifyTree = [
-        'addChild',
-        'insertSibling',
-        'insertParent',
-        'removeNodes',
-        'finishEdit',
-        'moveNodeBefore',
-        'moveNodeAfter',
-        'moveNodeIn',
-        'copyNode',
-        'copyNodes',
-      ];
-      
-      if (operationsThatModifyTree.includes(operation.name)) {
-        // Defer sync to next tick to ensure mind-elixir has updated its internal state
-        setTimeout(() => {
-          syncMapToStore();
-        }, 0);
-      }
-    };
-
     (mind.bus as any).addListener('selectNodes', handleSelection);
-    (mind.bus as any).addListener('operation', handleOperation);
 
     setIsInitialized(true);
 
@@ -334,7 +291,7 @@ function MindMapApp(): JSX.Element {
     // when dependencies change (including isInitialized going true->false),
     // which would null the ref immediately after initialization.
     // The mind-elixir instance will be garbage collected when component unmounts.
-  }, [isInitialized, setMap, setSelectedNodeId]);
+  }, [isInitialized, setMindElixirInstance, setSelectedNodeId]);
 
   // Hover listeners for tooltip/badges
   useEffect(() => {
