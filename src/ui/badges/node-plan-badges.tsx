@@ -6,21 +6,11 @@
 import React from 'react';
 import type { MindMapNode } from '@core/types/node';
 import { hasNodePlanData } from '@core/node-adapter';
+import { getAllPlanFlags } from '@utils/plan-status';
 import './node-plan-badges.css';
 
 export interface NodePlanBadgesProps {
   node: MindMapNode;
-}
-
-/**
- * Check if a task is overdue
- */
-function isOverdue(dueDate: string | null): boolean {
-  if (!dueDate) return false;
-  const due = new Date(dueDate);
-  const now = new Date();
-  now.setHours(0, 0, 0, 0); // Compare dates only
-  return due < now;
 }
 
 /**
@@ -36,47 +26,50 @@ export const NodePlanBadges: React.FC<NodePlanBadgesProps> = ({ node }) => {
     return null;
   }
 
+  const flags = getAllPlanFlags(plan);
   const badges: React.ReactNode[] = [];
 
   // Status badge
-  if (plan.status) {
-    const statusClass = `badge-status badge-status-${plan.status
-      .toLowerCase()
+  if (flags.status.hasStatus) {
+    const statusClass = `badge-status badge-status-${flags.status.status
+      ?.toLowerCase()
       .replace(/\s+/g, '-')}`;
     badges.push(
-      <span key="status" className={statusClass} title={`Status: ${plan.status}`}>
-        {plan.status === 'Not Started' && '⭕'}
-        {plan.status === 'In Progress' && '⏳'}
-        {plan.status === 'Completed' && '✅'}
+      <span key="status" className={statusClass} title={`Status: ${flags.status.status}`}>
+        {flags.status.isNotStarted && '⭕'}
+        {flags.status.isInProgress && '⏳'}
+        {flags.status.isCompleted && '✅'}
       </span>
     );
   }
 
   // Overdue warning
-  if (isOverdue(plan.dueDate) && plan.status !== 'Completed') {
+  if (flags.overdue.isOverdue) {
+    const overdueMsg = `Overdue by ${flags.overdue.daysOverdue} day${
+      flags.overdue.daysOverdue !== 1 ? 's' : ''
+    }`;
     badges.push(
-      <span key="overdue" className="badge-warning" title="Overdue!">
+      <span key="overdue" className="badge-warning" title={overdueMsg}>
         ⚠️
       </span>
     );
   }
 
   // Assignee badge
-  if (plan.assignee) {
-    const initials = plan.assignee
-      .split(' ')
-      .map((n) => n[0]?.toUpperCase())
-      .join('')
-      .slice(0, 2);
+  if (flags.assignee.hasAssignee) {
     badges.push(
-      <span key="assignee" className="badge-assignee" title={`Assigned to: ${plan.assignee}`}>
-        {initials || '👤'}
+      <span
+        key="assignee"
+        className="badge-assignee"
+        title={`Assigned to: ${flags.assignee.assignee}`}
+      >
+        {flags.assignee.initials}
       </span>
     );
   }
 
   // Time tracking indicator
-  if (plan.investedTimeHours !== null || plan.elapsedTimeDays !== null) {
+  if (flags.time.hasTimeTracking) {
     badges.push(
       <span key="time" className="badge-time" title="Time tracked">
         ⏱️

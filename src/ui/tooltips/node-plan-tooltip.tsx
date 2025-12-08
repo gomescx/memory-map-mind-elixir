@@ -6,37 +6,17 @@
 import React from 'react';
 import type { MindMapNode } from '@core/types/node';
 import { hasNodePlanData } from '@core/node-adapter';
+import {
+  getAllPlanFlags,
+  formatDate,
+  formatHours,
+  formatDays,
+} from '@utils/plan-status';
 import './node-plan-tooltip.css';
 
 export interface NodePlanTooltipProps {
   node: MindMapNode;
   show: boolean;
-}
-
-/**
- * Format hours for display (e.g., "5h" or "1.5h")
- */
-function formatHours(hours: number): string {
-  return hours % 1 === 0 ? `${hours}h` : `${hours.toFixed(1)}h`;
-}
-
-/**
- * Format days for display (e.g., "5d" or "1.5d")
- */
-function formatDays(days: number): string {
-  return days % 1 === 0 ? `${days}d` : `${days.toFixed(1)}d`;
-}
-
-/**
- * Format date for display
- */
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
 }
 
 /**
@@ -52,14 +32,15 @@ export const NodePlanTooltip: React.FC<NodePlanTooltipProps> = ({ node, show }) 
     return null;
   }
 
+  const flags = getAllPlanFlags(plan);
   const rows: React.ReactNode[] = [];
 
   // Status
-  if (plan.status) {
+  if (flags.status.hasStatus) {
     rows.push(
       <div key="status" className="tooltip-row">
         <span className="tooltip-label">Status:</span>
-        <span className="tooltip-value">{plan.status}</span>
+        <span className="tooltip-value">{flags.status.status}</span>
       </div>
     );
   }
@@ -75,41 +56,44 @@ export const NodePlanTooltip: React.FC<NodePlanTooltipProps> = ({ node, show }) 
   }
 
   if (plan.dueDate) {
+    const dueDateDisplay = formatDate(plan.dueDate);
+    const overdueWarning = flags.overdue.isOverdue
+      ? ` (⚠️ ${flags.overdue.daysOverdue}d overdue)`
+      : '';
     rows.push(
       <div key="due" className="tooltip-row">
         <span className="tooltip-label">Due:</span>
-        <span className="tooltip-value">{formatDate(plan.dueDate)}</span>
-      </div>
-    );
-  }
-
-  // Time tracking
-  if (plan.investedTimeHours !== null || plan.elapsedTimeDays !== null) {
-    rows.push(
-      <div key="time" className="tooltip-row">
-        <span className="tooltip-label">Time:</span>
         <span className="tooltip-value">
-          {plan.elapsedTimeDays !== null && formatDays(plan.elapsedTimeDays)}
-          {plan.investedTimeHours !== null &&
-            plan.elapsedTimeDays !== null &&
-            ' / '}
-          {plan.investedTimeHours !== null && formatHours(plan.investedTimeHours)}
-          {plan.elapsedTimeDays !== null && plan.investedTimeHours !== null
-            ? ' (elapsed/invested)'
-            : plan.elapsedTimeDays !== null
-            ? ' elapsed'
-            : ' invested'}
+          {dueDateDisplay}
+          {overdueWarning}
         </span>
       </div>
     );
   }
 
+  // Time tracking
+  if (flags.time.hasTimeTracking) {
+    const timeDisplay: string[] = [];
+    if (flags.time.hasElapsedTime && flags.time.elapsedTimeDays !== null) {
+      timeDisplay.push(`${formatDays(flags.time.elapsedTimeDays)} elapsed`);
+    }
+    if (flags.time.hasInvestedTime && flags.time.investedTimeHours !== null) {
+      timeDisplay.push(`${formatHours(flags.time.investedTimeHours)} invested`);
+    }
+    rows.push(
+      <div key="time" className="tooltip-row">
+        <span className="tooltip-label">Time:</span>
+        <span className="tooltip-value">{timeDisplay.join(' / ')}</span>
+      </div>
+    );
+  }
+
   // Assignee
-  if (plan.assignee) {
+  if (flags.assignee.hasAssignee) {
     rows.push(
       <div key="assignee" className="tooltip-row">
         <span className="tooltip-label">Assignee:</span>
-        <span className="tooltip-value">{plan.assignee}</span>
+        <span className="tooltip-value">{flags.assignee.assignee}</span>
       </div>
     );
   }

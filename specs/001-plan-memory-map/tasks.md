@@ -123,10 +123,10 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ### Implementation for User Story 5
 
-- [ ] T035 [P] [US5] Derive status/overdue/assignee flags from plan data in `src/utils/plan-status.ts`
-- [ ] T036 [US5] Render badges/icons on node view using derived flags in `src/ui/badges/node-plan-badges.tsx`
-- [ ] T037 [P] [US5] Add tooltip content for invested/elapsed time and dates in `src/ui/tooltips/node-plan-tooltip.tsx`
-- [ ] T038 [P] [US5] Add Vitest snapshot/logic tests for badge and overdue calculations in `tests/unit/ui/node-plan-badges.spec.ts`
+- [X] T035 [P] [US5] Derive status/overdue/assignee flags from plan data in `src/utils/plan-status.ts`
+- [X] T036 [US5] Render badges/icons on node view using derived flags in `src/ui/badges/node-plan-badges.tsx`
+- [X] T037 [P] [US5] Add tooltip content for invested/elapsed time and dates in `src/ui/tooltips/node-plan-tooltip.tsx`
+- [X] T038 [P] [US5] Add Vitest snapshot/logic tests for badge and overdue calculations in `tests/unit/ui/node-plan-badges.spec.ts`
 
 **Checkpoint**: User Story 5 independently functional
 
