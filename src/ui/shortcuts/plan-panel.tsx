@@ -73,7 +73,7 @@ export function PlanPanelToggleButton({ className }: PlanPanelToggleButtonProps)
         navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'
       }+P)`}
     >
-      📋 Plan
+      📋 Attributes
     </button>
   );
 }

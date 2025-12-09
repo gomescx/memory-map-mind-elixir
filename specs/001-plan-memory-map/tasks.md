@@ -149,6 +149,16 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
+## User Story 7: UX Layout Adjustments
+
+- [X] T046 [P] [US7] Make `Planning Attributes Sidepane` sit outside canvas so it doesn't cover canvas zoom commands
+- [X] T047 [P] [US7] Remove all tooltips below every attribute on `Planning Attributes Sidepane` 
+- [X] T048 [P] [US7] Remove Attribute Status value `-- None --`, default value to `Not Started` when creating the node
+- [X] T049 [P] [US7] Expand Header to 2 lines, first line has icons, 2nd line has shortcuts
+
+
+---
+
 ## Phase 9: Polish & Cross-Cutting Concerns
 
 **Purpose**: Performance, docs, and validation across stories

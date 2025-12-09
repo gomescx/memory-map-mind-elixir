@@ -17,7 +17,7 @@ import './App.css';
 function MindMapApp(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindElixirRef = useRef<any>(null);
-  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo } = useAppStore();
+  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo, isPanelOpen } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
@@ -341,51 +341,67 @@ function MindMapApp(): JSX.Element {
   return (
     <div className="app-container">
       <div className="toolbar">
-        <h1>Memory Map Action Planner</h1>
-        <div className="toolbar-actions">
-          <button 
-            className="toolbar-button" 
-            onClick={handleSave} 
-            title="Save map (Ctrl+S)"
+        <div className="toolbar-top-row">
+          <h1>Memory Map Action Planner</h1>
+          <div className="toolbar-actions">
+            <button 
+              className="toolbar-button" 
+              onClick={handleSave} 
+              title="Save map (Ctrl+S)"
+            >
+              💾 Save
+            </button>
+            <button 
+              className="toolbar-button" 
+              onClick={handleLoad} 
+              title="Load map (Ctrl+O)"
+            >
+              📂 Load
+            </button>
+            <button 
+              className="toolbar-button" 
+              onClick={handleReset} 
+              title="Reset map"
+            >
+              🔄 Reset
+            </button>
+            <button 
+              className="toolbar-button" 
+              onClick={handleExportCSV} 
+              title="Export as CSV"
+            >
+              📊 CSV
+            </button>
+            <button 
+              className="toolbar-button" 
+              onClick={handleExportHTML} 
+              title="Export as HTML table (Ctrl+E for both)"
+            >
+              📄 HTML
+            </button>
+            <PlanPanelToggleButton className="toolbar-button" />
+          </div>
+        </div>
+        <div className="toolbar-bottom-row">
+          <a 
+            href="https://claudio.coach" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="toolbar-link"
           >
-            💾 Save
-          </button>
-          <button 
-            className="toolbar-button" 
-            onClick={handleLoad} 
-            title="Load map (Ctrl+O)"
-          >
-            📂 Load
-          </button>
-          <button 
-            className="toolbar-button" 
-            onClick={handleReset} 
-            title="Reset map"
-          >
-            🔄 Reset
-          </button>
-          <button 
-            className="toolbar-button" 
-            onClick={handleExportCSV} 
-            title="Export as CSV"
-          >
-            📊 CSV
-          </button>
-          <button 
-            className="toolbar-button" 
-            onClick={handleExportHTML} 
-            title="Export as HTML table (Ctrl+E for both)"
-          >
-            📄 HTML
-          </button>
-          <PlanPanelToggleButton className="toolbar-button" />
+            Visit claudio.coach for more resources
+          </a>
           <span className="toolbar-hint">
             Ctrl+S (save) • Ctrl+O (load) • Tab (child) • Enter (sibling) • Alt+↑/↓ (reorder) • Ctrl+P (plan)
           </span>
         </div>
       </div>
       <div className="mind-map-wrapper">
-        <div ref={containerRef} id="mind-map" className="mind-map-container" />
+        <div 
+          ref={containerRef} 
+          id="mind-map" 
+          className="mind-map-container"
+        />
         {/* Badge overlay (hover takes priority, otherwise selection) */}
         {badgePosition && (hoveredNodeId ?? selectedNodeId) && (
           <div
@@ -412,8 +428,8 @@ function MindMapApp(): JSX.Element {
             })()}
           </div>
         )}
+        <PlanPanel />
       </div>
-      <PlanPanel />
     </div>
   );
 }

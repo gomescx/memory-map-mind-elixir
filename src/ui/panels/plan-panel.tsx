@@ -32,7 +32,11 @@ export const PlanPanel: React.FC = () => {
     const node = getNode(selectedNodeId);
     if (node) {
       const plan = getNodePlanAttributes(node);
-      setFormData(plan);
+      // Default status to 'Not Started' if not set
+      setFormData({
+        ...plan,
+        status: plan.status || 'Not Started',
+      });
     }
   }, [selectedNodeId, getNode]);
 
@@ -72,7 +76,7 @@ export const PlanPanel: React.FC = () => {
       investedTimeHours: null,
       elapsedTimeDays: null,
       assignee: null,
-      status: null,
+      status: 'Not Started',
     });
     setValidationError(null);
     setValidationWarning(null);
@@ -118,12 +122,11 @@ export const PlanPanel: React.FC = () => {
                 {field.type === 'select' && field.options ? (
                   <select
                     id={field.name}
-                    value={formatFormValue(formData[field.name])}
+                    value={formatFormValue(formData[field.name]) || 'Not Started'}
                     onChange={(e) =>
                       handleFieldChange(field.name, e.target.value || null)
                     }
                   >
-                    <option value="">-- None --</option>
                     {field.options.map((opt) => (
                       <option key={opt} value={opt}>
                         {opt}
@@ -162,8 +165,6 @@ export const PlanPanel: React.FC = () => {
                     }
                   />
                 )}
-
-                {field.hint && <small className="field-hint">{field.hint}</small>}
               </div>
             ))}
 

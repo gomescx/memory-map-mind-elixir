@@ -133,6 +133,16 @@ As a user working on a map during a coaching session, I want the system to optio
 
 ---
 
+#### User Story 7 -  UX Layout Adjustments
+
+As a user planning tasks I want to have a complete overview of a node attributes and still be able to zoom in and out on the map using the map +/- commands so I can easily update my planning
+
+**Acceptance Scenarios**:
+
+1. **Given** I have selected to show the Planning Attributes sidepane **When** the sidepane renders **Then** I can still the wholemap with all nodes and commands
+2. **Given** I have selected to show the Planning Attributes sidepane **When** the sidepane renders **Then** I can see all fields and the save button without having to scroll down
+
+
 ### Edge Cases
 
 - **What happens when a user tries to load a mind map file from an older version with a different schema?**  

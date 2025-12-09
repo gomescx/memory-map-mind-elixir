@@ -1,15 +1,14 @@
 .plan-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
+  position: relative;
   width: 360px;
-  height: 100vh;
+  height: 100%;
   background: white;
   border-left: 1px solid #ccc;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  z-index: 100;
+  flex-shrink: 0;
+  z-index: 10;
 }
 
 .plan-panel-header {

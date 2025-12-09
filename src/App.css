@@ -10,12 +10,24 @@
 
 .toolbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 8px;
   padding: 12px 20px;
   background: #f8f8f8;
   border-bottom: 1px solid #e0e0e0;
   flex-shrink: 0;
+}
+
+.toolbar-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar-bottom-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .toolbar h1 {
@@ -53,6 +65,19 @@
   cursor: not-allowed;
 }
 
+.toolbar-link {
+  font-size: 12px;
+  color: #4a90e2;
+  text-decoration: none;
+  margin-right: auto;
+  transition: color 0.2s;
+}
+
+.toolbar-link:hover {
+  color: #357abd;
+  text-decoration: underline;
+}
+
 .toolbar-hint {
   font-size: 12px;
   color: #666;
@@ -64,12 +89,15 @@
   position: relative;
   overflow: hidden;
   background: #fafafa;
+  display: flex;
+  flex-direction: row;
 }
 
 .mind-map-container {
-  width: 100%;
+  flex: 1;
   height: 100%;
   position: relative;
+  min-width: 0;
 }
 
 /* Ensure mind-elixir container fills the space */
