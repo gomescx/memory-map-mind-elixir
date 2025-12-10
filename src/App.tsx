@@ -17,7 +17,7 @@ import './App.css';
 function MindMapApp(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindElixirRef = useRef<any>(null);
-  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo, isPanelOpen } = useAppStore();
+  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
@@ -342,7 +342,8 @@ function MindMapApp(): JSX.Element {
     <div className="app-container">
       <div className="toolbar">
         <div className="toolbar-top-row">
-          <h1>Memory Map Action Planner</h1>
+            <h1>Memory Map Action Planner</h1>
+            <p className="toolbar-tagline"><em>"From messy ideas to clear action — in minutes."</em></p>
           <div className="toolbar-actions">
             <button 
               className="toolbar-button" 

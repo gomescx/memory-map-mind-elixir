@@ -229,8 +229,6 @@ export const AppStoreProvider = ({
       if (typeof me.reshapeNode === 'function') {
         me.reshapeNode(nodeEl, nodeObj);
       }
-
-      console.log(`Updated plan for node ${nodeId}:`, nodeObj.extended.plan);
     },
     []
   );
@@ -269,62 +267,4 @@ export const useAppStore = (): AppStoreContext => {
     );
   }
   return context;
-};
-
-/**
- * Hook to listen for state changes
- */
-export const useMapState = () => {
-  const store = useAppStore();
-  return {
-    getMindElixirInstance: store.getMindElixirInstance,
-    selectedNodeId: store.selectedNodeId,
-  };
-};
-
-/**
- * Hook for history operations
- */
-export const useHistory = () => {
-  const store = useAppStore();
-  return {
-    canUndo: store.historyIndex > 0,
-    canRedo: store.historyIndex < store.history.length - 1,
-    undo: store.undo,
-    redo: store.redo,
-    addToHistory: store.addToHistory,
-  };
-};
-
-/**
- * Hook for selection
- */
-export const useSelection = () => {
-  const store = useAppStore();
-  return {
-    selectedNodeId: store.selectedNodeId,
-    setSelectedNodeId: store.setSelectedNodeId,
-  };
-};
-
-/**
- * Hook for plan updates
- */
-export const usePlanUpdates = () => {
-  const store = useAppStore();
-  return {
-    updateNodePlan: store.updateNodePlan,
-    getNode: store.getNode,
-  };
-};
-
-/**
- * Hook for panel state
- */
-export const usePanelState = () => {
-  const store = useAppStore();
-  return {
-    isPanelOpen: store.isPanelOpen,
-    setIsPanelOpen: store.setIsPanelOpen,
-  };
 };

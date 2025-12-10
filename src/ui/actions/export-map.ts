@@ -26,8 +26,6 @@ export interface ExportOptions {
  * @param fileName - Optional custom filename (without extension)
  */
 export function exportToCSV(mindElixir: any, fileName?: string): void {
-  console.log('exportToCSV called');
-
   try {
     // Get current data directly from mind-elixir
     const data = mindElixir.getData();
@@ -36,15 +34,12 @@ export function exportToCSV(mindElixir: any, fileName?: string): void {
     }
 
     const root = data.nodeData as MindMapNode;
-    console.log('exportToCSV with root:', root.topic);
 
     // Flatten the tree to exportable rows
     const rows = flattenTree(root);
-    console.log(`Flattened ${rows.length} nodes for CSV export`);
 
     // Generate CSV content
     const csv = generateCSV(rows);
-    console.log(`Generated CSV content, length: ${csv.length}`);
 
     // Create downloadable blob
     const blob = createCSVBlob(csv);
@@ -58,9 +53,7 @@ export function exportToCSV(mindElixir: any, fileName?: string): void {
     const defaultFileName = `${rootLabel.replace(/[^a-zA-Z0-9-_]/g, '_')}-action-plan-${day}-${month}-${year}.csv`;
     const finalFileName = fileName ? `${fileName}.csv` : defaultFileName;
 
-    console.log('CSV filename:', finalFileName);
     downloadBlob(blob, finalFileName);
-    console.log('CSV export completed');
   } catch (error) {
     console.error('Error in exportToCSV:', error);
     throw new Error(
@@ -77,8 +70,6 @@ export function exportToCSV(mindElixir: any, fileName?: string): void {
  * @param fileName - Optional custom filename (without extension)
  */
 export function exportToHTML(mindElixir: any, fileName?: string): void {
-  console.log('exportToHTML called');
-
   try {
     // Get current data directly from mind-elixir
     const data = mindElixir.getData();
@@ -87,16 +78,13 @@ export function exportToHTML(mindElixir: any, fileName?: string): void {
     }
 
     const root = data.nodeData as MindMapNode;
-    console.log('exportToHTML with root:', root.topic);
 
     // Flatten the tree to exportable rows
     const rows = flattenTree(root);
-    console.log(`Flattened ${rows.length} nodes for HTML export`);
 
     // Generate HTML content
     const title = root.topic || 'Action Plan';
     const html = generateHTMLTable(rows, title);
-    console.log(`Generated HTML content, length: ${html.length}`);
 
     // Create downloadable blob
     const blob = createHTMLBlob(html);
@@ -110,9 +98,7 @@ export function exportToHTML(mindElixir: any, fileName?: string): void {
     const defaultFileName = `${rootLabel.replace(/[^a-zA-Z0-9-_]/g, '_')}-action-plan-${day}-${month}-${year}.html`;
     const finalFileName = fileName ? `${fileName}.html` : defaultFileName;
 
-    console.log('HTML filename:', finalFileName);
     downloadBlob(blob, finalFileName);
-    console.log('HTML export completed');
   } catch (error) {
     console.error('Error in exportToHTML:', error);
     throw new Error(
@@ -129,8 +115,6 @@ export function exportToHTML(mindElixir: any, fileName?: string): void {
  * @param options - Export options (which formats to export)
  */
 export function exportMap(mindElixir: any, options: ExportOptions = { csv: true, html: true }): void {
-  console.log('exportMap called with options:', options);
-
   try {
     if (options.csv) {
       exportToCSV(mindElixir);
@@ -139,8 +123,6 @@ export function exportMap(mindElixir: any, options: ExportOptions = { csv: true,
     if (options.html) {
       exportToHTML(mindElixir);
     }
-
-    console.log('Export completed successfully');
   } catch (error) {
     console.error('Error in exportMap:', error);
     throw error;

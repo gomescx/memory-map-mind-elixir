@@ -29,9 +29,3 @@ export const PLAN_STATUS_OPTIONS = [
 
 /** Default map title when creating new maps */
 export const DEFAULT_MAP_TITLE = 'Untitled Map';
-
-/** LocalStorage key prefix for autosave snapshots */
-export const AUTOSAVE_PREFIX = 'mmap_autosave_';
-
-/** Recovery data expiration in milliseconds (7 days) */
-export const RECOVERY_EXPIRATION_MS = 7 * 24 * 60 * 60 * 1000;
