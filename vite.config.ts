@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: '/memory-map-mind-elixir/',
   build: {
     target: 'ES2020',
     minify: 'terser',
