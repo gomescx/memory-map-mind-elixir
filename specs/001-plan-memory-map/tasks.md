@@ -179,13 +179,13 @@ description: "Task list for Memory Map Action Planner MVP"
 - And each cell displays correct data from node model (or "--" for empty values)
 
 **Tests Required**:
-- [ ] Unit: `test_table_renders_with_correct_columns()` in `tests/unit/ui/table-view.spec.ts`
-- [ ] Unit: `test_table_rows_match_node_data()` in `tests/unit/ui/table-view.spec.ts`
-- [ ] Integration: `test_table_displays_all_nodes_from_state()` in `tests/integration/table-view.spec.ts`
+- [X] Unit: `test_table_renders_with_correct_columns()` in `tests/unit/ui/table-view.spec.ts`
+- [X] Unit: `test_table_rows_match_node_data()` in `tests/unit/ui/table-view.spec.ts`
+- [X] Integration: `test_table_displays_all_nodes_from_state()` in `tests/integration/table-view.spec.ts`
 
 ---
 
-- [ ] T051 [P] [US8] Add view toggle button (Mindmap/Table) to header with state persistence in `src/ui/controls/view-toggle.tsx`
+- [X] T051 [P] [US8] Add view toggle button (Mindmap/Table) to header with state persistence in `src/ui/controls/view-toggle.tsx`
 
 **Acceptance Criteria**:
 - Given user is in mindmap view

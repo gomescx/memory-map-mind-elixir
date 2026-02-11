@@ -1,0 +1,35 @@
+/**
+ * Depth filter styles
+ */
+
+.depth-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.depth-filter label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.depth-select {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.depth-select:hover {
+  border-color: var(--primary-color, #3a9dff);
+}
+
+.depth-select:focus {
+  outline: 2px solid var(--primary-color, #3a9dff);
+  outline-offset: 2px;
+  border-color: var(--primary-color, #3a9dff);
+}
