@@ -5,7 +5,6 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import React from 'react';
 import { DepthFilter } from '@ui/controls/depth-filter';
 
 // Mock store
@@ -78,7 +77,7 @@ describe('DepthFilter', () => {
   });
 
   it('displays current depth filter value', () => {
-    mockStore.depthFilter = 2;
+    mockStore.depthFilter = 2 as any;
     render(<DepthFilter />);
     
     const select = screen.getByRole('combobox') as HTMLSelectElement;
@@ -92,7 +91,7 @@ describe('DepthFilter', () => {
     expect(select.value).toBe('all');
     
     // Update mock state
-    mockStore.depthFilter = 3;
+    mockStore.depthFilter = 3 as any;
     rerender(<DepthFilter />);
     
     expect(select.value).toBe('3');

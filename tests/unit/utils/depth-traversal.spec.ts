@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { flattenByDepth, type FlatNode } from '@/utils/tree/depth-traversal';
+import { flattenByDepth } from '@/utils/tree/depth-traversal';
 import type { MindMapNode } from '@core/types/node';
 
 describe('depth-traversal', () => {

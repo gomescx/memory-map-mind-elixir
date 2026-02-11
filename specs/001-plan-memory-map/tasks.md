@@ -200,7 +200,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T052 [US8] Implement depth filtering dropdown with "All, 1, 2, 3, 4" options in `src/ui/controls/depth-filter.tsx`
+- [X] T052 [US8] Implement depth filtering dropdown with "All, 1, 2, 3, 4" options in `src/ui/controls/depth-filter.tsx`
 
 **Acceptance Criteria**:
 - Given table view with nodes at depths 1, 2, and 3

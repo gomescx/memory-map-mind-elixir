@@ -9,6 +9,9 @@ import { NodePlanBadges } from '@ui/badges/node-plan-badges';
 import { NodePlanTooltip } from '@ui/tooltips/node-plan-tooltip';
 import { saveMapToFile, loadMapFromFile, resetMapToRoot } from '@ui/actions/map-actions';
 import { exportToCSV, exportToHTML } from '@ui/actions/export-map';
+import { TableView } from '@ui/views/table-view';
+import { ViewToggle } from '@ui/controls/view-toggle';
+import { DepthFilter } from '@ui/controls/depth-filter';
 import './App.css';
 
 /**
@@ -17,7 +20,7 @@ import './App.css';
 function MindMapApp(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
   const mindElixirRef = useRef<any>(null);
-  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo } = useAppStore();
+  const { setMindElixirInstance, setSelectedNodeId, getNode, selectedNodeId, undo, redo, currentView } = useAppStore();
   const [isInitialized, setIsInitialized] = useState(false);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
@@ -381,6 +384,8 @@ function MindMapApp(): JSX.Element {
               📄 HTML
             </button>
             <PlanPanelToggleButton className="toolbar-button" />
+            <ViewToggle />
+            {currentView === 'table' && <DepthFilter />}
           </div>
         </div>
         <div className="toolbar-bottom-row">
@@ -398,38 +403,44 @@ function MindMapApp(): JSX.Element {
         </div>
       </div>
       <div className="mind-map-wrapper">
-        <div 
-          ref={containerRef} 
-          id="mind-map" 
-          className="mind-map-container"
-        />
-        {/* Badge overlay (hover takes priority, otherwise selection) */}
-        {badgePosition && (hoveredNodeId ?? selectedNodeId) && (
-          <div
-            className="plan-badge-overlay"
-            style={{ top: badgePosition.top, left: badgePosition.left }}
-          >
-            {(() => {
-              const targetId = hoveredNodeId ?? selectedNodeId;
-              const node = targetId ? getNode(targetId) : null;
-              return node ? <NodePlanBadges node={node} /> : null;
-            })()}
-          </div>
-        )}
+        {currentView === 'mindmap' ? (
+          <>
+            <div 
+              ref={containerRef} 
+              id="mind-map" 
+              className="mind-map-container"
+            />
+            {/* Badge overlay (hover takes priority, otherwise selection) */}
+            {badgePosition && (hoveredNodeId ?? selectedNodeId) && (
+              <div
+                className="plan-badge-overlay"
+                style={{ top: badgePosition.top, left: badgePosition.left }}
+              >
+                {(() => {
+                  const targetId = hoveredNodeId ?? selectedNodeId;
+                  const node = targetId ? getNode(targetId) : null;
+                  return node ? <NodePlanBadges node={node} /> : null;
+                })()}
+              </div>
+            )}
 
-        {/* Tooltip overlay (hover only - disappears when mouse leaves) */}
-        {tooltipPosition && hoveredNodeId && (
-          <div
-            className="plan-tooltip-overlay"
-            style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
-          >
-            {(() => {
-              const node = hoveredNodeId ? getNode(hoveredNodeId) : null;
-              return node ? <NodePlanTooltip node={node} show /> : null;
-            })()}
-          </div>
+            {/* Tooltip overlay (hover only - disappears when mouse leaves) */}
+            {tooltipPosition && hoveredNodeId && (
+              <div
+                className="plan-tooltip-overlay"
+                style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
+              >
+                {(() => {
+                  const node = hoveredNodeId ? getNode(hoveredNodeId) : null;
+                  return node ? <NodePlanTooltip node={node} show /> : null;
+                })()}
+              </div>
+            )}
+            <PlanPanel />
+          </>
+        ) : (
+          <TableView />
         )}
-        <PlanPanel />
       </div>
     </div>
   );
