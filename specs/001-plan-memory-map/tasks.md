@@ -159,6 +159,246 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
+## User Story 8: Table View for Memory Map with Depth Filtering (Priority: P2)
+
+**Goal**: Enable users to view, filter, reorder, and edit nodes in table format synchronized with mindmap view
+
+**Independent Test**: User can switch views, filter by depth, drag-drop reorder, inline edit attributes, and see all changes reflected bidirectionally without data loss
+
+---
+
+### Implementation for User Story 8
+
+- [ ] T050 [P] [US8] Create table view component structure with columns for sequence, name, attributes, depth in `src/ui/views/table-view.tsx`
+
+**Acceptance Criteria**:
+- Given mindmap data with 10 nodes including custom planning attributes
+- When table view component is rendered
+- Then displays table with columns: Sequence, Name, Status, Priority, Due Date, Assignee, Est. Hours, Inv. Hours, Depth
+- And rows show all 10 nodes in depth-first traversal order
+- And each cell displays correct data from node model (or "--" for empty values)
+
+**Tests Required**:
+- [ ] Unit: `test_table_renders_with_correct_columns()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_table_rows_match_node_data()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Integration: `test_table_displays_all_nodes_from_state()` in `tests/integration/table-view.spec.ts`
+
+---
+
+- [ ] T051 [P] [US8] Add view toggle button (Mindmap/Table) to header with state persistence in `src/ui/controls/view-toggle.tsx`
+
+**Acceptance Criteria**:
+- Given user is in mindmap view
+- When user clicks "Table View" toggle button
+- Then view switches to table view rendering all nodes
+- And toggle button updates to show "Mindmap View" label
+- And view state persists in session (survives toggling back and forth)
+
+**Tests Required**:
+- [ ] Unit: `test_toggle_button_switches_views()` in `tests/unit/ui/view-toggle.spec.ts`
+- [ ] Integration: `test_toggle_preserves_data()` in `tests/integration/view-toggle.spec.ts`
+
+---
+
+- [ ] T052 [US8] Implement depth filtering dropdown with "All, 1, 2, 3, 4" options in `src/ui/controls/depth-filter.tsx`
+
+**Acceptance Criteria**:
+- Given table view with nodes at depths 1, 2, and 3
+- When user selects "Depth 2" from dropdown
+- Then table displays only depth-2 nodes
+- And sequence numbers remain consistent with full node set (not renumbered 1, 2, 3...)
+- And depth column shows "2" for all visible rows
+
+**Tests Required**:
+- [ ] Unit: `test_depth_filter_reduces_visible_rows()` in `tests/unit/ui/depth-filter.spec.ts`
+- [ ] Unit: `test_depth_filter_preserves_sequence_numbers()` in `tests/unit/ui/depth-filter.spec.ts`
+
+---
+
+- [ ] T053 [P] [US8] Add depth-first traversal utility to flatten tree by depth level in `src/utils/tree/depth-traversal.ts`
+
+**Acceptance Criteria**:
+- Given tree structure with nodes at multiple depths
+- When `flattenByDepth(rootNode, depthFilter)` is called with depthFilter=2
+- Then returns flat array of only depth-2 nodes in depth-first order
+- And each node includes computed depth property
+- And maintains parent-child relationship metadata for sequence calculations
+
+**Tests Required**:
+- [ ] Unit: `test_flatten_by_depth_filters_correctly()` in `tests/unit/utils/depth-traversal.spec.ts`
+- [ ] Unit: `test_flatten_maintains_depth_first_order()` in `tests/unit/utils/depth-traversal.spec.ts`
+
+---
+
+- [ ] T054 [US8] Implement drag-drop row reordering using drag-and-drop library (e.g., dnd-kit) in `src/ui/views/table-view.tsx`
+
+**Acceptance Criteria**:
+- Given table with 5 sibling rows A, B, C, D, E
+- When user drags row C to position between A and B
+- Then table updates to show A, C, B, D, E
+- And sequence numbers recalculate: A=1, C=2, B=3, D=4, E=5
+- And underlying node sequence in data model updates
+- And dragging provides visual feedback (ghost row, drop indicator)
+
+**Tests Required**:
+- [ ] Integration: `test_drag_drop_reorders_siblings()` in `tests/integration/table-drag-drop.spec.ts`
+- [ ] Integration: `test_reorder_updates_data_model()` in `tests/integration/table-drag-drop.spec.ts`
+
+---
+
+- [ ] T055 [US8] Implement updateNodeSequence() function to persist reorder in state in `src/state/tree/mutations.ts`
+
+**Acceptance Criteria**:
+- Given node C currently at position 3 among siblings
+- When `updateNodeSequence(nodeId, newPosition=1)` is called
+- Then node C moves to first position in parent's children array
+- And all sibling positions recalculate
+- And state change triggers reactive update in both views
+
+**Tests Required**:
+- [ ] Unit: `test_update_node_sequence_reorders_siblings()` in `tests/unit/state/mutations.spec.ts`
+- [ ] Unit: `test_sequence_change_emits_state_update()` in `tests/unit/state/mutations.spec.ts`
+
+---
+
+- [ ] T056 [P] [US8] Implement inline editing for text cells (Name, Assignee) with validation in `src/ui/table/editable-text-cell.tsx`
+
+**Acceptance Criteria**:
+- Given table cell displaying node name "Research"
+- When user double-clicks or presses Enter on cell
+- Then cell becomes editable text input with current value
+- When user changes text to "User Research" and presses Enter (or blurs)
+- Then cell saves new value to data model and exits edit mode
+- When user presses Escape
+- Then cell exits edit mode without saving changes
+- And validation enforces max 200 chars for Name field
+
+**Tests Required**:
+- [ ] Unit: `test_editable_cell_saves_on_enter()` in `tests/unit/ui/editable-cell.spec.ts`
+- [ ] Unit: `test_editable_cell_cancels_on_escape()` in `tests/unit/ui/editable-cell.spec.ts`
+- [ ] Unit: `test_name_validation_enforces_max_length()` in `tests/unit/ui/editable-cell.spec.ts`
+
+---
+
+- [ ] T057 [P] [US8] Implement inline editing for dropdown cells (Status, Priority) in `src/ui/table/editable-select-cell.tsx`
+
+**Acceptance Criteria**:
+- Given table cell displaying Status "Not Started"
+- When user clicks on cell
+- Then cell shows dropdown with options: Not Started, In Progress, Completed, Blocked, Deferred
+- When user selects "In Progress"
+- Then cell saves new value and exits edit mode
+- And dropdown closes
+- And change immediately visible in table and mindmap
+
+**Tests Required**:
+- [ ] Unit: `test_select_cell_saves_on_selection()` in `tests/unit/ui/editable-select-cell.spec.ts`
+- [ ] Integration: `test_status_change_updates_both_views()` in `tests/integration/table-edit-sync.spec.ts`
+
+---
+
+- [ ] T058 [P] [US8] Implement inline editing for date cells (Due Date) with date picker in `src/ui/table/editable-date-cell.tsx`
+
+**Acceptance Criteria**:
+- Given table cell displaying empty due date
+- When user clicks on cell
+- Then date picker modal/dropdown opens
+- When user selects date 2026-03-15
+- Then cell displays "2026-03-15" (formatted)
+- And value saves to data model
+- And date becomes visible in mindmap hover tooltip
+
+**Tests Required**:
+- [ ] Unit: `test_date_cell_opens_picker_on_click()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [ ] Unit: `test_date_cell_saves_selected_date()` in `tests/unit/ui/editable-date-cell.spec.ts`
+
+---
+
+- [ ] T059 [P] [US8] Implement inline editing for numeric cells (Est. Hours, Inv. Hours) with validation in `src/ui/table/editable-number-cell.tsx`
+
+**Acceptance Criteria**:
+- Given table cell displaying Estimated Hours = 10
+- When user clicks and edits to "abc" (non-numeric)
+- Then inline validation error appears "Must be a number"
+- And value does not save
+- And cell reverts to previous value (10) on blur
+- When user edits to "40" and presses Enter
+- Then validation passes and value saves as 40
+- And accepts range 0-9999
+
+**Tests Required**:
+- [ ] Unit: `test_number_cell_validates_numeric_input()` in `tests/unit/ui/editable-number-cell.spec.ts`
+- [ ] Unit: `test_number_cell_rejects_invalid_input()` in `tests/unit/ui/editable-number-cell.spec.ts`
+- [ ] Unit: `test_number_cell_enforces_range()` in `tests/unit/ui/editable-number-cell.spec.ts`
+
+---
+
+- [ ] T060 [US8] Wire table cell edits to state mutations (updateNodeAttribute) in `src/state/tree/mutations.ts`
+
+**Acceptance Criteria**:
+- Given any editable cell in table view
+- When user completes edit (Enter, blur, select)
+- Then `updateNodeAttribute(nodeId, attributeName, newValue)` is called
+- And state update propagates to both table and mindmap views
+- And changes are captured by autosave (if US6 enabled)
+
+**Tests Required**:
+- [ ] Integration: `test_cell_edit_calls_update_mutation()` in `tests/integration/table-edit-sync.spec.ts`
+- [ ] Integration: `test_edit_syncs_to_mindmap_immediately()` in `tests/integration/table-edit-sync.spec.ts`
+
+---
+
+- [ ] T061 [US8] Add reactive state subscription to table view for mindmap changes in `src/ui/views/table-view.tsx`
+
+**Acceptance Criteria**:
+- Given table view is currently displayed
+- When user toggles to mindmap and edits node name
+- And toggles back to table view
+- Then table immediately shows updated name without manual refresh
+- And uses reactive state listener (no polling)
+
+**Tests Required**:
+- [ ] Integration: `test_table_updates_when_mindmap_changes()` in `tests/integration/bidirectional-sync.spec.ts`
+
+---
+
+- [ ] T062 [P] [US8] Add empty state handling for table (no nodes, no nodes at depth) in `src/ui/views/table-view.tsx`
+
+**Acceptance Criteria**:
+- Given map has only root node (no children)
+- When user switches to table view
+- Then table shows empty state message "No nodes to display. Add nodes in mindmap view."
+- Given map has nodes at depth 1 and 2 only
+- When user filters to Depth 3
+- Then table shows "No nodes at this depth level"
+
+**Tests Required**:
+- [ ] Unit: `test_table_shows_empty_state_when_no_nodes()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_table_shows_no_results_for_empty_filter()` in `tests/unit/ui/table-view.spec.ts`
+
+---
+
+- [ ] T063 [P] [US8] Add Playwright integration test for complete table workflow in `tests/integration/table-view-e2e.spec.ts`
+
+**Acceptance Criteria**:
+- Test creates map with 10 nodes across 3 depths
+- Switches to table view
+- Filters to Depth 2
+- Drags row to reorder
+- Edits Status and Due Date inline
+- Switches back to mindmap
+- Verifies all changes persist in mindmap view
+- Test passes without manual intervention
+
+**Tests Required**:
+- [ ] Integration: `test_complete_table_workflow()` in `tests/integration/table-view-e2e.spec.ts`
+
+---
+
+**Checkpoint**: User Story 8 independently functional - table view provides overview, filtering, reordering, and inline editing fully synchronized with mindmap view
+
+---
+
 ## Phase 9: Polish & Cross-Cutting Concerns
 
 **Purpose**: Performance, docs, and validation across stories

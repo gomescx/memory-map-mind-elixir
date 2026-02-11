@@ -35,6 +35,9 @@ export interface AppState {
 
   // UI state
   isPanelOpen: boolean;
+  
+  // Table view state
+  depthFilter: number | undefined;
 }
 
 /**
@@ -59,6 +62,9 @@ export interface StoreActions {
 
   // UI
   setIsPanelOpen: (open: boolean) => void;
+  
+  // Table view
+  setDepthFilter: (depth: number | undefined) => void;
 }
 
 /**
@@ -87,6 +93,7 @@ export const AppStoreProvider = ({
     history: [],
     historyIndex: -1,
     isPanelOpen: false,
+    depthFilter: undefined,
   });
 
   const setMindElixirInstance = useCallback((instance: any) => {
@@ -237,6 +244,10 @@ export const AppStoreProvider = ({
     setState((prev) => ({ ...prev, isPanelOpen: open }));
   }, []);
 
+  const setDepthFilter = useCallback((depth: number | undefined) => {
+    setState((prev) => ({ ...prev, depthFilter: depth }));
+  }, []);
+
   const contextValue: AppStoreContext = {
     ...state,
     setMindElixirInstance,
@@ -248,6 +259,7 @@ export const AppStoreProvider = ({
     updateNodePlan,
     getNode,
     setIsPanelOpen,
+    setDepthFilter,
   };
 
   return React.createElement(AppStoreContext.Provider, {
