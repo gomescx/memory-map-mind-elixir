@@ -169,7 +169,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ### Implementation for User Story 8
 
-- [ ] T050 [P] [US8] Create table view component structure with columns for sequence, name, attributes, depth in `src/ui/views/table-view.tsx`
+- [X] T050 [P] [US8] Create table view component structure with columns for sequence, name, attributes, depth in `src/ui/views/table-view.tsx`
 
 **Acceptance Criteria**:
 - Given mindmap data with 10 nodes including custom planning attributes

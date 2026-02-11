@@ -38,6 +38,7 @@ export interface AppState {
   
   // Table view state
   depthFilter: number | undefined;
+  currentView: 'mindmap' | 'table';
 }
 
 /**
@@ -65,6 +66,7 @@ export interface StoreActions {
   
   // Table view
   setDepthFilter: (depth: number | undefined) => void;
+  setCurrentView: (view: 'mindmap' | 'table') => void;
 }
 
 /**
@@ -94,6 +96,7 @@ export const AppStoreProvider = ({
     historyIndex: -1,
     isPanelOpen: false,
     depthFilter: undefined,
+    currentView: 'mindmap',
   });
 
   const setMindElixirInstance = useCallback((instance: any) => {
@@ -248,6 +251,10 @@ export const AppStoreProvider = ({
     setState((prev) => ({ ...prev, depthFilter: depth }));
   }, []);
 
+  const setCurrentView = useCallback((view: 'mindmap' | 'table') => {
+    setState((prev) => ({ ...prev, currentView: view }));
+  }, []);
+
   const contextValue: AppStoreContext = {
     ...state,
     setMindElixirInstance,
@@ -260,6 +267,7 @@ export const AppStoreProvider = ({
     getNode,
     setIsPanelOpen,
     setDepthFilter,
+    setCurrentView,
   };
 
   return React.createElement(AppStoreContext.Provider, {
