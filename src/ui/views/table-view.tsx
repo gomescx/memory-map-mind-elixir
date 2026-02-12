@@ -27,6 +27,7 @@ import { getNodePlanAttributes } from '@core/node-adapter';
 import type { MindMapNode } from '@core/types/node';
 import { EditableTextCell } from '@ui/table/editable-text-cell';
 import { EditableSelectCell } from '@ui/table/editable-select-cell';
+import { EditableDateCell } from '@ui/table/editable-date-cell';
 import './table-view.css';
 
 const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed'];
@@ -38,6 +39,7 @@ interface SortableRowProps {
   onUpdateNodeTopic: (nodeId: string, topic: string) => void;
   onUpdateAssignee: (nodeId: string, assignee: string) => void;
   onUpdateStatus: (nodeId: string, status: string) => void;
+  onUpdateDueDate: (nodeId: string, dueDate: string | null) => void;
 }
 
 function SortableRow({ 
@@ -47,6 +49,7 @@ function SortableRow({
   onUpdateNodeTopic,
   onUpdateAssignee,
   onUpdateStatus,
+  onUpdateDueDate,
 }: SortableRowProps) {
   const {
     attributes,
@@ -87,7 +90,11 @@ function SortableRow({
         placeholder="--"
       />
       <td>{formatCell(null)}</td>
-      <td>{formatCell(plan.dueDate)}</td>
+      <EditableDateCell
+        value={plan.dueDate}
+        onSave={(newValue) => onUpdateDueDate(flatNode.id, newValue)}
+        placeholder="--"
+      />
       <td>
         <EditableTextCell
           value={plan.assignee}
@@ -176,6 +183,10 @@ export const TableView: React.FC = () => {
     updateNodePlan(nodeId, { status: newStatus as 'Not Started' | 'In Progress' | 'Completed' });
   };
 
+  const handleUpdateDueDate = (nodeId: string, newDueDate: string | null) => {
+    updateNodePlan(nodeId, { dueDate: newDueDate });
+  };
+
   // Format cell value (show "--" for null/undefined)
   const formatCell = (value: string | number | null | undefined): string => {
     if (value === null || value === undefined || value === '') return '--';
@@ -218,6 +229,7 @@ export const TableView: React.FC = () => {
                   onUpdateNodeTopic={handleUpdateNodeTopic}
                   onUpdateAssignee={handleUpdateAssignee}
                   onUpdateStatus={handleUpdateStatus}
+                  onUpdateDueDate={handleUpdateDueDate}
                 />
               ))}
             </SortableContext>
