@@ -60,6 +60,7 @@ export interface StoreActions {
   // Node operations - query/update mind-elixir directly
   getNode: (nodeId: string) => MindMapNode | null;
   updateNodePlan: (nodeId: string, plan: Partial<PlanAttributes>) => void;
+  updateNodeSequence: (nodeId: string, parentId: string, newIndex: number) => void;
 
   // UI
   setIsPanelOpen: (open: boolean) => void;
@@ -255,6 +256,47 @@ export const AppStoreProvider = ({
     setState((prev) => ({ ...prev, currentView: view }));
   }, []);
 
+  /**
+   * Update node sequence/position within parent's children array
+   */
+  const updateNodeSequence = useCallback(
+    (nodeId: string, parentId: string, newIndex: number) => {
+      const me = meInstanceRef.current;
+      if (!me) return;
+
+      const data = me.getData();
+      if (!data || !data.nodeData) return;
+
+      // Find parent node
+      const findNode = (node: any, id: string): any => {
+        if (node.id === id) return node;
+        if (!node.children) return null;
+        for (const child of node.children) {
+          const found = findNode(child, id);
+          if (found) return found;
+        }
+        return null;
+      };
+
+      const parent = findNode(data.nodeData, parentId);
+      if (!parent || !parent.children) return;
+
+      // Find the node to move
+      const nodeIndex = parent.children.findIndex((n: any) => n.id === nodeId);
+      if (nodeIndex === -1) return;
+
+      // Remove from current position
+      const [node] = parent.children.splice(nodeIndex, 1);
+
+      // Insert at new position
+      parent.children.splice(newIndex, 0, node);
+
+      // Refresh the view
+      me.refresh(data);
+    },
+    []
+  );
+
   const contextValue: AppStoreContext = {
     ...state,
     setMindElixirInstance,
@@ -268,6 +310,7 @@ export const AppStoreProvider = ({
     setIsPanelOpen,
     setDepthFilter,
     setCurrentView,
+    updateNodeSequence,
   };
 
   return React.createElement(AppStoreContext.Provider, {
