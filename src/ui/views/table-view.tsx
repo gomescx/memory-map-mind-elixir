@@ -26,7 +26,10 @@ import { flattenByDepth, type FlatNode } from '@/utils/tree/depth-traversal';
 import { getNodePlanAttributes } from '@core/node-adapter';
 import type { MindMapNode } from '@core/types/node';
 import { EditableTextCell } from '@ui/table/editable-text-cell';
+import { EditableSelectCell } from '@ui/table/editable-select-cell';
 import './table-view.css';
+
+const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed'];
 
 interface SortableRowProps {
   flatNode: FlatNode;
@@ -34,6 +37,7 @@ interface SortableRowProps {
   formatCell: (value: string | number | null | undefined) => string;
   onUpdateNodeTopic: (nodeId: string, topic: string) => void;
   onUpdateAssignee: (nodeId: string, assignee: string) => void;
+  onUpdateStatus: (nodeId: string, status: string) => void;
 }
 
 function SortableRow({ 
@@ -42,6 +46,7 @@ function SortableRow({
   formatCell,
   onUpdateNodeTopic,
   onUpdateAssignee,
+  onUpdateStatus,
 }: SortableRowProps) {
   const {
     attributes,
@@ -75,7 +80,12 @@ function SortableRow({
           maxLength={200}
         />
       </td>
-      <td>{formatCell(plan.status)}</td>
+      <EditableSelectCell
+        value={plan.status}
+        options={STATUS_OPTIONS}
+        onSave={(newValue) => onUpdateStatus(flatNode.id, newValue)}
+        placeholder="--"
+      />
       <td>{formatCell(null)}</td>
       <td>{formatCell(plan.dueDate)}</td>
       <td>
@@ -162,6 +172,10 @@ export const TableView: React.FC = () => {
     updateNodePlan(nodeId, { assignee: newAssignee || null });
   };
 
+  const handleUpdateStatus = (nodeId: string, newStatus: string) => {
+    updateNodePlan(nodeId, { status: newStatus as 'Not Started' | 'In Progress' | 'Completed' });
+  };
+
   // Format cell value (show "--" for null/undefined)
   const formatCell = (value: string | number | null | undefined): string => {
     if (value === null || value === undefined || value === '') return '--';
@@ -203,6 +217,7 @@ export const TableView: React.FC = () => {
                   formatCell={formatCell}
                   onUpdateNodeTopic={handleUpdateNodeTopic}
                   onUpdateAssignee={handleUpdateAssignee}
+                  onUpdateStatus={handleUpdateStatus}
                 />
               ))}
             </SortableContext>
