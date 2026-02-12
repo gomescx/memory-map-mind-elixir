@@ -25,15 +25,24 @@ import { useAppStore } from '@state/store';
 import { flattenByDepth, type FlatNode } from '@/utils/tree/depth-traversal';
 import { getNodePlanAttributes } from '@core/node-adapter';
 import type { MindMapNode } from '@core/types/node';
+import { EditableTextCell } from '@ui/table/editable-text-cell';
 import './table-view.css';
 
 interface SortableRowProps {
   flatNode: FlatNode;
   index: number;
   formatCell: (value: string | number | null | undefined) => string;
+  onUpdateNodeTopic: (nodeId: string, topic: string) => void;
+  onUpdateAssignee: (nodeId: string, assignee: string) => void;
 }
 
-function SortableRow({ flatNode, index, formatCell }: SortableRowProps) {
+function SortableRow({ 
+  flatNode, 
+  index, 
+  formatCell,
+  onUpdateNodeTopic,
+  onUpdateAssignee,
+}: SortableRowProps) {
   const {
     attributes,
     listeners,
@@ -59,11 +68,23 @@ function SortableRow({ flatNode, index, formatCell }: SortableRowProps) {
         </span>
       </td>
       <td>{index + 1}</td>
-      <td>{flatNode.node.topic}</td>
+      <td>
+        <EditableTextCell
+          value={flatNode.node.topic}
+          onSave={(newValue) => onUpdateNodeTopic(flatNode.id, newValue)}
+          maxLength={200}
+        />
+      </td>
       <td>{formatCell(plan.status)}</td>
       <td>{formatCell(null)}</td>
       <td>{formatCell(plan.dueDate)}</td>
-      <td>{formatCell(plan.assignee)}</td>
+      <td>
+        <EditableTextCell
+          value={plan.assignee}
+          onSave={(newValue) => onUpdateAssignee(flatNode.id, newValue)}
+          maxLength={100}
+        />
+      </td>
       <td>{formatCell(plan.elapsedTimeDays)}</td>
       <td>{formatCell(plan.investedTimeHours)}</td>
       <td>{flatNode.depth}</td>
@@ -72,7 +93,7 @@ function SortableRow({ flatNode, index, formatCell }: SortableRowProps) {
 }
 
 export const TableView: React.FC = () => {
-  const { getMindElixirInstance, depthFilter, updateNodeSequence } = useAppStore();
+  const { getMindElixirInstance, depthFilter, updateNodeSequence, updateNodePlan } = useAppStore();
   const [items, setItems] = useState<FlatNode[]>([]);
 
   // Get flattened nodes in depth-first order
@@ -114,6 +135,33 @@ export const TableView: React.FC = () => {
     }
   };
 
+  const handleUpdateNodeTopic = (nodeId: string, newTopic: string) => {
+    const meInstance = getMindElixirInstance();
+    if (!meInstance) return;
+
+    const data = meInstance.getData();
+    const findAndUpdateNode = (node: any): boolean => {
+      if (node.id === nodeId) {
+        node.topic = newTopic;
+        return true;
+      }
+      if (node.children) {
+        for (const child of node.children) {
+          if (findAndUpdateNode(child)) return true;
+        }
+      }
+      return false;
+    };
+
+    if (data?.nodeData && findAndUpdateNode(data.nodeData)) {
+      meInstance.refresh(data);
+    }
+  };
+
+  const handleUpdateAssignee = (nodeId: string, newAssignee: string) => {
+    updateNodePlan(nodeId, { assignee: newAssignee || null });
+  };
+
   // Format cell value (show "--" for null/undefined)
   const formatCell = (value: string | number | null | undefined): string => {
     if (value === null || value === undefined || value === '') return '--';
@@ -153,6 +201,8 @@ export const TableView: React.FC = () => {
                   flatNode={flatNode}
                   index={index}
                   formatCell={formatCell}
+                  onUpdateNodeTopic={handleUpdateNodeTopic}
+                  onUpdateAssignee={handleUpdateAssignee}
                 />
               ))}
             </SortableContext>

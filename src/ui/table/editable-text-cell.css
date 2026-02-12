@@ -1,0 +1,31 @@
+/**
+ * Editable text cell styles
+ */
+
+.editable-text-cell {
+  display: block;
+  cursor: text;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.editable-text-cell:hover {
+  background-color: #f5f5f5;
+}
+
+.editable-text-input {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border: 2px solid var(--primary-color, #3a9dff);
+  border-radius: 3px;
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.editable-text-input:focus {
+  border-color: var(--primary-color, #3a9dff);
+  box-shadow: 0 0 0 2px rgba(58, 157, 255, 0.2);
+}
