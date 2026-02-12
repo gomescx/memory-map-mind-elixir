@@ -215,7 +215,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T053 [P] [US8] Add depth-first traversal utility to flatten tree by depth level in `src/utils/tree/depth-traversal.ts`
+- [X] T053 [P] [US8] Add depth-first traversal utility to flatten tree by depth level in `src/utils/tree/depth-traversal.ts`
 
 **Acceptance Criteria**:
 - Given tree structure with nodes at multiple depths
@@ -230,7 +230,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T054 [US8] Implement drag-drop row reordering using drag-and-drop library (e.g., dnd-kit) in `src/ui/views/table-view.tsx`
+- [X] T054 [US8] Implement drag-drop row reordering using drag-and-drop library (e.g., dnd-kit) in `src/ui/views/table-view.tsx`
 
 **Acceptance Criteria**:
 - Given table with 5 sibling rows A, B, C, D, E
@@ -246,7 +246,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T055 [US8] Implement updateNodeSequence() function to persist reorder in state in `src/state/tree/mutations.ts`
+- [X] T055 [US8] Implement updateNodeSequence() function to persist reorder in state in `src/state/tree/mutations.ts`
 
 **Acceptance Criteria**:
 - Given node C currently at position 3 among siblings
@@ -261,7 +261,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T056 [P] [US8] Implement inline editing for text cells (Name, Assignee) with validation in `src/ui/table/editable-text-cell.tsx`
+- [X] T056 [P] [US8] Implement inline editing for text cells (Name, Assignee) with validation in `src/ui/table/editable-text-cell.tsx`
 
 **Acceptance Criteria**:
 - Given table cell displaying node name "Research"
@@ -280,7 +280,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T057 [P] [US8] Implement inline editing for dropdown cells (Status, Priority) in `src/ui/table/editable-select-cell.tsx`
+- [X] T057 [P] [US8] Implement inline editing for dropdown cells (Status, Priority) in `src/ui/table/editable-select-cell.tsx`
 
 **Acceptance Criteria**:
 - Given table cell displaying Status "Not Started"
@@ -297,7 +297,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T058 [P] [US8] Implement inline editing for date cells (Due Date) with date picker in `src/ui/table/editable-date-cell.tsx`
+- [X] T058 [P] [US8] Implement inline editing for date cells (Due Date) with date picker in `src/ui/table/editable-date-cell.tsx`
 
 **Acceptance Criteria**:
 - Given table cell displaying empty due date
