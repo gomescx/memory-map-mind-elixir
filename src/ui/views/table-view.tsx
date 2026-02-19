@@ -96,6 +96,7 @@ function SortableRow({
         onSave={(newValue) => onUpdateStartDate(flatNode.id, newValue)}
         placeholder="--"
       />
+      <td>--</td>
       <EditableDateCell
         value={plan.dueDate}
         onSave={(newValue) => onUpdateDueDate(flatNode.id, newValue)}
@@ -126,6 +127,7 @@ function SortableRow({
         onSave={(newValue) => onUpdateStatus(flatNode.id, newValue)}
         placeholder="--"
       />
+      <td>{flatNode.depth}</td>
     </tr>
   );
 }
@@ -259,14 +261,16 @@ export const TableView: React.FC = () => {
           <thead>
             <tr>
               <th style={{ width: '40px' }}>⋮</th>
-              <th>#</th>
-              <th>Title</th>
+              <th>Sequence</th>
+              <th>Name</th>
               <th>Start Date</th>
+              <th>Priority</th>
               <th>Due Date</th>
-              <th>Invested Time (h)</th>
-              <th>Elapsed Time (d)</th>
+              <th>Est. Hours</th>
+              <th>Inv. Hours</th>
               <th>Assignee</th>
               <th>Status</th>
+              <th>Depth</th>
             </tr>
           </thead>
           <tbody>
