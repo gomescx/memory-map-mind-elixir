@@ -403,44 +403,43 @@ function MindMapApp(): JSX.Element {
         </div>
       </div>
       <div className="mind-map-wrapper">
-        {currentView === 'mindmap' ? (
-          <>
-            <div 
-              ref={containerRef} 
-              id="mind-map" 
-              className="mind-map-container"
-            />
-            {/* Badge overlay (hover takes priority, otherwise selection) */}
-            {badgePosition && (hoveredNodeId ?? selectedNodeId) && (
-              <div
-                className="plan-badge-overlay"
-                style={{ top: badgePosition.top, left: badgePosition.left }}
-              >
-                {(() => {
-                  const targetId = hoveredNodeId ?? selectedNodeId;
-                  const node = targetId ? getNode(targetId) : null;
-                  return node ? <NodePlanBadges node={node} /> : null;
-                })()}
-              </div>
-            )}
+        {/* Mindmap view - always kept in DOM to prevent mind-elixir re-init on view toggle */}
+        <div style={{ display: currentView === 'mindmap' ? 'contents' : 'none' }}>
+          <div 
+            ref={containerRef} 
+            id="mind-map" 
+            className="mind-map-container"
+          />
+          {/* Badge overlay (hover takes priority, otherwise selection) */}
+          {badgePosition && (hoveredNodeId ?? selectedNodeId) && (
+            <div
+              className="plan-badge-overlay"
+              style={{ top: badgePosition.top, left: badgePosition.left }}
+            >
+              {(() => {
+                const targetId = hoveredNodeId ?? selectedNodeId;
+                const node = targetId ? getNode(targetId) : null;
+                return node ? <NodePlanBadges node={node} /> : null;
+              })()}
+            </div>
+          )}
 
-            {/* Tooltip overlay (hover only - disappears when mouse leaves) */}
-            {tooltipPosition && hoveredNodeId && (
-              <div
-                className="plan-tooltip-overlay"
-                style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
-              >
-                {(() => {
-                  const node = hoveredNodeId ? getNode(hoveredNodeId) : null;
-                  return node ? <NodePlanTooltip node={node} show /> : null;
-                })()}
-              </div>
-            )}
-            <PlanPanel />
-          </>
-        ) : (
-          <TableView />
-        )}
+          {/* Tooltip overlay (hover only - disappears when mouse leaves) */}
+          {tooltipPosition && hoveredNodeId && (
+            <div
+              className="plan-tooltip-overlay"
+              style={{ top: tooltipPosition.top, left: tooltipPosition.left }}
+            >
+              {(() => {
+                const node = hoveredNodeId ? getNode(hoveredNodeId) : null;
+                return node ? <NodePlanTooltip node={node} show /> : null;
+              })()}
+            </div>
+          )}
+          <PlanPanel />
+        </div>
+        {/* Table view - mounted/unmounted on toggle (fresh data fetch each time) */}
+        {currentView === 'table' && <TableView />}
       </div>
     </div>
   );
