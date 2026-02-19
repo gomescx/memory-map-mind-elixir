@@ -64,6 +64,8 @@ function createTableRow(row: ExportRow): string {
   const indentStyle = `padding-left: ${row.depth * 20}px;`;
 
   const cells = [
+    `<td>${escapeHTML(row.id)}</td>`,
+    `<td>${row.depth}</td>`,
     `<td style="${indentStyle}">${escapeHTML(row.title)}</td>`,
     `<td>${formatCellValue(row.startDate, true)}</td>`,
     `<td>${formatCellValue(row.dueDate, true)}</td>`,
@@ -71,6 +73,7 @@ function createTableRow(row: ExportRow): string {
     `<td>${formatCellValue(row.elapsedTimeDays)}</td>`,
     `<td>${formatCellValue(row.assignee)}</td>`,
     `<td>${formatCellValue(row.status)}</td>`,
+    `<td>${escapeHTML(row.parentPath)}</td>`,
   ];
 
   return `<tr>\n    ${cells.join('\n    ')}\n  </tr>`;
@@ -161,6 +164,8 @@ function createTotalsRow(rows: ExportRow[]): string {
   const totals = calculateTotals(rows);
 
   const cells = [
+    `<td><strong>TOTALS</strong></td>`,
+    `<td><strong>${escapeHTML(totals.depthCounts)}</strong></td>`,
     `<td><strong>Nodes per level: ${escapeHTML(totals.depthCounts)}</strong></td>`,
     `<td><strong>${escapeHTML(formatDate(totals.minStartDate))}</strong></td>`,
     `<td><strong>${escapeHTML(formatDate(totals.maxDueDate))}</strong></td>`,
@@ -168,6 +173,7 @@ function createTotalsRow(rows: ExportRow[]): string {
     `<td><strong>${totals.totalElapsedTime}</strong></td>`,
     `<td><strong>${totals.uniqueAssignees}</strong></td>`,
     `<td><strong>${escapeHTML(totals.statusCounts)}</strong></td>`,
+    `<td></td>`,
   ];
 
   return `<tr style="background-color: #e8f4f8; font-weight: bold;">\n    ${cells.join('\n    ')}\n  </tr>`;
@@ -183,6 +189,8 @@ function createTotalsRow(rows: ExportRow[]): string {
  */
 export function generateHTMLTable(rows: ExportRow[], title: string = 'Action Plan'): string {
   const headerCells = [
+    'ID',
+    'Depth',
     'Title',
     'Start Date',
     'Due Date',
@@ -190,6 +198,7 @@ export function generateHTMLTable(rows: ExportRow[], title: string = 'Action Pla
     'Elapsed Time (days)',
     'Assignee',
     'Status',
+    'Parent Path',
   ];
 
   const headerRow = `<tr>\n    ${headerCells
