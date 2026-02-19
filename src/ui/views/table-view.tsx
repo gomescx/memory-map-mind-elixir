@@ -278,20 +278,39 @@ export const TableView: React.FC = () => {
               items={items.map((item) => item.id)}
               strategy={verticalListSortingStrategy}
             >
-              {items.map((flatNode: FlatNode, index: number) => (
-                <SortableRow
-                  key={flatNode.id}
-                  flatNode={flatNode}
-                  index={index}
-                  onUpdateNodeTopic={handleUpdateNodeTopic}
-                  onUpdateStartDate={handleUpdateStartDate}
-                  onUpdateDueDate={handleUpdateDueDate}
-                  onUpdateInvestedTime={handleUpdateInvestedTime}
-                  onUpdateElapsedTime={handleUpdateElapsedTime}
-                  onUpdateAssignee={handleUpdateAssignee}
-                  onUpdateStatus={handleUpdateStatus}
-                />
-              ))}
+              {(() => {
+                // Empty state: no non-root nodes, or depth filter returns nothing
+                const isEmpty =
+                  items.length === 0 ||
+                  (depthFilter === undefined && items.every((n) => n.depth === 0));
+
+                if (isEmpty) {
+                  return (
+                    <tr>
+                      <td colSpan={11} style={{ textAlign: 'center', padding: '24px', color: '#888' }}>
+                        {depthFilter !== undefined
+                          ? 'No nodes at this depth level.'
+                          : 'No nodes to display. Add nodes in mindmap view.'}
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return items.map((flatNode: FlatNode, index: number) => (
+                  <SortableRow
+                    key={flatNode.id}
+                    flatNode={flatNode}
+                    index={index}
+                    onUpdateNodeTopic={handleUpdateNodeTopic}
+                    onUpdateStartDate={handleUpdateStartDate}
+                    onUpdateDueDate={handleUpdateDueDate}
+                    onUpdateInvestedTime={handleUpdateInvestedTime}
+                    onUpdateElapsedTime={handleUpdateElapsedTime}
+                    onUpdateAssignee={handleUpdateAssignee}
+                    onUpdateStatus={handleUpdateStatus}
+                  />
+                ));
+              })()}
             </SortableContext>
           </tbody>
         </table>

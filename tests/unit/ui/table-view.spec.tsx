@@ -146,4 +146,39 @@ describe('TableView', () => {
     const emptyMarkers = screen.getAllByText('--');
     expect(emptyMarkers.length).toBeGreaterThan(0);
   });
+
+  it('test_table_shows_empty_state_when_no_nodes: shows message when map has only root node', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      // No children
+    };
+
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+
+    render(<TableView />);
+
+    expect(screen.getByText('No nodes to display. Add nodes in mindmap view.')).toBeTruthy();
+  });
+
+  it('test_table_shows_no_results_for_empty_filter: shows message when depth filter returns no nodes', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [
+        { id: 'a', topic: 'Depth 1 node' },
+      ],
+    };
+
+    // Set depth filter to 3 (no nodes at depth 3)
+    mockStore.depthFilter = 3;
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+
+    render(<TableView />);
+
+    expect(screen.getByText('No nodes at this depth level.')).toBeTruthy();
+
+    // Reset
+    mockStore.depthFilter = undefined;
+  });
 });
