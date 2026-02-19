@@ -72,3 +72,66 @@ function deepClone(node: MindMapNode): MindMapNode {
     children: node.children ? node.children.map(deepClone) : undefined,
   };
 }
+
+/** Result returned by attribute update operations */
+export interface UpdateResult {
+  success: boolean;
+  updatedTree: MindMapNode;
+}
+
+/**
+ * Updates a single plan attribute on a node identified by nodeId.
+ * Immutable operation: returns a new tree without modifying the original.
+ *
+ * @param tree - Root node of the mind map tree
+ * @param nodeId - ID of the node to update
+ * @param attributeName - Key of the plan attribute to update
+ * @param newValue - New value to set (null to clear)
+ * @returns UpdateResult with success flag and updated (or unchanged) tree
+ */
+export function updateNodeAttribute(
+  tree: MindMapNode,
+  nodeId: string,
+  attributeName: keyof NonNullable<NonNullable<MindMapNode['extended']>['plan']>,
+  newValue: string | number | null,
+): UpdateResult {
+  let found = false;
+
+  function cloneAndUpdate(node: MindMapNode): MindMapNode {
+    if (node.id === nodeId) {
+      found = true;
+      return {
+        ...node,
+        extended: {
+          ...node.extended,
+          plan: {
+            startDate: null,
+            dueDate: null,
+            investedTimeHours: null,
+            elapsedTimeDays: null,
+            assignee: null,
+            status: null,
+            ...node.extended?.plan,
+            [attributeName]: newValue,
+          },
+        },
+      };
+    }
+
+    if (!node.children) return node;
+
+    const updatedChildren = node.children.map(cloneAndUpdate);
+    const childrenChanged = updatedChildren.some(
+      (child, i) => child !== node.children![i],
+    );
+
+    return childrenChanged ? { ...node, children: updatedChildren } : node;
+  }
+
+  const updatedTree = cloneAndUpdate(tree);
+
+  return {
+    success: found,
+    updatedTree: found ? updatedTree : deepClone(tree),
+  };
+}
