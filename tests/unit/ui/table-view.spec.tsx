@@ -59,7 +59,7 @@ describe('TableView', () => {
       ],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
@@ -89,7 +89,7 @@ describe('TableView', () => {
       ],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
@@ -120,7 +120,7 @@ describe('TableView', () => {
       ],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
@@ -138,7 +138,7 @@ describe('TableView', () => {
       children: [{ id: 'task1', topic: 'Task without attributes' }],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 

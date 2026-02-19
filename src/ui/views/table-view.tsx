@@ -118,7 +118,10 @@ export const TableView: React.FC = () => {
     const meInstance = getMindElixirInstance();
     if (!meInstance) return [];
 
-    const rootData: MindMapNode = meInstance.getData();
+    const data = meInstance.getData();
+    if (!data || !data.nodeData) return [];
+
+    const rootData: MindMapNode = data.nodeData;
     const flattened = flattenByDepth(rootData, depthFilter);
     setItems(flattened);
     return flattened;
