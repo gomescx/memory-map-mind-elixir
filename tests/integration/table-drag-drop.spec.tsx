@@ -51,7 +51,7 @@ describe('Table Drag-Drop Reordering', () => {
       ],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
@@ -71,7 +71,7 @@ describe('Table Drag-Drop Reordering', () => {
       ],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
@@ -96,7 +96,7 @@ describe('Table Drag-Drop Reordering', () => {
       ],
     };
 
-    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => mockData });
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
