@@ -3,7 +3,7 @@
  * Synchronized with mindmap view for bidirectional editing
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -28,6 +28,7 @@ import type { MindMapNode } from '@core/types/node';
 import { EditableTextCell } from '@ui/table/editable-text-cell';
 import { EditableSelectCell } from '@ui/table/editable-select-cell';
 import { EditableDateCell } from '@ui/table/editable-date-cell';
+import { EditableNumberCell } from '@ui/table/editable-number-cell';
 import './table-view.css';
 
 const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed'];
@@ -35,21 +36,25 @@ const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed'];
 interface SortableRowProps {
   flatNode: FlatNode;
   index: number;
-  formatCell: (value: string | number | null | undefined) => string;
   onUpdateNodeTopic: (nodeId: string, topic: string) => void;
   onUpdateAssignee: (nodeId: string, assignee: string) => void;
   onUpdateStatus: (nodeId: string, status: string) => void;
+  onUpdateStartDate: (nodeId: string, startDate: string | null) => void;
   onUpdateDueDate: (nodeId: string, dueDate: string | null) => void;
+  onUpdateInvestedTime: (nodeId: string, hours: number | null) => void;
+  onUpdateElapsedTime: (nodeId: string, days: number | null) => void;
 }
 
 function SortableRow({ 
   flatNode, 
   index, 
-  formatCell,
   onUpdateNodeTopic,
   onUpdateAssignee,
   onUpdateStatus,
+  onUpdateStartDate,
   onUpdateDueDate,
+  onUpdateInvestedTime,
+  onUpdateElapsedTime,
 }: SortableRowProps) {
   const {
     attributes,
@@ -67,6 +72,7 @@ function SortableRow({
   };
 
   const plan = getNodePlanAttributes(flatNode.node);
+  const titleIndent = flatNode.depth * 20;
 
   return (
     <tr ref={setNodeRef} style={style} className={isDragging ? 'dragging' : ''}>
@@ -77,22 +83,34 @@ function SortableRow({
       </td>
       <td>{index + 1}</td>
       <td>
-        <EditableTextCell
-          value={flatNode.node.topic}
-          onSave={(newValue) => onUpdateNodeTopic(flatNode.id, newValue)}
-          maxLength={200}
-        />
+        <div style={{ paddingLeft: `${titleIndent}px` }}>
+          <EditableTextCell
+            value={flatNode.node.topic}
+            onSave={(newValue) => onUpdateNodeTopic(flatNode.id, newValue)}
+            maxLength={200}
+          />
+        </div>
       </td>
-      <EditableSelectCell
-        value={plan.status}
-        options={STATUS_OPTIONS}
-        onSave={(newValue) => onUpdateStatus(flatNode.id, newValue)}
+      <EditableDateCell
+        value={plan.startDate}
+        onSave={(newValue) => onUpdateStartDate(flatNode.id, newValue)}
         placeholder="--"
       />
-      <td>{formatCell(null)}</td>
       <EditableDateCell
         value={plan.dueDate}
         onSave={(newValue) => onUpdateDueDate(flatNode.id, newValue)}
+        placeholder="--"
+      />
+      <EditableNumberCell
+        value={plan.investedTimeHours}
+        onSave={(newValue) => onUpdateInvestedTime(flatNode.id, newValue)}
+        step={0.5}
+        placeholder="--"
+      />
+      <EditableNumberCell
+        value={plan.elapsedTimeDays}
+        onSave={(newValue) => onUpdateElapsedTime(flatNode.id, newValue)}
+        step={1}
         placeholder="--"
       />
       <td>
@@ -102,9 +120,12 @@ function SortableRow({
           maxLength={100}
         />
       </td>
-      <td>{formatCell(plan.elapsedTimeDays)}</td>
-      <td>{formatCell(plan.investedTimeHours)}</td>
-      <td>{flatNode.depth}</td>
+      <EditableSelectCell
+        value={plan.status}
+        options={STATUS_OPTIONS}
+        onSave={(newValue) => onUpdateStatus(flatNode.id, newValue)}
+        placeholder="--"
+      />
     </tr>
   );
 }
@@ -112,20 +133,22 @@ function SortableRow({
 export const TableView: React.FC = () => {
   const { getMindElixirInstance, depthFilter, updateNodeSequence, updateNodePlan } = useAppStore();
   const [items, setItems] = useState<FlatNode[]>([]);
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  // Get flattened nodes in depth-first order
-  const flatNodes = useMemo(() => {
+  const forceRefresh = () => setRefreshTick((t) => t + 1);
+
+  // Get flattened nodes in depth-first order; re-runs whenever data changes
+  useEffect(() => {
     const meInstance = getMindElixirInstance();
-    if (!meInstance) return [];
+    if (!meInstance) return;
 
     const data = meInstance.getData();
-    if (!data || !data.nodeData) return [];
+    if (!data || !data.nodeData) return;
 
     const rootData: MindMapNode = data.nodeData;
     const flattened = flattenByDepth(rootData, depthFilter);
     setItems(flattened);
-    return flattened;
-  }, [getMindElixirInstance, depthFilter]);
+  }, [getMindElixirInstance, depthFilter, refreshTick]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -142,14 +165,30 @@ export const TableView: React.FC = () => {
       const newIndex = items.findIndex((item) => item.id === over.id);
 
       if (oldIndex !== -1 && newIndex !== -1) {
+        const node = items[oldIndex];
+        const targetNode = items[newIndex];
+
+        // Prevent reparenting: the drop target must share the same parent.
+        if (node.parentId !== targetNode.parentId) {
+          alert(
+            'Reparenting is not supported in Table View.\n\n' +
+            'To move a node under a different parent, please use the Mindmap View instead.'
+          );
+          return;
+        }
+
         // Update local state for immediate visual feedback
         const newItems = arrayMove(items, oldIndex, newIndex);
         setItems(newItems);
 
-        // Update mind-elixir data model
-        const node = items[oldIndex];
-        if (node.parentId) {
-          updateNodeSequence(node.id, node.parentId, newIndex);
+        // Translate flat-list newIndex to the index within the parent's children array.
+        // Count how many nodes that share the same parentId appear before newIndex
+        // in the reordered flat list (excluding the dragged node itself, which is now at newIndex).
+        if (node.parentId !== null) {
+          const siblingIndex = newItems
+            .slice(0, newIndex)
+            .filter((item) => item.parentId === node.parentId).length;
+          updateNodeSequence(node.id, node.parentId, siblingIndex);
         }
       }
     }
@@ -175,25 +214,38 @@ export const TableView: React.FC = () => {
 
     if (data?.nodeData && findAndUpdateNode(data.nodeData)) {
       meInstance.refresh(data);
+      forceRefresh();
     }
+  };
+
+  const handleUpdateStartDate = (nodeId: string, newStartDate: string | null) => {
+    updateNodePlan(nodeId, { startDate: newStartDate });
+    forceRefresh();
+  };
+
+  const handleUpdateInvestedTime = (nodeId: string, hours: number | null) => {
+    updateNodePlan(nodeId, { investedTimeHours: hours });
+    forceRefresh();
+  };
+
+  const handleUpdateElapsedTime = (nodeId: string, days: number | null) => {
+    updateNodePlan(nodeId, { elapsedTimeDays: days });
+    forceRefresh();
   };
 
   const handleUpdateAssignee = (nodeId: string, newAssignee: string) => {
     updateNodePlan(nodeId, { assignee: newAssignee || null });
+    forceRefresh();
   };
 
   const handleUpdateStatus = (nodeId: string, newStatus: string) => {
     updateNodePlan(nodeId, { status: newStatus as 'Not Started' | 'In Progress' | 'Completed' });
+    forceRefresh();
   };
 
   const handleUpdateDueDate = (nodeId: string, newDueDate: string | null) => {
     updateNodePlan(nodeId, { dueDate: newDueDate });
-  };
-
-  // Format cell value (show "--" for null/undefined)
-  const formatCell = (value: string | number | null | undefined): string => {
-    if (value === null || value === undefined || value === '') return '--';
-    return String(value);
+    forceRefresh();
   };
 
   return (
@@ -207,15 +259,14 @@ export const TableView: React.FC = () => {
           <thead>
             <tr>
               <th style={{ width: '40px' }}>⋮</th>
-              <th>Sequence</th>
-              <th>Name</th>
-              <th>Status</th>
-              <th>Priority</th>
+              <th>#</th>
+              <th>Title</th>
+              <th>Start Date</th>
               <th>Due Date</th>
+              <th>Invested Time (h)</th>
+              <th>Elapsed Time (d)</th>
               <th>Assignee</th>
-              <th>Est. Hours</th>
-              <th>Inv. Hours</th>
-              <th>Depth</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -228,11 +279,13 @@ export const TableView: React.FC = () => {
                   key={flatNode.id}
                   flatNode={flatNode}
                   index={index}
-                  formatCell={formatCell}
                   onUpdateNodeTopic={handleUpdateNodeTopic}
+                  onUpdateStartDate={handleUpdateStartDate}
+                  onUpdateDueDate={handleUpdateDueDate}
+                  onUpdateInvestedTime={handleUpdateInvestedTime}
+                  onUpdateElapsedTime={handleUpdateElapsedTime}
                   onUpdateAssignee={handleUpdateAssignee}
                   onUpdateStatus={handleUpdateStatus}
-                  onUpdateDueDate={handleUpdateDueDate}
                 />
               ))}
             </SortableContext>

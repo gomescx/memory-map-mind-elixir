@@ -83,52 +83,51 @@
 
 .mind-map-table th:nth-child(2),
 .mind-map-table td:nth-child(2) {
-  width: 80px; /* Sequence */
+  width: 60px; /* # */
+  text-align: center;
 }
 
 .mind-map-table th:nth-child(3),
 .mind-map-table td:nth-child(3) {
-  min-width: 200px; /* Name */
+  min-width: 200px; /* Title */
 }
 
 .mind-map-table th:nth-child(4),
 .mind-map-table td:nth-child(4) {
-  width: 120px; /* Status */
+  width: 120px; /* Start Date */
 }
 
 .mind-map-table th:nth-child(5),
 .mind-map-table td:nth-child(5) {
-  width: 100px; /* Priority */
+  width: 120px; /* Due Date */
 }
 
 .mind-map-table th:nth-child(6),
 .mind-map-table td:nth-child(6) {
-  width: 120px; /* Due Date */
+  width: 130px; /* Invested Time (h) */
+  text-align: right;
+}
+
+.mind-map-table td:nth-child(6) {
+  text-align: right;
 }
 
 .mind-map-table th:nth-child(7),
 .mind-map-table td:nth-child(7) {
-  width: 120px; /* Assignee */
+  width: 130px; /* Elapsed Time (d) */
+  text-align: right;
+}
+
+.mind-map-table td:nth-child(7) {
+  text-align: right;
 }
 
 .mind-map-table th:nth-child(8),
 .mind-map-table td:nth-child(8) {
-  width: 100px; /* Est. Hours */
+  width: 150px; /* Assignee */
 }
 
 .mind-map-table th:nth-child(9),
 .mind-map-table td:nth-child(9) {
-  width: 100px; /* Inv. Hours */
-}
-
-.mind-map-table th:nth-child(10),
-.mind-map-table td:nth-child(10) {
-  width: 80px; /* Depth */
-  text-align: center;
-}
-
-.mind-map-table td:nth-child(10) {
-  text-align: center;
-  font-weight: 500;
-  color: #666;
+  width: 120px; /* Status */
 }

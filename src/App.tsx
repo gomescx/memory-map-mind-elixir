@@ -300,6 +300,21 @@ function MindMapApp(): JSX.Element {
     // The mind-elixir instance will be garbage collected when component unmounts.
   }, [isInitialized, setMindElixirInstance, setSelectedNodeId]);
 
+  // Re-render mind-elixir when returning from table view.
+  // The mindmap container is hidden via display:none while in table view, so any
+  // me.refresh() calls made there calculate SVG connector positions against a
+  // zero-dimension container. Re-running refresh() once the container is visible
+  // again ensures all connecting lines are drawn correctly.
+  useEffect(() => {
+    if (currentView === 'mindmap' && isInitialized && mindElixirRef.current) {
+      const me = mindElixirRef.current;
+      // Use rAF so the container has been made visible by the time we measure
+      requestAnimationFrame(() => {
+        me.refresh(me.getData());
+      });
+    }
+  }, [currentView, isInitialized]);
+
   // Hover listeners for tooltip/badges
   useEffect(() => {
     if (!isInitialized || !containerRef.current) return;
