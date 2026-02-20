@@ -195,8 +195,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And view state persists in session (survives toggling back and forth)
 
 **Tests Required**:
-- [ ] Unit: `test_toggle_button_switches_views()` in `tests/unit/ui/view-toggle.spec.ts`
-- [ ] Integration: `test_toggle_preserves_data()` in `tests/integration/view-toggle.spec.ts`
+- [X] Unit: `test_toggle_button_switches_views()` in `tests/unit/ui/view-toggle.spec.ts`
+- [X] Integration: `test_toggle_preserves_data()` in `tests/integration/view-toggle.spec.ts`
 
 ---
 
@@ -210,8 +210,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And depth column shows "2" for all visible rows
 
 **Tests Required**:
-- [ ] Unit: `test_depth_filter_reduces_visible_rows()` in `tests/unit/ui/depth-filter.spec.ts`
-- [ ] Unit: `test_depth_filter_preserves_sequence_numbers()` in `tests/unit/ui/depth-filter.spec.ts`
+- [X] Unit: `test_depth_filter_reduces_visible_rows()` in `tests/unit/ui/depth-filter.spec.ts`
+- [X] Unit: `test_depth_filter_preserves_sequence_numbers()` in `tests/unit/ui/depth-filter.spec.ts`
 
 ---
 
@@ -225,8 +225,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And maintains parent-child relationship metadata for sequence calculations
 
 **Tests Required**:
-- [ ] Unit: `test_flatten_by_depth_filters_correctly()` in `tests/unit/utils/depth-traversal.spec.ts`
-- [ ] Unit: `test_flatten_maintains_depth_first_order()` in `tests/unit/utils/depth-traversal.spec.ts`
+- [X] Unit: `test_flatten_by_depth_filters_correctly()` in `tests/unit/utils/depth-traversal.spec.ts`
+- [X] Unit: `test_flatten_maintains_depth_first_order()` in `tests/unit/utils/depth-traversal.spec.ts`
 
 ---
 
@@ -241,8 +241,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And dragging provides visual feedback (ghost row, drop indicator)
 
 **Tests Required**:
-- [ ] Integration: `test_drag_drop_reorders_siblings()` in `tests/integration/table-drag-drop.spec.ts`
-- [ ] Integration: `test_reorder_updates_data_model()` in `tests/integration/table-drag-drop.spec.ts`
+- [X] Integration: `test_drag_drop_reorders_siblings()` in `tests/integration/table-drag-drop.spec.ts`
+- [X] Integration: `test_reorder_updates_data_model()` in `tests/integration/table-drag-drop.spec.ts`
 
 ---
 
@@ -256,8 +256,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And state change triggers reactive update in both views
 
 **Tests Required**:
-- [ ] Unit: `test_update_node_sequence_reorders_siblings()` in `tests/unit/state/mutations.spec.ts`
-- [ ] Unit: `test_sequence_change_emits_state_update()` in `tests/unit/state/mutations.spec.ts`
+- [X] Unit: `test_update_node_sequence_reorders_siblings()` in `tests/unit/state/mutations.spec.ts`
+- [X] Unit: `test_sequence_change_emits_state_update()` in `tests/unit/state/mutations.spec.ts`
 
 ---
 
@@ -274,9 +274,9 @@ description: "Task list for Memory Map Action Planner MVP"
 - And validation enforces max 200 chars for Name field
 
 **Tests Required**:
-- [ ] Unit: `test_editable_cell_saves_on_enter()` in `tests/unit/ui/editable-cell.spec.ts`
-- [ ] Unit: `test_editable_cell_cancels_on_escape()` in `tests/unit/ui/editable-cell.spec.ts`
-- [ ] Unit: `test_name_validation_enforces_max_length()` in `tests/unit/ui/editable-cell.spec.ts`
+- [X] Unit: `test_editable_cell_saves_on_enter()` in `tests/unit/ui/editable-cell.spec.ts`
+- [X] Unit: `test_editable_cell_cancels_on_escape()` in `tests/unit/ui/editable-cell.spec.ts`
+- [X] Unit: `test_name_validation_enforces_max_length()` in `tests/unit/ui/editable-cell.spec.ts`
 
 ---
 
@@ -292,8 +292,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And change immediately visible in table and mindmap
 
 **Tests Required**:
-- [ ] Unit: `test_select_cell_saves_on_selection()` in `tests/unit/ui/editable-select-cell.spec.ts`
-- [ ] Integration: `test_status_change_updates_both_views()` in `tests/integration/table-edit-sync.spec.ts`
+- [X] Unit: `test_select_cell_saves_on_selection()` in `tests/unit/ui/editable-select-cell.spec.ts`
+- [X] Integration: `test_status_change_updates_both_views()` in `tests/integration/table-edit-sync.spec.ts`
 
 ---
 
@@ -309,12 +309,12 @@ description: "Task list for Memory Map Action Planner MVP"
 - And date becomes visible in mindmap hover tooltip
 
 **Tests Required**:
-- [ ] Unit: `test_date_cell_opens_picker_on_click()` in `tests/unit/ui/editable-date-cell.spec.ts`
-- [ ] Unit: `test_date_cell_saves_selected_date()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [X] Unit: `test_date_cell_opens_picker_on_click()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [X] Unit: `test_date_cell_saves_selected_date()` in `tests/unit/ui/editable-date-cell.spec.ts`
 
 ---
 
-- [ ] T059 [P] [US8] Implement inline editing for numeric cells (Est. Hours, Inv. Hours) with validation in `src/ui/table/editable-number-cell.tsx`
+- [X] T059 [P] [US8] Implement inline editing for numeric cells (Est. Hours, Inv. Hours) with validation in `src/ui/table/editable-number-cell.tsx`
 
 **Acceptance Criteria**:
 - Given table cell displaying Estimated Hours = 10
@@ -327,13 +327,13 @@ description: "Task list for Memory Map Action Planner MVP"
 - And accepts range 0-9999
 
 **Tests Required**:
-- [ ] Unit: `test_number_cell_validates_numeric_input()` in `tests/unit/ui/editable-number-cell.spec.ts`
-- [ ] Unit: `test_number_cell_rejects_invalid_input()` in `tests/unit/ui/editable-number-cell.spec.ts`
-- [ ] Unit: `test_number_cell_enforces_range()` in `tests/unit/ui/editable-number-cell.spec.ts`
+- [X] Unit: `test_number_cell_validates_numeric_input()` in `tests/unit/ui/editable-number-cell.spec.ts`
+- [X] Unit: `test_number_cell_rejects_invalid_input()` in `tests/unit/ui/editable-number-cell.spec.ts`
+- [X] Unit: `test_number_cell_enforces_range()` in `tests/unit/ui/editable-number-cell.spec.ts`
 
 ---
 
-- [ ] T060 [US8] Wire table cell edits to state mutations (updateNodeAttribute) in `src/state/tree/mutations.ts`
+- [X] T060 [US8] Wire table cell edits to state mutations (updateNodeAttribute) in `src/state/tree/mutations.ts`
 
 **Acceptance Criteria**:
 - Given any editable cell in table view
@@ -343,8 +343,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - And changes are captured by autosave (if US6 enabled)
 
 **Tests Required**:
-- [ ] Integration: `test_cell_edit_calls_update_mutation()` in `tests/integration/table-edit-sync.spec.ts`
-- [ ] Integration: `test_edit_syncs_to_mindmap_immediately()` in `tests/integration/table-edit-sync.spec.ts`
+- [X] Integration: `test_cell_edit_calls_update_mutation()` in `tests/integration/table-edit-sync.spec.ts`
+- [X] Integration: `test_edit_syncs_to_mindmap_immediately()` in `tests/integration/table-edit-sync.spec.ts`
 
 ---
 
@@ -362,7 +362,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T062 [P] [US8] Add empty state handling for table (no nodes, no nodes at depth) in `src/ui/views/table-view.tsx`
+- [X] T062 [P] [US8] Add empty state handling for table (no nodes, no nodes at depth) in `src/ui/views/table-view.tsx`
 
 **Acceptance Criteria**:
 - Given map has only root node (no children)
@@ -373,8 +373,8 @@ description: "Task list for Memory Map Action Planner MVP"
 - Then table shows "No nodes at this depth level"
 
 **Tests Required**:
-- [ ] Unit: `test_table_shows_empty_state_when_no_nodes()` in `tests/unit/ui/table-view.spec.ts`
-- [ ] Unit: `test_table_shows_no_results_for_empty_filter()` in `tests/unit/ui/table-view.spec.ts`
+- [X] Unit: `test_table_shows_empty_state_when_no_nodes()` in `tests/unit/ui/table-view.spec.ts`
+- [X] Unit: `test_table_shows_no_results_for_empty_filter()` in `tests/unit/ui/table-view.spec.ts`
 
 ---
 
@@ -406,6 +406,10 @@ description: "Task list for Memory Map Action Planner MVP"
 - [ ] T043 [P] Add 200-node export performance check script and notes in `tests/perf/export-benchmark.ts`
 - [ ] T044 [P] Update quickstart with save/load/export/autosave steps in `specs/001-plan-memory-map/quickstart.md`
 - [ ] T045 Refresh repo README with offline usage, keyboard shortcuts, and export notes in `README.md`
+- [ ] T009.1  Remove Attributes button and dead code following US8 table view implementation
+      Given: US8 table view is fully functional
+      When: The Attributes button and related handler/modal code are removed
+      Then: App builds without errors, all table view functionality still works, no orphaned code references remain
 
 ---
 
