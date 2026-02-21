@@ -4,7 +4,7 @@ import 'mind-elixir/style.css';
 import { AppStoreProvider, useAppStore } from '@state/store';
 import { useUndoRedoShortcuts } from '@state/history';
 import { PlanPanel } from '@ui/panels/plan-panel';
-import { usePlanPanelHotkey, PlanPanelToggleButton } from '@ui/shortcuts/plan-panel';
+import { usePlanPanelHotkey } from '@ui/shortcuts/plan-panel';
 import { NodePlanBadges } from '@ui/badges/node-plan-badges';
 import { NodePlanTooltip } from '@ui/tooltips/node-plan-tooltip';
 import { saveMapToFile, loadMapFromFile, resetMapToRoot } from '@ui/actions/map-actions';
@@ -398,7 +398,6 @@ function MindMapApp(): JSX.Element {
             >
               📄 HTML
             </button>
-            <PlanPanelToggleButton className="toolbar-button" />
             <ViewToggle />
             {currentView === 'table' && <DepthFilter />}
           </div>

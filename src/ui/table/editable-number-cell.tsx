@@ -13,7 +13,6 @@ interface EditableNumberCellProps {
   onSave: (newValue: number | null) => void;
   min?: number;
   max?: number;
-  step?: number;
   placeholder?: string;
 }
 
@@ -22,7 +21,6 @@ export const EditableNumberCell: React.FC<EditableNumberCellProps> = ({
   onSave,
   min = 0,
   max = 9999,
-  step = 0.5,
   placeholder = '--',
 }) => {
   const [isEditing, setIsEditing] = useState(false);

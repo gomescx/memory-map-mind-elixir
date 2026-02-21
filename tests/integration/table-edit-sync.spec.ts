@@ -3,7 +3,7 @@
  * Tests: T057 (status change syncs to both views), T060 (cell edits call mutations)
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { updateNodeAttribute } from '@state/tree/mutations';
 import type { MindMapNode } from '@core/types/node';
 

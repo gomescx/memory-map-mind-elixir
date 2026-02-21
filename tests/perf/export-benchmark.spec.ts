@@ -16,8 +16,8 @@ import type { MindMapNode } from '@core/types/node';
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Build a balanced tree with `total` nodes (root + branches + leaves). */
-function buildLargeTree(total: number): MindMapNode {
+/** Build a balanced tree with ~191 nodes (root + 10 branches + 100 children + 80 grandchildren). */
+function buildLargeTree(): MindMapNode {
   const make = (id: string, topic: string, depth: number): MindMapNode => ({
     id,
     topic,
@@ -69,7 +69,7 @@ function countNodes(node: MindMapNode): number {
 // ---------------------------------------------------------------------------
 
 describe('Export Performance (200 nodes)', () => {
-  const tree = buildLargeTree(200);
+  const tree = buildLargeTree();
   const nodeCount = countNodes(tree);
 
   it('tree fixture has at least 100 nodes', () => {

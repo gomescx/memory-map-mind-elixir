@@ -105,13 +105,11 @@ function SortableRow({
       <EditableNumberCell
         value={plan.investedTimeHours}
         onSave={(newValue) => onUpdateInvestedTime(flatNode.id, newValue)}
-        step={0.5}
         placeholder="--"
       />
       <EditableNumberCell
         value={plan.elapsedTimeDays}
         onSave={(newValue) => onUpdateElapsedTime(flatNode.id, newValue)}
-        step={1}
         placeholder="--"
       />
       <td>
