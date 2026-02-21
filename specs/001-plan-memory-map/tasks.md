@@ -403,13 +403,15 @@ description: "Task list for Memory Map Action Planner MVP"
 
 **Purpose**: Performance, docs, and validation across stories
 
-- [ ] T043 [P] Add 200-node export performance check script and notes in `tests/perf/export-benchmark.ts`
-- [ ] T044 [P] Update quickstart with save/load/export/autosave steps in `specs/001-plan-memory-map/quickstart.md`
-- [ ] T045 Refresh repo README with offline usage, keyboard shortcuts, and export notes in `README.md`
-- [ ] T009.1  Remove Attributes button and dead code following US8 table view implementation
+- [X] T043 [P] Add 200-node export performance check script and notes in `tests/perf/export-benchmark.spec.ts`
+- [X] T044 [P] Update quickstart with save/load/export/autosave steps in `specs/001-plan-memory-map/quickstart.md`
+- [X] T045 Refresh repo README with offline usage, keyboard shortcuts, and export notes in `README.md`
+- [X] T009.1  Remove Attributes button and dead code following US8 table view implementation
       Given: US8 table view is fully functional
       When: The Attributes button and related handler/modal code are removed
       Then: App builds without errors, all table view functionality still works, no orphaned code references remain
+
+- [X] T009.2 Clean root folder by moving files to appropriate places using repo standards for typescript and Vite apps.
 
 ---
 
