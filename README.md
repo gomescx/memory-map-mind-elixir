@@ -37,15 +37,28 @@ Each node supports comprehensive planning data:
 - Stable node IDs for tracking across exports
 
 ### ⌨️ Keyboard Shortcuts
-- `Ctrl+Z` / `Cmd+Z` - Undo
-- `Ctrl+Y` / `Cmd+Shift+Z` - Redo
-- `Ctrl+P` / `Cmd+P` - Toggle plan panel
+- `Ctrl+Z` / `Cmd+Z` — Undo
+- `Ctrl+Y` / `Cmd+Shift+Z` — Redo
+- `Ctrl+S` / `Cmd+S` — Save map to JSON
+- `Ctrl+O` / `Cmd+O` — Load map from JSON
+- `Ctrl+E` / `Cmd+E` — Export CSV + HTML table
+- `Ctrl+P` / `Cmd+P` — Toggle planning attributes panel
+- `Alt+↑` / `Alt+↓` — Reorder node among siblings
+- `Tab` — Add child node | `Enter` — Add sibling node
 - Plus all [mind-elixir shortcuts](https://github.com/ssshooter/mind-elixir-core#shortcuts)
+
+### 📊 Table View
+- Toggle between mindmap and table view with a single click
+- All nodes displayed in depth-first order with planning attributes
+- **Depth filter** — show only nodes at a chosen depth level (All, 1, 2, 3, 4)
+- **Drag-and-drop** row reordering within sibling groups
+- **Inline editing** — double-click any cell to edit name, assignee, dates, status, or time values
+- Every change is immediately reflected in the mindmap view
 
 ### 🎯 Visual Indicators
 - **Badges** - Quick visual status at-a-glance (✅ ⏳ ⭕ ⚠️)
 - **Tooltips** - Hover to see full planning details
-- **Side Panel** - Edit planning attributes with validation
+- **Side Panel** - Edit planning attributes via `Ctrl+P` / `Cmd+P`
 
 ## 🚀 Getting Started
 
@@ -108,17 +121,21 @@ memory-map-mind-elixir/
 ├── src/
 │   ├── core/           # Type definitions and core utilities
 │   ├── services/       # Business logic (export, storage)
-│   ├── state/          # State management and history
+│   ├── state/          # State management, history, and tree mutations
 │   ├── ui/             # React components and UI logic
 │   │   ├── actions/    # User action handlers
 │   │   ├── badges/     # Visual indicators
+│   │   ├── controls/   # View toggle and depth filter
 │   │   ├── panels/     # Side panels
-│   │   └── tooltips/   # Hover tooltips
+│   │   ├── table/      # Inline-editable table cell components
+│   │   ├── tooltips/   # Hover tooltips
+│   │   └── views/      # MindMap and Table view components
 │   └── utils/          # Validation and helpers
 ├── tests/
 │   ├── unit/           # Component and service tests
 │   ├── integration/    # Feature integration tests
-│   └── contract/       # Export format validation
+│   ├── contract/       # Export format validation
+│   └── perf/           # Performance benchmarks
 ├── docs/               # Implementation documentation
 └── specs/              # Feature specifications
 ```
@@ -146,12 +163,15 @@ memory-map-mind-elixir/
 
 ### Basic Workflow
 
-1. **Create your mind map** - Start typing your central topic, press Tab to add children, Enter for siblings
-2. **Add planning details** - Click a node and press `Ctrl+P` to open the plan panel
-3. **Fill in attributes** - Set dates, time estimates, assignees, and status
-4. **Visual feedback** - See badges appear on nodes with planning data
-5. **Save your work** - Click "Save Map" to download a JSON file
-6. **Export plans** - Generate CSV or HTML reports for sharing
+1. **Create your mind map** — Start typing your central topic, press `Tab` to add children, `Enter` for siblings
+2. **Add planning details** — Select a node and press `Ctrl+P` / `Cmd+P` to open the plan panel
+3. **Fill in attributes** — Set dates, time estimates, assignees, and status
+4. **Visual feedback** — See badges appear on nodes with planning data
+5. **Switch to table view** — Click the **Table** button in the toolbar to see all nodes in a list
+6. **Filter by depth** — Use the Depth dropdown to focus on a single level
+7. **Inline edit in table** — Double-click any cell to edit without leaving the table view
+8. **Save your work** — Press `Ctrl+S` / `Cmd+S` to download a JSON file
+9. **Export plans** — Press `Ctrl+E` / `Cmd+E` to generate CSV and HTML reports
 
 ### Loading Saved Maps
 
@@ -229,18 +249,18 @@ For detailed information about implementation and architecture:
 
 ## 🐛 Known Issues
 
-- Test files contain some TypeScript type mismatches (doesn't affect production)
-- Drag-drop file loading is implemented but not wired up to UI
+- Auto-save to localStorage (US6) is not yet implemented — maps must be saved manually via `Ctrl+S`
+- Playwright e2e tests require `npm run dev` running locally before running `npm run test:e2e`
 
 ## 🗺️ Roadmap
 
 Future enhancements under consideration:
-- Auto-save to browser localStorage
-- Drag-and-drop file loading UI
+- Auto-save to browser localStorage (opt-in, with session recovery prompt)
 - Additional export formats (Markdown, PDF)
 - Color coding for status visualization
-- Gantt chart view of timeline
-- Collaboration features
+- Gantt chart / timeline view
+- Priority field with full inline editing support
+- Reactive bidirectional sync between table edits and live mindmap updates
 
 ## 📧 Contact
 
