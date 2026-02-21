@@ -143,6 +143,7 @@ As a user planning tasks I want to have a complete overview of a node attributes
 2. **Given** I have selected to show the Planning Attributes sidepane **When** the sidepane renders **Then** I can see all fields and the save button without having to scroll down
 
 
+
 ### Edge Cases
 
 - **What happens when a user tries to load a mind map file from an older version with a different schema?**  
@@ -256,16 +257,190 @@ The following are **explicitly excluded** from the MVP per `.specify/memory/cons
 
 ---
 
-## Next Steps
 
-1. **Constitutional Gate**: ✅ Passed (validated against all five core principles)
-2. **Speckit Plan**: Generate implementation plan (`/speckit.plan`) with phased approach respecting solo-developer + Copilot model
-3. **Design Review**: Confirm UI/UX approach for attribute editor (side panel vs. modal) with stakeholder (coach) feedback
-4. **Prototype**: Build proof-of-concept for node attribute extension and CSV export to validate technical feasibility
-5. **User Testing**: Conduct usability session with 2-3 PEP coaches using prioritized user stories (P1 features first)
+# US-008: Table View for Memory Map with Depth Filtering
+
+**As a** user planning my project
+**I want to** view my memory map as an editable table with depth filtering
+**So that** I can see the overall sequence, make bulk updates, and reorder nodes efficiently without losing the visual context of the mindmap
+
+**Value**: Provides high-level overview and bulk editing capabilities that complement the detailed mindmap view. Essential for managing larger maps (15+ nodes) where sequence and attribute consistency matter.
+
+**Priority**: P2 (High value for project planning workflow, complements existing US1-US7)
+
+**Independent Test**: User can toggle between mindmap and table views, filter table by depth level, drag-drop to reorder rows, edit attributes inline, and see all changes immediately reflected in both views without data loss or desynchronization.
 
 ---
 
-**Approved by**: [Awaiting Human Software Engineer review]  
-**Speckit Agent**: Validated against constitution.md v1.0.0  
-**Estimated Effort**: [To be determined in implementation plan phase]
+## Functional Requirements
+
+### FR-008.01: View Mode Toggle
+- System MUST provide a toggle button/control to switch between mindmap view and table view
+- Toggle state persists during session (but not across page reloads unless autosave enabled)
+- Both views operate on the same underlying data model (single source of truth)
+- Switching views MUST preserve all unsaved changes in memory
+
+**Rationale**: Users need seamless transitions without losing context or data.
+
+---
+
+### FR-008.02: Depth Filtering
+- System MUST allow filtering by node depth using dropdown/radio buttons (Depth 1, 2, 3, 4, All)
+- Depth 1 = immediate children of root node only
+- Depth 2 = children of depth 1 nodes (grandchildren of root)
+- Depth N = nodes at that distance from root
+- "All" shows all nodes regardless of depth
+- Filter selection persists until explicitly changed by user
+- Filter applies only to table view, not mindmap view
+
+**Rationale**: Large maps become unmanageable in table form; depth filtering allows focused work on specific planning levels.
+
+---
+
+### FR-008.03: Table Display Structure
+- System MUST display filtered nodes as table rows with columns:
+  - **Sequence #**: Visual indicator of node order (read-only, updates automatically on reorder)
+  - **Node Name/Title**: Primary identifier (editable inline)
+  - **Custom Attributes**: All planning attributes defined in US1 (Status, Priority, Due Date, Assignee, Estimated Hours, Invested Hours) - editable inline
+  - **Depth Level**: Numeric indicator of node depth from root (read-only)
+- Table MUST show nodes in their current hierarchical sequence order (depth-first traversal within filtered depth)
+- Empty/unset attribute values display as "--" or similar placeholder
+- Table MUST be responsive (scrollable on smaller screens)
+
+**Rationale**: Users need all relevant data visible for efficient bulk review and editing.
+
+---
+
+### FR-008.04: Drag-and-Drop Reordering
+- System MUST allow drag-and-drop reordering of table rows
+- Dragging a row changes its position in the sibling sequence (not depth)
+- Reordering updates the underlying node sequence in the data model
+- Changes immediately visible in both table and mindmap views
+- System MUST provide visual feedback during drag (ghost row, drop target indicator)
+- Reordering MUST be undoable via standard undo mechanism (if US4 undo is implemented)
+
+**Constraints**: 
+- Can only reorder siblings (same parent) - cross-parent moves not supported in table view
+- Dragging a node does not change its parent or depth
+
+**Rationale**: Table view excels at showing sequence; drag-drop is the most intuitive reordering mechanism.
+
+---
+
+### FR-008.05: Inline Editing
+- System MUST allow inline editing of:
+  - Node name/title (text input, max 200 chars)
+  - Status (dropdown matching US1 values: Not Started, In Progress, Completed, Blocked, Deferred)
+  - Priority (dropdown: Low, Medium, High, Critical)
+  - Due Date (date picker)
+  - Assignee (text input)
+  - Estimated Hours (number input, 0-9999)
+  - Invested Hours (number input, 0-9999)
+- Changes save automatically on blur (focus leaves cell) or Enter key
+- Escape key cancels edit and restores previous value
+- Invalid inputs (e.g., non-numeric hours) show inline validation error and prevent save
+- Updates immediately reflected in mindmap view
+
+**Rationale**: Inline editing is standard for table UIs and enables efficient bulk updates.
+
+---
+
+### FR-008.06: Data Synchronization (Bidirectional)
+- Changes in table view MUST immediately update mindmap view data model
+- Changes in mindmap view MUST immediately update table view display (if visible)
+- Both views operate on same data source (no separate copies or async sync)
+- System MUST use reactive state management to ensure consistency
+- No "save" or "apply" button required - changes are immediate
+
+**Constraints**:
+- If table view is not currently visible, it updates when user toggles back to it
+- Autosave (US6) operates on the shared data model, capturing changes from either view
+
+**Rationale**: Dual views are only useful if they stay synchronized; separate data copies create maintenance burden and bugs.
+
+---
+
+## Acceptance Scenarios
+
+### AS-008.1: Switch from Mindmap to Table View
+**Given** user is viewing mindmap with 15 nodes across 3 depth levels
+**When** user clicks "Table View" toggle button
+**Then** system displays table showing all 15 nodes in depth-first order
+**And** table includes columns: Sequence, Name, Status, Priority, Due Date, Assignee, Est. Hours, Inv. Hours, Depth
+**And** all current attribute values are visible in table cells
+**And** mindmap remains accessible via toggle button
+
+---
+
+### AS-008.2: Filter by Depth Level
+**Given** user is in table view with nodes at depths 1 (3 nodes), 2 (8 nodes), and 3 (4 nodes)
+**When** user selects "Depth 2" from depth filter dropdown
+**Then** system displays only 8 depth-2 nodes
+**And** sequence numbers still reflect position among ALL nodes (not restarting at 1)
+**And** depth column shows "2" for all visible rows
+**When** user selects "All"
+**Then** system displays all 15 nodes again
+
+---
+
+### AS-008.3: Reorder Nodes via Drag-Drop
+**Given** table view filtered to "Depth 1" showing 5 sibling nodes in order: A, B, C, D, E
+**When** user drags node C above node A (to first position)
+**Then** table displays order: C, A, B, D, E
+**And** sequence numbers update: C=1, A=2, B=3, D=4, E=5
+**When** user toggles to mindmap view
+**Then** node C appears first in its parent's child list
+**And** visual positions reflect new order
+
+---
+
+### AS-008.4: Edit Node Name and Attributes in Table
+**Given** node "User Research" with Status="Not Started", Priority="High", Due Date=empty
+**When** user double-clicks the Name cell and changes text to "Customer Discovery"
+**And** presses Enter
+**Then** table shows "Customer Discovery" immediately
+**When** user clicks into Status cell and selects "In Progress" from dropdown
+**Then** Status cell shows "In Progress" after selection
+**When** user clicks into Due Date cell and selects 2026-03-15 from date picker
+**Then** Due Date cell shows "2026-03-15"
+**When** user toggles to mindmap view
+**Then** node displays "Customer Discovery", Status badge "In Progress", and due date "2026-03-15" on hover
+
+---
+
+### AS-008.5: Bidirectional Sync Between Views
+**Given** user has table view open with node "Research" visible
+**When** user toggles to mindmap view
+**And** renames node "Research" to "User Research" via mindmap edit dialog
+**And** toggles back to table view
+**Then** table immediately shows "User Research" in Name column
+**When** user edits Priority from "High" to "Medium" in table
+**And** toggles to mindmap view
+**Then** node shows Priority badge "Medium" (or equivalent visual indicator)
+
+---
+
+### AS-008.6: Handle Invalid Input in Table
+**Given** user is editing Estimated Hours cell for a node
+**When** user types "abc" (non-numeric text)
+**And** presses Enter or clicks away
+**Then** system shows inline validation error "Must be a number"
+**And** does NOT save the invalid value
+**And** cell reverts to previous value or remains empty
+**When** user types "40" and presses Enter
+**Then** validation passes and value saves as 40
+
+---
+
+## Edge Cases & Error Handling
+
+1. **Empty Map**: If no nodes exist beyond root, table shows empty state message "No nodes to display. Add nodes in mindmap view."
+
+2. **No Nodes at Selected Depth**: If user filters to Depth 3 but no depth-3 nodes exist, table shows "No nodes at this depth level"
+
+3. **Large Maps (100+ nodes)**: Table implements virtual scrolling or pagination if performance degrades
+
+4. **Concurrent Edits**: If using autosave (US6), last edit wins. No conflict resolution needed for single-user offline app.
+
+5. **Drag-Drop Across Different Parents**: System prevents this via UI (disable drop targets for nodes with different parents)
+

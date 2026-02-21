@@ -48,32 +48,4 @@ export function usePlanPanelHotkey() {
   }, [isPanelOpen, selectedNodeId, setIsPanelOpen]);
 }
 
-/**
- * Button component to manually open plan panel
- */
-export interface PlanPanelToggleButtonProps {
-  className?: string;
-}
 
-export function PlanPanelToggleButton({ className }: PlanPanelToggleButtonProps) {
-  const { selectedNodeId, setIsPanelOpen } = useAppStore();
-
-  const handleClick = () => {
-    if (selectedNodeId) {
-      setIsPanelOpen(true);
-    }
-  };
-
-  return (
-    <button
-      className={className}
-      onClick={handleClick}
-      disabled={!selectedNodeId}
-      title={`Edit planning attributes (${
-        navigator.platform.includes('Mac') ? 'Cmd' : 'Ctrl'
-      }+P)`}
-    >
-      📋 Attributes
-    </button>
-  );
-}

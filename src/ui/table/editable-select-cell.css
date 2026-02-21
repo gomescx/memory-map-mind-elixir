@@ -1,0 +1,41 @@
+.editable-select-cell {
+  cursor: pointer;
+  padding: 8px 12px;
+  min-height: 40px;
+  transition: background-color 0.2s;
+}
+
+.editable-select-cell:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.editable-select-cell__display {
+  display: inline-block;
+  width: 100%;
+}
+
+.editable-select-cell__select {
+  width: 100%;
+  border: 1px solid #4a90e2;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.editable-select-cell__select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.editable-select-cell__select option {
+  padding: 4px 8px;
+}
+
+.editable-select-cell__select option:disabled {
+  color: #9ca3af;
+  font-style: italic;
+}
