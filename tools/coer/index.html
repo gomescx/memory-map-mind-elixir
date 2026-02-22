@@ -315,6 +315,50 @@
       }
 
       // ─────────────────────────────────────────────────────────────────────
+      // LIST EVENT DELEGATION  (T-001.03 / T-001.04 / T-001.06)
+      // Handles "+ Add item" and "Remove" for Q2, Q5a, Q5b, Q7, Q9 lists.
+      // Single delegated listener on the form — no per-list setup required.
+      // ─────────────────────────────────────────────────────────────────────
+
+      document.getElementById("coer-form").addEventListener("click", function (event) {
+        var target = event.target;
+
+        // ── "+ Add item" button ──────────────────────────────────────────
+        if (target.classList.contains("btn-add")) {
+          var listId = target.getAttribute("data-target");
+          var listEl = document.getElementById(listId);
+          var field  = listEl.getAttribute("data-field");
+
+          // Sync any in-progress typed values before mutating the array.
+          formState[field] = readListFromDOM(listEl);
+          formState[field].push("");
+          renderList(listEl, formState[field]);
+
+          // Move focus to the newly added input.
+          var newInputs = listEl.querySelectorAll(".list-item-input");
+          if (newInputs.length > 0) {
+            newInputs[newInputs.length - 1].focus();
+          }
+          return;
+        }
+
+        // ── "Remove" button ──────────────────────────────────────────────
+        if (target.classList.contains("btn-remove")) {
+          var li     = target.closest("li");
+          var listEl = li.closest("ul");
+          var field  = listEl.getAttribute("data-field");
+          var index  = parseInt(target.getAttribute("data-index"), 10);
+
+          // Sync current typed values first so we remove the right item.
+          var items = readListFromDOM(listEl);
+          items.splice(index, 1);
+          formState[field] = items;
+          renderList(listEl, formState[field]);
+          return;
+        }
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
       // INIT
       // ─────────────────────────────────────────────────────────────────────
       renderForm();
