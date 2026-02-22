@@ -824,20 +824,20 @@
 
       // ─────────────────────────────────────────────────────────────────────
       // FILENAME DATE HELPER  (T-001.09)
-      // Returns today's date as DD-MM-YYYY for use in downloaded filenames.
+      // Returns today's date as YYYY-MM-DD for use in downloaded filenames.
       // ─────────────────────────────────────────────────────────────────────
 
-      function formatDateDDMMYYYY(date) {
+      function formatDateYYYYMMDD(date) {
         var d = String(date.getDate()).padStart(2, "0");
         var m = String(date.getMonth() + 1).padStart(2, "0");
         var y = String(date.getFullYear());
-        return d + "-" + m + "-" + y;
+        return y + "-" + m + "-" + d;
       }
 
       // ─────────────────────────────────────────────────────────────────────
       // SAVE BUTTON  (T-001.07, T-001.09)
-      // Filename format: {InitiativeName}-coer-DD-MM-YYYY.json
-      //                  coer-DD-MM-YYYY.json  (when Q1 is empty)
+      // Filename format: {InitiativeName}-coer-YYYY-MM-DD.json
+      //                  coer-YYYY-MM-DD.json  (when Q1 is empty)
       // Spaces → underscores; filesystem-unsafe chars → hyphens (T-001.09).
       // ─────────────────────────────────────────────────────────────────────
 
@@ -846,7 +846,7 @@
         readFormStateFromDOM();
 
         var json     = JSON.stringify(serializeToProjectFile(), null, 2);
-        var dateStr  = formatDateDDMMYYYY(new Date());
+        var dateStr  = formatDateYYYYMMDD(new Date());
         var rawName  = formState.initiativeName.trim();
         var filename;
 

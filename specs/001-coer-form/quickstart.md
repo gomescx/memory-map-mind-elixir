@@ -22,7 +22,7 @@ No build step. No installation. No server.
 
 - Click **"Save"** (or the save button in the toolbar).
 - The browser downloads a `.json` project file.
-- Choose a location and filename (e.g., `my-project.json`).
+- Choose a location and filename (e.g., `my-project yyyy-mm-dd.json`).
 - The file contains the complete `effectivenessToolkit` envelope with your initiative and COER data.
 
 ## 4. Load an Existing Project File
@@ -53,8 +53,8 @@ No build step. No installation. No server.
 
 ## 7. Validation Checks
 
-- [ ] Q1 filled → form saves successfully.
-- [ ] All 9 questions filled → all values round-trip through save/load.
+- [x] Q1 filled → form saves successfully.
+- [x] All 9 questions filled → all values round-trip through save/load.
 - [ ] Bullet list add/remove works for Q2, Q5 (both lists), Q7, Q9.
 - [ ] Save with only Q1 → file is valid, other fields at defaults.
 - [ ] Load a file → re-save → re-load → data identical (no drift).

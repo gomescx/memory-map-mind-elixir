@@ -216,8 +216,8 @@
 
   > **Source**: FR-US1.12
   > **AC**:
-  > - **Given** Q1 is "My Initiative" and today is 22 Feb 2026, **When** the user clicks Save, **Then** the downloaded filename is `My_Initiative-coer-22-02-2026.json`
-  > - **Given** Q1 is empty, **When** the user clicks Save, **Then** the downloaded filename is `coer-22-02-2026.json`
+  > - **Given** Q1 is "My Initiative" and today is 22 Feb 2026, **When** the user clicks Save, **Then** the downloaded filename is `My_Initiative-coer-2026-02-22.json`
+  > - **Given** Q1 is empty, **When** the user clicks Save, **Then** the downloaded filename is `coer-2026-02-22.json`
   > - **Given** Q1 contains special characters like `/\?%*:|"<>`, **When** saved, **Then** those characters are replaced with `-` in the filename (existing sanitization preserved)
   > **Manual Verification**: Fill Q1 → Save → check filename in downloads bar includes today's date in DD-MM-YYYY format
 
