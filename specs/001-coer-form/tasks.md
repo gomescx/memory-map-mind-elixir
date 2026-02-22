@@ -249,7 +249,7 @@
   > - After Abort: `formState.initiativeName === ""` (blank state preserved)  
   > **Manual Verification**: Create JSON with `"version": "9.9"` → Load → warning appears → click Abort → form still blank → Load same file → Proceed → form attempts to show data
 
-- [ ] T-002.03 [US2] Implement round-trip preservation — store entire loaded JSON in memory (`loadedProjectFile`); on save, merge only COER-owned fields; write all other fields back unchanged in `tools/coer/index.html`
+- [x] T-002.03 [US2] Implement round-trip preservation — store entire loaded JSON in memory (`loadedProjectFile`); on save, merge only COER-owned fields; write all other fields back unchanged in `tools/coer/index.html`
 
   > **Source**: FR-US2.04, FR-US2.05; contracts/project-file-schema.md §Contract 2 (all 5 test scenarios)  
   > **AC**:  
@@ -264,7 +264,7 @@
   > - `savedFile.effectivenessToolkit.initiatives[0].customField === "testvalue"`  
   > **Manual Verification**: Create project JSON with `"sob": null`, `"customField": "preserve-me"`, and a `memoryMap: { "nodes": [] }` → Load → edit Q3 → Save → open output in VS Code → confirm all three fields are identical to input
 
-- [ ] T-002.04 [US2] Implement `lastModified` update on re-save — both `coer.lastModified` and `effectivenessToolkit.lastModified` updated to `new Date().toISOString()` on every save in `tools/coer/index.html`
+- [x] T-002.04 [US2] Implement `lastModified` update on re-save — both `coer.lastModified` and `effectivenessToolkit.lastModified` updated to `new Date().toISOString()` on every save in `tools/coer/index.html`
 
   > **Source**: FR-US2.03; spec.md US2 Acceptance Scenario 2; SC-US2.02  
   > **AC**:  
