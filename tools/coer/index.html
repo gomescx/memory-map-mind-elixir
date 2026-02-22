@@ -823,20 +823,45 @@
       });
 
       // ─────────────────────────────────────────────────────────────────────
-      // SAVE BUTTON  (T-001.07)
+      // FILENAME DATE HELPER  (T-001.09)
+      // Returns today's date as DD-MM-YYYY for use in downloaded filenames.
+      // ─────────────────────────────────────────────────────────────────────
+
+      function formatDateDDMMYYYY(date) {
+        var d = String(date.getDate()).padStart(2, "0");
+        var m = String(date.getMonth() + 1).padStart(2, "0");
+        var y = String(date.getFullYear());
+        return d + "-" + m + "-" + y;
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // SAVE BUTTON  (T-001.07, T-001.09)
+      // Filename format: {InitiativeName}-coer-DD-MM-YYYY.json
+      //                  coer-DD-MM-YYYY.json  (when Q1 is empty)
+      // Spaces → underscores; filesystem-unsafe chars → hyphens (T-001.09).
       // ─────────────────────────────────────────────────────────────────────
 
       document.getElementById("btn-save").addEventListener("click", function () {
         // Flush all current DOM values into formState before serializing.
         readFormStateFromDOM();
 
-        var json = JSON.stringify(serializeToProjectFile(), null, 2);
+        var json     = JSON.stringify(serializeToProjectFile(), null, 2);
+        var dateStr  = formatDateDDMMYYYY(new Date());
+        var rawName  = formState.initiativeName.trim();
+        var filename;
 
-        // Build a safe filename from the initiative name (falls back to "coer").
-        var rawName = formState.initiativeName.trim() || "coer";
-        // Strip characters not allowed in most file systems.
-        var safeName = rawName.replace(/[/\\?%*:|"<>]/g, "-").slice(0, 100);
-        saveFileToDownload(json, safeName + ".json", "application/json");
+        if (rawName) {
+          // Sanitize: strip filesystem-unsafe chars, replace whitespace with _.
+          var safeName = rawName
+            .replace(/[/\\?%*:|"<>]/g, "-")
+            .replace(/\s+/g, "_")
+            .slice(0, 80);
+          filename = safeName + "-coer-" + dateStr + ".json";
+        } else {
+          filename = "coer-" + dateStr + ".json";
+        }
+
+        saveFileToDownload(json, filename, "application/json");
       });
 
       // ─────────────────────────────────────────────────────────────────────
