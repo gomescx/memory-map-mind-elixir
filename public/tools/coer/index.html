@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COER — Clarity of End Result</title>
+    <style>
+      /* ── Custom properties ─────────────────────────────────────────────── */
+      :root {
+        --color-bg:       #f5f5f5;
+        --color-surface:  #ffffff;
+        --color-border:   #e0e0e0;
+        --color-label:    #333333;
+        --color-muted:    #666666;
+        --color-primary:  #2563eb;
+        --color-primary-hover: #1d4ed8;
+        --color-danger:   #dc2626;
+        --color-danger-hover: #b91c1c;
+        --color-add:      #16a34a;
+        --color-add-hover: #15803d;
+        --radius:         6px;
+        --shadow-sm:      0 1px 3px rgba(0,0,0,.08);
+      }
+
+      /* ── Reset & base ──────────────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                     Helvetica, Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        background: var(--color-bg);
+        color: var(--color-label);
+      }
+
+      /* ── Toolbar ───────────────────────────────────────────────────────── */
+      #toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 24px;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-sm);
+      }
+
+      #toolbar button {
+        padding: 7px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: var(--radius);
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: background 0.15s, border-color 0.15s;
+      }
+
+      #btn-save {
+        background: var(--color-primary);
+        color: #fff;
+        border-color: var(--color-primary);
+      }
+      #btn-save:hover { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
+
+      #btn-load, #btn-print, #btn-export-text {
+        background: var(--color-surface);
+        color: var(--color-label);
+        border-color: var(--color-border);
+      }
+      #btn-load:hover, #btn-print:hover, #btn-export-text:hover {
+        background: #f0f0f0;
+        border-color: #bbb;
+      }
+
+      /* ── Page content ──────────────────────────────────────────────────── */
+      main {
+        max-width: 820px;
+        margin: 32px auto;
+        padding: 0 24px 64px;
+      }
+
+      /* ── Question sections ─────────────────────────────────────────────── */
+      .question {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .question > label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 10px;
+      }
+
+      /* ── Text inputs and textareas ─────────────────────────────────────── */
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 8px 12px;
+        font-family: inherit;
+        font-size: 15px;
+        line-height: 1.5;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        background: #fafafa;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        resize: vertical;
+      }
+
+      input[type="text"]:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+        background: var(--color-surface);
+      }
+
+      /* ── Bullet lists ──────────────────────────────────────────────────── */
+      .bullet-list {
+        list-style: none;
+        margin-bottom: 8px;
+      }
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .list-item-input {
+        flex: 1;
+        resize: none;
+      }
+
+      .btn-remove {
+        flex-shrink: 0;
+        padding: 5px 10px;
+        font-size: 13px;
+        font-weight: 500;
+        background: transparent;
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s;
+      }
+      .btn-remove:hover {
+        background: var(--color-danger);
+        color: #fff;
+      }
+
+      .btn-add {
+        padding: 5px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        background: transparent;
+        color: var(--color-add);
+        border: 1px dashed var(--color-add);
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s;
+      }
+      .btn-add:hover {
+        background: var(--color-add);
+        color: #fff;
+        border-style: solid;
+      }
+
+      /* ── Q5 dual-list layout ───────────────────────────────────────────── */
+      .dual-list {
+        display: flex;
+        gap: 24px;
+      }
+
+      .dual-list-col {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .dual-list-col h3 {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--color-muted);
+        margin-bottom: 10px;
+      }
+
+      /* ── Schema version warning banner (T-002.02) ─────────────────────── */
+      #version-warning {
+        display: none;   /* shown only when an unrecognised version is loaded */
+        align-items: flex-start;
+        gap: 16px;
+        padding: 14px 24px;
+        background: #fffbeb;
+        border-bottom: 2px solid #f59e0b;
+        color: #92400e;
+        font-size: 14px;
+      }
+
+      #version-warning.visible { display: flex; }
+
+      #version-warning p {
+        flex: 1;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      #version-warning strong {
+        color: #78350f;
+      }
+
+      .btn-warning-proceed,
+      .btn-warning-abort {
+        flex-shrink: 0;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s;
+      }
+
+      .btn-warning-proceed {
+        background: #f59e0b;
+        color: #fff;
+        border: 1px solid #d97706;
+      }
+      .btn-warning-proceed:hover { background: #d97706; }
+
+      .btn-warning-abort {
+        background: transparent;
+        color: #92400e;
+        border: 1px solid #d97706;
+      }
+      .btn-warning-abort:hover { background: #fef3c7; }
+
+      /* ── Visually-hidden utility (T-004.02) ──────────────────────────── */
+      /* Hides content visually while keeping it in the accessibility tree. */
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      @media (max-width: 600px) {
+        .dual-list { flex-direction: column; gap: 16px; }
+        #toolbar { flex-wrap: wrap; }
+        #version-warning { flex-direction: column; }
+      }
+
+      /* ── Print-only elements (T-003.01) ──────────────────────────────── */
+      #print-header  { display: none; }
+      #print-footer  { display: none; }
+      .print-value   { display: none; }
+
+      /* ── @media print (T-003.01) ─────────────────────────────────── */
+      @media print {
+        *, *::before, *::after {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        /* Hide all interactive chrome */
+        #toolbar,
+        #version-warning,
+        #file-input  { display: none !important; }
+
+        /* Hide form controls; show static print-value instead */
+        input[type="text"],
+        textarea,
+        .btn-add,
+        .btn-remove,
+        .list-item   { display: none !important; }
+
+        .print-value { display: block; }
+
+        /* Show print header and footer */
+        #print-header {
+          display: block;
+          padding: 0 0 20px;
+          border-bottom: 2px solid #333;
+          margin-bottom: 24px;
+        }
+
+        #print-header h1 {
+          font-size: 22px;
+          font-weight: 700;
+          margin-bottom: 6px;
+        }
+
+        #print-header p {
+          font-size: 13px;
+          color: #555;
+          margin: 2px 0;
+        }
+
+        #print-footer {
+          display: block;
+          margin-top: 40px;
+          padding-top: 12px;
+          border-top: 1px solid #ccc;
+          font-size: 11px;
+          color: #666;
+          font-style: italic;
+        }
+
+        /* Clean up question cards for paper */
+        .question {
+          border: none;
+          box-shadow: none;
+          border-bottom: 1px solid #e0e0e0;
+          border-radius: 0;
+          padding: 14px 0;
+          margin-bottom: 0;
+          page-break-inside: avoid;
+        }
+
+        .question > label {
+          font-size: 11px;
+          color: #555;
+        }
+
+        .dual-list { gap: 32px; }
+
+        .print-value ul {
+          margin: 4px 0 0 16px;
+          padding: 0;
+        }
+
+        .print-value li {
+          list-style: disc;
+          margin-bottom: 2px;
+        }
+
+        main {
+          max-width: 100%;
+          margin: 0;
+          padding: 0 16px 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header id="toolbar" role="toolbar" aria-label="Document actions">
+      <button id="btn-save" type="button">Save</button>
+      <button id="btn-load" type="button">Load</button>
+      <button id="btn-print" type="button">Print / Export PDF</button>
+      <button id="btn-export-text" type="button">Export Text</button>
+    </header>
+
+    <!-- Print-only header (T-003.01) — hidden on screen, visible on print -->
+    <div id="print-header" aria-hidden="true">
+      <h1>Clarity of End Result (COER)</h1>
+      <p><strong>Initiative:</strong> <span id="print-initiative"></span></p>
+      <p><strong>Last Modified:</strong> <span id="print-last-modified"></span></p>
+    </div>
+
+    <!-- Schema version warning banner (T-002.02) — hidden until needed -->
+    <div id="version-warning" role="alert" aria-live="assertive">
+      <p>
+        <strong>Unknown file version.</strong>
+        This file uses version <strong id="version-warning-number"></strong>, which
+        this tool does not recognise (expected <code>1.0</code>).
+        The file may have been created by a newer version of the tool.
+        You can proceed anyway (data may be incomplete) or abort and keep the
+        current form state.
+      </p>
+      <button type="button" class="btn-warning-proceed" id="btn-version-proceed">Proceed</button>
+      <button type="button" class="btn-warning-abort"   id="btn-version-abort">Abort</button>
+    </div>
+
+    <main>
+      <h1 class="visually-hidden">COER — Clarity of End Result</h1>
+      <form id="coer-form" novalidate aria-label="COER form">
+
+        <section class="question" id="section-q1">
+          <label for="q1-name">Q1 — Initiative name</label>
+          <input type="text" id="q1-name" autocomplete="off" />
+          <div class="print-value" id="q1-print"></div>
+        </section>
+
+        <section class="question" id="section-q2">
+          <label id="q2-label">Q2 — What are the specific results you want to achieve, and by when?</label>
+          <ul id="q2-list" class="bullet-list" data-field="specificResults" aria-labelledby="q2-label"></ul>
+          <button type="button" class="btn-add" data-target="q2-list" aria-label="Add specific result">+ Add item</button>
+          <div class="print-value" id="q2-print"></div>
+        </section>
+
+        <section class="question" id="section-q3">
+          <label for="q3-reason">Q3 — Why do you want to achieve it?</label>
+          <textarea id="q3-reason" rows="4"></textarea>
+          <div class="print-value" id="q3-print"></div>
+        </section>
+
+        <section class="question" id="section-q4">
+          <label for="q4-contribution">Q4 — How will it contribute to corporate goals?</label>
+          <textarea id="q4-contribution" rows="4"></textarea>
+          <div class="print-value" id="q4-print"></div>
+        </section>
+
+        <section class="question" id="section-q5">
+          <label id="q5-label">Q5 — What are the consequences?</label>
+          <div class="dual-list">
+            <div class="dual-list-col" role="group" aria-labelledby="q5a-heading">
+              <h3 id="q5a-heading">Achieving</h3>
+              <ul id="q5a-list" class="bullet-list" data-field="consequencesAchieving" aria-labelledby="q5a-heading"></ul>
+              <button type="button" class="btn-add" data-target="q5a-list" aria-label="Add achieving consequence">+ Add item</button>
+              <div class="print-value" id="q5a-print"></div>
+            </div>
+            <div class="dual-list-col" role="group" aria-labelledby="q5b-heading">
+              <h3 id="q5b-heading">Not Achieving</h3>
+              <ul id="q5b-list" class="bullet-list" data-field="consequencesNotAchieving" aria-labelledby="q5b-heading"></ul>
+              <button type="button" class="btn-add" data-target="q5b-list" aria-label="Add not-achieving consequence">+ Add item</button>
+              <div class="print-value" id="q5b-print"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="question" id="section-q6">
+          <label for="q6-starting-point">Q6 — Where are you now? (starting point)</label>
+          <textarea id="q6-starting-point" rows="4"></textarea>
+          <div class="print-value" id="q6-print"></div>
+        </section>
+
+        <section class="question" id="section-q7">
+          <label id="q7-label">Q7 — Who else needs to be involved?</label>
+          <ul id="q7-list" class="bullet-list" data-field="stakeholders" aria-labelledby="q7-label"></ul>
+          <button type="button" class="btn-add" data-target="q7-list" aria-label="Add stakeholder">+ Add item</button>
+          <div class="print-value" id="q7-print"></div>
+        </section>
+
+        <section class="question" id="section-q8">
+          <label for="q8-confidence">Q8 — How confident are you? (%)</label>
+          <input type="text" id="q8-confidence" autocomplete="off" />
+          <div class="print-value" id="q8-print"></div>
+        </section>
+
+        <section class="question" id="section-q9">
+          <label id="q9-label">Q9 — What obstacles might get in the way?</label>
+          <ul id="q9-list" class="bullet-list" data-field="obstacles" aria-labelledby="q9-label"></ul>
+          <button type="button" class="btn-add" data-target="q9-list" aria-label="Add obstacle">+ Add item</button>
+          <div class="print-value" id="q9-print"></div>
+        </section>
+
+      </form>
+
+      <!-- Print-only footer (T-003.01) — hidden on screen, visible on print -->
+      <div id="print-footer" aria-hidden="true">
+        <em>Generated by the Effectiveness Suite app — visit
+        <a href="https://claudio.coach">https://claudio.coach</a> for access</em>
+      </div>
+    </main>
+
+    <!-- Hidden file input used by loadFileFromInput() -->
+    <input type="file" id="file-input" accept=".json" style="display:none" aria-hidden="true" />
+
+    <script>
+      // ─────────────────────────────────────────────────────────────────────
+      // STATE  (T-000.03)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // formState holds all 10 COER fields at their defaults.
+      // Q1 (initiative name) maps to Initiative.name; all others map to coer.*
+      const formState = {
+        initiativeName:           "",   // Q1  → Initiative.name
+        specificResults:          [],   // Q2  → coer.specificResults
+        reason:                   "",   // Q3  → coer.reason
+        corporateContribution:    "",   // Q4  → coer.corporateContribution
+        consequencesAchieving:    [],   // Q5a → coer.consequencesAchieving
+        consequencesNotAchieving: [],   // Q5b → coer.consequencesNotAchieving
+        startingPoint:            "",   // Q6  → coer.startingPoint
+        stakeholders:             [],   // Q7  → coer.stakeholders
+        confidencePercent:        "",   // Q8  → coer.confidencePercent
+        obstacles:                []    // Q9  → coer.obstacles
+      };
+
+      // Holds the full parsed JSON of the last loaded file so round-trip
+      // preservation can write back non-COER fields unchanged (T-002.03).
+      let loadedProjectFile = null;
+
+      // ─────────────────────────────────────────────────────────────────────
+      // UUID  (T-000.05)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Generate a UUID v4 using crypto.getRandomValues() — works offline and
+      // from file:// without any external dependency.
+      function generateUUID() {
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        // Set version bits (4) and variant bits (10xx) per RFC 4122.
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;  // version 4
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;  // variant 10xx
+        const hex = Array.from(bytes, function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+        return (
+          hex.slice(0, 8)  + "-" +
+          hex.slice(8, 12) + "-" +
+          hex.slice(12, 16) + "-" +
+          hex.slice(16, 20) + "-" +
+          hex.slice(20)
+        );
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // SERIALIZATION  (T-000.04)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Build the effectivenessToolkit envelope from current formState.
+      // If a file was loaded, preserves all non-COER fields (round-trip safe).
+      function serializeToProjectFile() {
+        const now = new Date().toISOString();
+
+        // Start from loaded initiative (preserves sob, memoryMap, etc.) or
+        // create a fresh one with a new UUID.
+        const baseInitiative =
+          loadedProjectFile &&
+          loadedProjectFile.effectivenessToolkit &&
+          Array.isArray(loadedProjectFile.effectivenessToolkit.initiatives) &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0]
+            ? JSON.parse(JSON.stringify(loadedProjectFile.effectivenessToolkit.initiatives[0]))
+            : { id: generateUUID() };
+
+        baseInitiative.name = formState.initiativeName;
+        baseInitiative.coer = {
+          lastModified:             now,
+          specificResults:          formState.specificResults.slice(),
+          reason:                   formState.reason,
+          corporateContribution:    formState.corporateContribution,
+          consequencesAchieving:    formState.consequencesAchieving.slice(),
+          consequencesNotAchieving: formState.consequencesNotAchieving.slice(),
+          startingPoint:            formState.startingPoint,
+          stakeholders:             formState.stakeholders.slice(),
+          confidencePercent:        formState.confidencePercent,
+          obstacles:                formState.obstacles.slice()
+        };
+
+        if (loadedProjectFile) {
+          const output = JSON.parse(JSON.stringify(loadedProjectFile));
+          output.effectivenessToolkit.lastModified      = now;
+          output.effectivenessToolkit.initiatives[0]    = baseInitiative;
+          return output;
+        }
+
+        return {
+          effectivenessToolkit: {
+            version:      "1.0",
+            lastModified: now,
+            initiatives:  [baseInitiative]
+          }
+        };
+      }
+
+      // Extract the first initiative's coer section from a parsed JSON object
+      // into formState, then store the full file for round-trip preservation.
+      function deserializeFromProjectFile(json) {
+        const initiative = json.effectivenessToolkit.initiatives[0];
+        const coer = initiative.coer || {};
+
+        formState.initiativeName           = initiative.name                       || "";
+        formState.specificResults          = (coer.specificResults          || []).slice();
+        formState.reason                   =  coer.reason                          || "";
+        formState.corporateContribution    =  coer.corporateContribution           || "";
+        formState.consequencesAchieving    = (coer.consequencesAchieving    || []).slice();
+        formState.consequencesNotAchieving = (coer.consequencesNotAchieving || []).slice();
+        formState.startingPoint            =  coer.startingPoint                   || "";
+        formState.stakeholders             = (coer.stakeholders             || []).slice();
+        formState.confidencePercent        =  coer.confidencePercent               || "";
+        formState.obstacles                = (coer.obstacles                || []).slice();
+
+        loadedProjectFile = json;
+        return formState;
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // FILE I/O  (T-000.06)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Trigger a browser file download of `content` (string) as `filename`.
+      // Uses Blob + hidden <a download> — works from file:// with no CORS issues.
+      function saveFileToDownload(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = filename;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Open a file picker (JSON files only) and call `callback(fileContentString)`
+      // once the user selects a file. Re-uses the hidden #file-input element.
+      function loadFileFromInput(callback) {
+        const input = document.getElementById("file-input");
+        // Remove any previous listener to avoid stacking handlers.
+        const handler = function () {
+          const file = input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            callback(event.target.result);
+          };
+          reader.readAsText(file);
+          // Reset so the same file can be reloaded if needed.
+          input.value = "";
+          input.removeEventListener("change", handler);
+        };
+        input.addEventListener("change", handler);
+        input.click();
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // RENDER  (T-000.03)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Escape HTML to prevent XSS when inserting user text into innerHTML.
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      // Render a single bullet-list container from an array of strings.
+      // Each item gets a Remove button and a text input.
+      function renderList(listEl, items) {
+        listEl.innerHTML = "";
+        items.forEach(function (value, index) {
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.innerHTML =
+            '<input type="text" class="list-item-input" value="' +
+            escapeHtml(value) +
+            '" data-index="' + index + '" aria-label="Item ' + (index + 1) + '" />' +
+            '<button type="button" class="btn-remove" data-index="' + index +
+            '" aria-label="Remove item ' + (index + 1) + '">Remove</button>';
+          listEl.appendChild(li);
+        });
+      }
+
+      // Project the full formState into the DOM.
+      function renderForm() {
+        document.getElementById("q1-name").value         = formState.initiativeName;
+        document.getElementById("q3-reason").value       = formState.reason;
+        document.getElementById("q4-contribution").value = formState.corporateContribution;
+        document.getElementById("q6-starting-point").value = formState.startingPoint;
+        document.getElementById("q8-confidence").value   = formState.confidencePercent;
+
+        renderList(document.getElementById("q2-list"),  formState.specificResults);
+        renderList(document.getElementById("q5a-list"), formState.consequencesAchieving);
+        renderList(document.getElementById("q5b-list"), formState.consequencesNotAchieving);
+        renderList(document.getElementById("q7-list"),  formState.stakeholders);
+        renderList(document.getElementById("q9-list"),  formState.obstacles);
+
+        // Keep print-view in sync whenever the form is re-rendered.
+        populatePrintView();
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // PRINT VIEW  (T-003.01)
+      // Populates .print-value containers from current formState so the
+      // @media print stylesheet can display static text with no form controls.
+      // Called by renderForm() and by window.onbeforeprint.
+      // ─────────────────────────────────────────────────────────────────────
+
+      var EMPTY_ANSWER = "(Not yet answered)";
+
+      // Render an array of strings as a <ul> inside a print-value container.
+      // Empty arrays: leave the container empty (heading still visible).
+      function renderPrintList(id, items) {
+        var el = document.getElementById(id);
+        if (!items || items.length === 0) {
+          el.innerHTML = "";
+          return;
+        }
+        el.innerHTML =
+          "<ul>" +
+          items.map(function (item) {
+            return "<li>" + escapeHtml(item || "") + "</li>";
+          }).join("") +
+          "</ul>";
+      }
+
+      // Render a plain text value, using EMPTY_ANSWER if blank.
+      function renderPrintText(id, value) {
+        document.getElementById(id).textContent = value || EMPTY_ANSWER;
+      }
+
+      function populatePrintView() {
+        // Header metadata
+        var name = formState.initiativeName || "(Unnamed initiative)";
+        document.getElementById("print-initiative").textContent = name;
+
+        var lastMod = "";
+        if (
+          loadedProjectFile &&
+          loadedProjectFile.effectivenessToolkit &&
+          Array.isArray(loadedProjectFile.effectivenessToolkit.initiatives) &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0] &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0].coer
+        ) {
+          lastMod = loadedProjectFile.effectivenessToolkit.initiatives[0].coer.lastModified;
+        }
+        document.getElementById("print-last-modified").textContent =
+          lastMod ? new Date(lastMod).toLocaleString() : "(Not yet saved)";
+
+        // Text fields
+        renderPrintText("q1-print", formState.initiativeName);
+        renderPrintText("q3-print", formState.reason);
+        renderPrintText("q4-print", formState.corporateContribution);
+        renderPrintText("q6-print", formState.startingPoint);
+        renderPrintText("q8-print", formState.confidencePercent);
+
+        // List fields
+        renderPrintList("q2-print",  formState.specificResults);
+        renderPrintList("q5a-print", formState.consequencesAchieving);
+        renderPrintList("q5b-print", formState.consequencesNotAchieving);
+        renderPrintList("q7-print",  formState.stakeholders);
+        renderPrintList("q9-print",  formState.obstacles);
+      }
+
+      // Flush any in-progress typed values before the browser renders the
+      // print preview (handles changes made since last renderForm call).
+      window.addEventListener("beforeprint", function () {
+        readFormStateFromDOM();
+        populatePrintView();
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // READ FROM DOM  (T-001.02 / T-001.05)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Collect all text input values from a bullet list container.
+      function readListFromDOM(listEl) {
+        return Array.from(listEl.querySelectorAll(".list-item-input"))
+          .map(function (input) { return input.value; });
+      }
+
+      // Read every form field from the DOM back into formState.
+      // Called immediately before any save or export operation.
+      function readFormStateFromDOM() {
+        // Q1 — single-line text (T-001.01)
+        formState.initiativeName        = document.getElementById("q1-name").value;
+        // Q3, Q4, Q6 — multi-line textareas (T-001.02)
+        formState.reason                = document.getElementById("q3-reason").value;
+        formState.corporateContribution = document.getElementById("q4-contribution").value;
+        formState.startingPoint         = document.getElementById("q6-starting-point").value;
+        // Q8 — single-line text stored as string, never coerced (T-001.05)
+        formState.confidencePercent     = document.getElementById("q8-confidence").value;
+        // Q2, Q5a, Q5b, Q7, Q9 — dynamic bullet lists (T-001.03/04/06)
+        formState.specificResults          = readListFromDOM(document.getElementById("q2-list"));
+        formState.consequencesAchieving    = readListFromDOM(document.getElementById("q5a-list"));
+        formState.consequencesNotAchieving = readListFromDOM(document.getElementById("q5b-list"));
+        formState.stakeholders             = readListFromDOM(document.getElementById("q7-list"));
+        formState.obstacles                = readListFromDOM(document.getElementById("q9-list"));
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // LIST EVENT DELEGATION  (T-001.03 / T-001.04 / T-001.06)
+      // Handles "+ Add item" and "Remove" for Q2, Q5a, Q5b, Q7, Q9 lists.
+      // Single delegated listener on the form — no per-list setup required.
+      // ─────────────────────────────────────────────────────────────────────
+
+      document.getElementById("coer-form").addEventListener("click", function (event) {
+        var target = event.target;
+
+        // ── "+ Add item" button ──────────────────────────────────────────
+        if (target.classList.contains("btn-add")) {
+          var listId = target.getAttribute("data-target");
+          var listEl = document.getElementById(listId);
+          var field  = listEl.getAttribute("data-field");
+
+          // Sync any in-progress typed values before mutating the array.
+          formState[field] = readListFromDOM(listEl);
+          formState[field].push("");
+          renderList(listEl, formState[field]);
+
+          // Move focus to the newly added input.
+          var newInputs = listEl.querySelectorAll(".list-item-input");
+          if (newInputs.length > 0) {
+            newInputs[newInputs.length - 1].focus();
+          }
+          return;
+        }
+
+        // ── "Remove" button ──────────────────────────────────────────────
+        if (target.classList.contains("btn-remove")) {
+          var li     = target.closest("li");
+          var listEl = li.closest("ul");
+          var field  = listEl.getAttribute("data-field");
+          var index  = parseInt(target.getAttribute("data-index"), 10);
+
+          // Sync current typed values first so we remove the right item.
+          var items = readListFromDOM(listEl);
+          items.splice(index, 1);
+          formState[field] = items;
+          renderList(listEl, formState[field]);
+          return;
+        }
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // FILENAME DATE HELPER  (T-001.09)
+      // Returns today's date as YYYY-MM-DD for use in downloaded filenames.
+      // ─────────────────────────────────────────────────────────────────────
+
+      function formatDateYYYYMMDD(date) {
+        var d = String(date.getDate()).padStart(2, "0");
+        var m = String(date.getMonth() + 1).padStart(2, "0");
+        var y = String(date.getFullYear());
+        return y + "-" + m + "-" + d;
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // SAVE BUTTON  (T-001.07, T-001.09)
+      // Filename format: {InitiativeName}-coer-YYYY-MM-DD.json
+      //                  coer-YYYY-MM-DD.json  (when Q1 is empty)
+      // Spaces → underscores; filesystem-unsafe chars → hyphens (T-001.09).
+      // ─────────────────────────────────────────────────────────────────────
+
+      document.getElementById("btn-save").addEventListener("click", function () {
+        // Flush all current DOM values into formState before serializing.
+        readFormStateFromDOM();
+
+        var json     = JSON.stringify(serializeToProjectFile(), null, 2);
+        var dateStr  = formatDateYYYYMMDD(new Date());
+        var rawName  = formState.initiativeName.trim();
+        var filename;
+
+        if (rawName) {
+          // Sanitize: strip filesystem-unsafe chars, replace whitespace with _.
+          var safeName = rawName
+            .replace(/[/\\?%*:|"<>]/g, "-")
+            .replace(/\s+/g, "_")
+            .slice(0, 80);
+          filename = safeName + "-coer-" + dateStr + ".json";
+        } else {
+          filename = "coer-" + dateStr + ".json";
+        }
+
+        saveFileToDownload(json, filename, "application/json");
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // LOAD BUTTON  (T-002.01)
+      // Reads a .json file, deserializes into formState, re-renders the form.
+      // ─────────────────────────────────────────────────────────────────────
+
+      // applyLoad() is the shared entry point used by the load button AND the
+      // schema-warning "Proceed" path (T-002.02).  It assumes the JSON is
+      // already parsed and validated as an effectivenessToolkit envelope.
+      function applyLoad(json) {
+        try {
+          deserializeFromProjectFile(json);
+          renderForm();
+        } catch (err) {
+          alert("Failed to load file: " + err.message);
+        }
+      }
+
+      document.getElementById("btn-load").addEventListener("click", function () {
+        loadFileFromInput(function (content) {
+          var json;
+          try {
+            json = JSON.parse(content);
+          } catch (_) {
+            alert("Invalid JSON file — could not parse.");
+            return;
+          }
+
+          // Validate top-level envelope before doing anything.
+          if (
+            !json.effectivenessToolkit ||
+            !Array.isArray(json.effectivenessToolkit.initiatives) ||
+            json.effectivenessToolkit.initiatives.length === 0
+          ) {
+            alert("File does not appear to be a valid COER project file.");
+            return;
+          }
+
+          var version = json.effectivenessToolkit.version;
+
+          // Unknown version → delegate to schema-warning handler (T-002.02).
+          if (version !== "1.0") {
+            showVersionWarning(version, json);
+            return;
+          }
+
+          applyLoad(json);
+        });
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // SCHEMA VERSION WARNING  (T-002.02)
+      // Shows an inline warning when an unrecognised envelope version is loaded.
+      // The user can Proceed (attempt the load) or Abort (keep current state).
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Holds the pending parsed JSON while the user decides Proceed / Abort.
+      var pendingVersionJson = null;
+
+      function showVersionWarning(version, json) {
+        pendingVersionJson = json;
+        document.getElementById("version-warning-number").textContent = version;
+        document.getElementById("version-warning").classList.add("visible");
+        // Shift focus to the warning so screen-reader users are notified.
+        document.getElementById("btn-version-abort").focus();
+      }
+
+      function hideVersionWarning() {
+        document.getElementById("version-warning").classList.remove("visible");
+        pendingVersionJson = null;
+      }
+
+      document.getElementById("btn-version-proceed").addEventListener("click", function () {
+        var json = pendingVersionJson;
+        hideVersionWarning();
+        if (json) { applyLoad(json); }
+      });
+
+      document.getElementById("btn-version-abort").addEventListener("click", function () {
+        hideVersionWarning();
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // PRINT BUTTON  (T-003.02)
+      // Flushes unsaved form changes into the print-view containers, then
+      // calls window.print() to open the browser's native print dialog.
+      // The @media print CSS (T-003.01) handles the visual transformation.
+      // ─────────────────────────────────────────────────────────────────────
+
+      document.getElementById("btn-print").addEventListener("click", function () {
+        readFormStateFromDOM();
+        populatePrintView();
+        window.print();
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // EXPORT TEXT BUTTON  (T-003.03)
+      // Builds a Markdown string from formState following Contract 3 template,
+      // then downloads it as a .md file via saveFileToDownload().
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Format a list array as a markdown bullet list.
+      // Empty arrays produce an empty string (section heading still visible).
+      function mdList(items) {
+        if (!items || items.length === 0) { return ""; }
+        return items.map(function (item) { return "- " + (item || ""); }).join("\n");
+      }
+
+      // Format a plain text value, using placeholder if blank.
+      function mdText(value) {
+        return (value || "(Not yet answered)");
+      }
+
+      // Build the full Markdown export string per Contract 3 template.
+      function buildMarkdown() {
+        var lastMod = "";
+        if (
+          loadedProjectFile &&
+          loadedProjectFile.effectivenessToolkit &&
+          Array.isArray(loadedProjectFile.effectivenessToolkit.initiatives) &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0] &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0].coer
+        ) {
+          var raw = loadedProjectFile.effectivenessToolkit.initiatives[0].coer.lastModified;
+          if (raw) { lastMod = new Date(raw).toLocaleString(); }
+        }
+
+        var lines = [];
+
+        lines.push("# Clarity of End Result (COER)");
+        lines.push("");
+        lines.push("**Initiative**: " + (formState.initiativeName || "(Unnamed)"));
+        lines.push("**Last Modified**: " + (lastMod || "(Not yet saved)"));
+        lines.push("");
+        lines.push("---");
+        lines.push("");
+
+        // Q1
+        lines.push("## 1. Choose an important responsibility or project to work on");
+        lines.push("");
+        lines.push(mdText(formState.initiativeName));
+        lines.push("");
+
+        // Q2
+        lines.push("## 2. I want to achieve the following specific result(s) by a specific timeline");
+        lines.push("");
+        var q2 = mdList(formState.specificResults);
+        if (q2) { lines.push(q2); lines.push(""); }
+
+        // Q3
+        lines.push("## 3. I want to achieve it because (what\u2019s in it for me)");
+        lines.push("");
+        lines.push(mdText(formState.reason));
+        lines.push("");
+
+        // Q4
+        lines.push("## 4. This will contribute to corporate objectives in the following ways");
+        lines.push("");
+        lines.push(mdText(formState.corporateContribution));
+        lines.push("");
+
+        // Q5
+        lines.push("## 5. The consequences of achieving it / not achieving it are");
+        lines.push("");
+        lines.push("### Achieving");
+        var q5a = mdList(formState.consequencesAchieving);
+        if (q5a) { lines.push(q5a); }
+        lines.push("");
+        lines.push("### Not Achieving");
+        var q5b = mdList(formState.consequencesNotAchieving);
+        if (q5b) { lines.push(q5b); }
+        lines.push("");
+
+        // Q6
+        lines.push("## 6. Where am I now? My starting point is");
+        lines.push("");
+        lines.push(mdText(formState.startingPoint));
+        lines.push("");
+
+        // Q7
+        lines.push("## 7. Who else needs to be involved?");
+        lines.push("");
+        var q7 = mdList(formState.stakeholders);
+        if (q7) { lines.push(q7); lines.push(""); }
+
+        // Q8
+        lines.push("## 8. How confident am I that I will achieve the result with ease?");
+        lines.push("");
+        lines.push(mdText(formState.confidencePercent));
+        lines.push("");
+
+        // Q9
+        lines.push("## 9. The obstacle(s) I see affecting the ease of achieving the result");
+        lines.push("");
+        var q9 = mdList(formState.obstacles);
+        if (q9) { lines.push(q9); lines.push(""); }
+
+        lines.push("---");
+        lines.push("");
+        lines.push("*Generated by the Effectiveness Suite app \u2014 visit https://claudio.coach for access*");
+
+        return lines.join("\n");
+      }
+
+      document.getElementById("btn-export-text").addEventListener("click", function () {
+        readFormStateFromDOM();
+
+        var markdown = buildMarkdown();
+
+        // Build a safe filename from the initiative name (fallback to "coer").
+        var rawName = formState.initiativeName.trim() || "coer";
+        var safeName = rawName.replace(/[/\\?%*:|"<>]/g, "-").slice(0, 100);
+        saveFileToDownload(markdown, safeName + ".md", "text/markdown");
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // INIT
+      // ─────────────────────────────────────────────────────────────────────
+      renderForm();
+    </script>
+  </body>
+</html>
