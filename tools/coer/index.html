@@ -906,6 +906,19 @@
       });
 
       // ─────────────────────────────────────────────────────────────────────
+      // PRINT BUTTON  (T-003.02)
+      // Flushes unsaved form changes into the print-view containers, then
+      // calls window.print() to open the browser's native print dialog.
+      // The @media print CSS (T-003.01) handles the visual transformation.
+      // ─────────────────────────────────────────────────────────────────────
+
+      document.getElementById("btn-print").addEventListener("click", function () {
+        readFormStateFromDOM();
+        populatePrintView();
+        window.print();
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
       // INIT
       // ─────────────────────────────────────────────────────────────────────
       renderForm();

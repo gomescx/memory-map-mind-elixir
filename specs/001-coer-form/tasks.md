@@ -300,7 +300,7 @@
   > - Q2 with 3 items shows 3 `<li>` elements in print view, not raw array string  
   > **Manual Verification**: Fill Q2 with 3 items → DevTools → Rendering → Emulate CSS media: print → inspect: no inputs visible, Q2 shows as bullet list, footer text correct; then use "print-color-adjust: exact" to verify header styling preserved
 
-- [ ] T-003.02 [P] [US3] Implement "Print / Export PDF" button — calls `window.print()` — in `tools/coer/index.html`
+- [x] T-003.02 [P] [US3] Implement "Print / Export PDF" button — calls `window.print()` — in `tools/coer/index.html`
 
   > **Source**: FR-US3.01; spec.md US3 Acceptance Scenario 1; SC-US3.01  
   > **AC**:  
