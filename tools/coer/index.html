@@ -286,6 +286,35 @@
       }
 
       // ─────────────────────────────────────────────────────────────────────
+      // READ FROM DOM  (T-001.02 / T-001.05)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Collect all text input values from a bullet list container.
+      function readListFromDOM(listEl) {
+        return Array.from(listEl.querySelectorAll(".list-item-input"))
+          .map(function (input) { return input.value; });
+      }
+
+      // Read every form field from the DOM back into formState.
+      // Called immediately before any save or export operation.
+      function readFormStateFromDOM() {
+        // Q1 — single-line text (T-001.01)
+        formState.initiativeName        = document.getElementById("q1-name").value;
+        // Q3, Q4, Q6 — multi-line textareas (T-001.02)
+        formState.reason                = document.getElementById("q3-reason").value;
+        formState.corporateContribution = document.getElementById("q4-contribution").value;
+        formState.startingPoint         = document.getElementById("q6-starting-point").value;
+        // Q8 — single-line text stored as string, never coerced (T-001.05)
+        formState.confidencePercent     = document.getElementById("q8-confidence").value;
+        // Q2, Q5a, Q5b, Q7, Q9 — dynamic bullet lists (T-001.03/04/06)
+        formState.specificResults          = readListFromDOM(document.getElementById("q2-list"));
+        formState.consequencesAchieving    = readListFromDOM(document.getElementById("q5a-list"));
+        formState.consequencesNotAchieving = readListFromDOM(document.getElementById("q5b-list"));
+        formState.stakeholders             = readListFromDOM(document.getElementById("q7-list"));
+        formState.obstacles                = readListFromDOM(document.getElementById("q9-list"));
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
       // INIT
       // ─────────────────────────────────────────────────────────────────────
       renderForm();
