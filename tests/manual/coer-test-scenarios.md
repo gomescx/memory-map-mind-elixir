@@ -165,6 +165,135 @@
 
 ---
 
+## Edge Case Scenarios (T-004.03)
+
+*Source: spec.md §Edge Cases. Run after completing core scenarios 1–9.*
+
+---
+
+### Scenario EC-1 — Empty Form Save (Q1 Only)
+
+**Status**: `[ ] PENDING`
+
+**Edge Case**: Empty form save — if the user saves with only Q1 filled, the form
+ saves with all other fields at their empty defaults; no validation error is raised.
+
+**Precondition**: Page freshly loaded, all fields blank.
+
+**Steps**:
+1. Fill Q1 with `"Minimal COER"`. Leave all other fields blank.
+2. Click **Save**.
+3. Open the downloaded JSON in a text editor.
+
+**Expected Result**: File is valid JSON. `initiatives[0].name === "Minimal COER"`.
+ All array fields are `[]` (not `null`). All string fields are `""` (not `null`).
+ No error or alert was shown during save.
+
+---
+
+### Scenario EC-2 — Empty Q9 Obstacles at Save
+
+**Status**: `[ ] PENDING`
+
+**Edge Case**: Empty Q9 at save — obstacles array may be empty `[]`; must not break
+ future Tool 3 integration.
+
+**Precondition**: Page freshly loaded.
+
+**Steps**:
+1. Fill Q1 and at least one other question. Leave Q9 completely empty.
+2. Click **Save**.
+3. Open the downloaded JSON in a text editor.
+
+**Expected Result**: `coer.obstacles` is present and equals `[]`
+ (not absent, not `null`). File is valid JSON throughout.
+
+---
+
+### Scenario EC-3 — Single-Item Bullet List Removal
+
+**Status**: `[ ] PENDING`
+
+**Edge Case**: Single-item removal — removing the last item leaves the list
+ empty `[]`; an "Add item" prompt remains visible.
+
+**Precondition**: Page freshly loaded.
+
+**Steps**:
+1. In Q9, click **"+ Add item"** once. Type any text.
+2. Click **Remove** on that single item.
+3. Inspect the Q9 section.
+
+**Expected Result**: Q9 list is empty. The **"+ Add item"** button is still visible
+ (not hidden, not collapsed). Repeat for Q2, Q7, and each Q5 sub-list.
+
+---
+
+### Scenario EC-4 — File Format Conflict (Unrecognised Version)
+
+**Status**: `[ ] PENDING`
+
+**Edge Case**: File format conflict — unrecognised schema version triggers a
+ warning rather than silently corrupting data.
+
+**Precondition**: A project JSON file with `"version": "9.9"` in the envelope.
+
+**Steps**:
+1. Hand-edit a valid project file to change `"version": "1.0"` → `"version": "9.9"`.
+2. Click **Load** and select the modified file.
+3. Observe the inline warning banner.
+4. Click **Abort** — verify form remains blank (or unchanged).
+5. Click **Load** again, select the same file, then click **Proceed** — verify form
+   attempts to show data.
+
+**Expected Result**: On load, a warning banner appears with version `9.9` and
+ "Proceed" / "Abort" options. Abort leaves the form unchanged. Proceed loads
+ whatever data is parseable.
+
+---
+
+### Scenario EC-5 — Export with Empty Answers
+
+**Status**: `[ ] PENDING`
+
+**Edge Case**: Export renders question labels even when answers are blank.
+
+**Precondition**: Page freshly loaded. Fill Q1 only; leave Q2–Q9 blank.
+
+**Steps**:
+1. Click **Print / Export PDF** → inspect the print preview.
+2. Click **Export Text** → open the `.md` file.
+
+**Expected Result (Print)**: All 9 question labels are visible. Blank text fields
+ show a "(Not yet answered)" placeholder. Empty list sections show their heading
+ with no list items. No form controls visible.
+
+**Expected Result (Export)**: All 9 question headings are present in the `.md` file.
+ Blank text answers show `(Not yet answered)`. Empty list sections show their
+ heading with no bullet items. No JSON syntax visible.
+
+---
+
+### Scenario EC-6 — Large Obstacle List (20+ Items)
+
+**Status**: `[ ] PENDING`
+
+**Edge Case**: Q9 with 20+ items must remain usable (scroll within list or page;
+ no truncation).
+
+**Precondition**: Page freshly loaded.
+
+**Steps**:
+1. In Q9, add 25 items (can use copy-paste to speed up entry).
+2. Scroll the page to verify all 25 items are accessible.
+3. Click **Save**. Open the downloaded JSON in a text editor.
+
+**Expected Result**: All 25 items are visible (via page scroll — no items hidden
+ or truncated). The downloaded JSON has all 25 entries in `coer.obstacles`.
+ No layout overflow or horizontal scrollbar.
+
+---
+
 ## Results Summary
 
 | # | Scenario | Chrome | Firefox | Safari | Edge |
@@ -178,3 +307,9 @@
 | 7 | Text Export | — | — | — | — |
 | 8 | Non-COER Round-Trip | — | — | — | — |
 | 9 | No Network Requests | — | — | — | — |
+| EC-1 | Empty Form Save | — | — | — | — |
+| EC-2 | Empty Q9 at Save | — | — | — | — |
+| EC-3 | Single-Item Removal | — | — | — | — |
+| EC-4 | Format Conflict / Version Warning | — | — | — | — |
+| EC-5 | Export with Empty Answers | — | — | — | — |
+| EC-6 | Large Obstacle List (20+) | — | — | — | — |
