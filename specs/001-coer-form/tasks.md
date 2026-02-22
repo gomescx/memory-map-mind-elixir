@@ -49,7 +49,7 @@
 
 **⚠️ CRITICAL**: Phase 3, 4, and 5 cannot start until T-000.03 through T-000.06 are complete.
 
-- [ ] T-000.03 Implement `formState` plain JS object and `renderForm()` function in `tools/coer/index.html` — `formState` holds all fields at defaults; `renderForm()` projects `formState` to DOM
+- [x] T-000.03 Implement `formState` plain JS object and `renderForm()` function in `tools/coer/index.html` — `formState` holds all fields at defaults; `renderForm()` projects `formState` to DOM
 
   > **Source**: research.md §R7 (State Management); data-model.md §COER  
   > **AC**:  
@@ -60,7 +60,7 @@
   > - After setting `formState.reason = "test"` and calling `renderForm()`, the Q3 textarea value equals `"test"`  
   > **Manual Verification**: Open DevTools Console → type `formState` → inspect all 10 keys and their default values
 
-- [ ] T-000.04 Implement `serializeToProjectFile()` and `deserializeFromProjectFile()` utility functions in `tools/coer/index.html` — serialize produces the `effectivenessToolkit` JSON envelope; deserialize extracts the first initiative's `coer` section into `formState`
+- [x] T-000.04 Implement `serializeToProjectFile()` and `deserializeFromProjectFile()` utility functions in `tools/coer/index.html` — serialize produces the `effectivenessToolkit` JSON envelope; deserialize extracts the first initiative's `coer` section into `formState`
 
   > **Source**: FR-US1.08, FR-US1.09, FR-US1.10; data-model.md §ProjectFile; contracts/project-file-schema.md §Contract 1  
   > **AC**:  
@@ -74,7 +74,7 @@
   > - `deserializeFromProjectFile(canonicalExample).obstacles.length === 3`  
   > **Manual Verification**: DevTools Console → call `serializeToProjectFile()` → inspect output structure against data-model.md canonical JSON
 
-- [ ] T-000.05 Implement `generateUUID()` function (UUID v4) in `tools/coer/index.html` — used when creating a new initiative with no loaded file
+- [x] T-000.05 Implement `generateUUID()` function (UUID v4) in `tools/coer/index.html` — used when creating a new initiative with no loaded file
 
   > **Source**: data-model.md §Initiative.id ("UUID v4, generated on creation")  
   > **AC**:  
@@ -84,7 +84,7 @@
   > - Two successive calls return different values  
   > **Manual Verification**: DevTools Console → call `generateUUID()` five times → each result is unique and matches UUID v4 pattern
 
-- [ ] T-000.06 Implement `saveFileToDownload(content, filename, mimeType)` and `loadFileFromInput(callback)` utility functions in `tools/coer/index.html` — save via Blob + hidden `<a download>`; load via `<input type="file">` + FileReader
+- [x] T-000.06 Implement `saveFileToDownload(content, filename, mimeType)` and `loadFileFromInput(callback)` utility functions in `tools/coer/index.html` — save via Blob + hidden `<a download>`; load via `<input type="file">` + FileReader
 
   > **Source**: research.md §R2 (File Save/Load Strategy); FR-US1.11, FR-US2.01  
   > **AC**:  
