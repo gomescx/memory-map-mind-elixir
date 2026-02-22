@@ -6,5 +6,151 @@
     <title>COER — Clarity of End Result</title>
   </head>
   <body>
+    <header id="toolbar">
+      <button id="btn-save" type="button">Save</button>
+      <button id="btn-load" type="button">Load</button>
+      <button id="btn-print" type="button">Print / Export PDF</button>
+      <button id="btn-export-text" type="button">Export Text</button>
+    </header>
+
+    <main>
+      <form id="coer-form" novalidate>
+
+        <section class="question" id="section-q1">
+          <label for="q1-name">Q1 — Initiative name</label>
+          <input type="text" id="q1-name" autocomplete="off" />
+        </section>
+
+        <section class="question" id="section-q2">
+          <label>Q2 — What are the specific results you want to achieve, and by when?</label>
+          <ul id="q2-list" class="bullet-list" data-field="specificResults"></ul>
+          <button type="button" class="btn-add" data-target="q2-list">+ Add item</button>
+        </section>
+
+        <section class="question" id="section-q3">
+          <label for="q3-reason">Q3 — Why do you want to achieve it?</label>
+          <textarea id="q3-reason" rows="4"></textarea>
+        </section>
+
+        <section class="question" id="section-q4">
+          <label for="q4-contribution">Q4 — How will it contribute to corporate goals?</label>
+          <textarea id="q4-contribution" rows="4"></textarea>
+        </section>
+
+        <section class="question" id="section-q5">
+          <label>Q5 — What are the consequences?</label>
+          <div class="dual-list">
+            <div class="dual-list-col">
+              <h3>Achieving</h3>
+              <ul id="q5a-list" class="bullet-list" data-field="consequencesAchieving"></ul>
+              <button type="button" class="btn-add" data-target="q5a-list">+ Add item</button>
+            </div>
+            <div class="dual-list-col">
+              <h3>Not Achieving</h3>
+              <ul id="q5b-list" class="bullet-list" data-field="consequencesNotAchieving"></ul>
+              <button type="button" class="btn-add" data-target="q5b-list">+ Add item</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="question" id="section-q6">
+          <label for="q6-starting-point">Q6 — Where are you now? (starting point)</label>
+          <textarea id="q6-starting-point" rows="4"></textarea>
+        </section>
+
+        <section class="question" id="section-q7">
+          <label>Q7 — Who else needs to be involved?</label>
+          <ul id="q7-list" class="bullet-list" data-field="stakeholders"></ul>
+          <button type="button" class="btn-add" data-target="q7-list">+ Add item</button>
+        </section>
+
+        <section class="question" id="section-q8">
+          <label for="q8-confidence">Q8 — How confident are you? (%)</label>
+          <input type="text" id="q8-confidence" autocomplete="off" />
+        </section>
+
+        <section class="question" id="section-q9">
+          <label>Q9 — What obstacles might get in the way?</label>
+          <ul id="q9-list" class="bullet-list" data-field="obstacles"></ul>
+          <button type="button" class="btn-add" data-target="q9-list">+ Add item</button>
+        </section>
+
+      </form>
+    </main>
+
+    <!-- Hidden file input used by loadFileFromInput() -->
+    <input type="file" id="file-input" accept=".json" style="display:none" aria-hidden="true" />
+
+    <script>
+      // ─────────────────────────────────────────────────────────────────────
+      // STATE  (T-000.03)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // formState holds all 10 COER fields at their defaults.
+      // Q1 (initiative name) maps to Initiative.name; all others map to coer.*
+      const formState = {
+        initiativeName:           "",   // Q1  → Initiative.name
+        specificResults:          [],   // Q2  → coer.specificResults
+        reason:                   "",   // Q3  → coer.reason
+        corporateContribution:    "",   // Q4  → coer.corporateContribution
+        consequencesAchieving:    [],   // Q5a → coer.consequencesAchieving
+        consequencesNotAchieving: [],   // Q5b → coer.consequencesNotAchieving
+        startingPoint:            "",   // Q6  → coer.startingPoint
+        stakeholders:             [],   // Q7  → coer.stakeholders
+        confidencePercent:        "",   // Q8  → coer.confidencePercent
+        obstacles:                []    // Q9  → coer.obstacles
+      };
+
+      // ─────────────────────────────────────────────────────────────────────
+      // RENDER  (T-000.03)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Escape HTML to prevent XSS when inserting user text into innerHTML.
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      // Render a single bullet-list container from an array of strings.
+      // Each item gets a Remove button and a text input.
+      function renderList(listEl, items) {
+        listEl.innerHTML = "";
+        items.forEach(function (value, index) {
+          const li = document.createElement("li");
+          li.className = "list-item";
+          li.innerHTML =
+            '<input type="text" class="list-item-input" value="' +
+            escapeHtml(value) +
+            '" data-index="' + index + '" aria-label="Item ' + (index + 1) + '" />' +
+            '<button type="button" class="btn-remove" data-index="' + index +
+            '" aria-label="Remove item ' + (index + 1) + '">Remove</button>';
+          listEl.appendChild(li);
+        });
+      }
+
+      // Project the full formState into the DOM.
+      function renderForm() {
+        document.getElementById("q1-name").value         = formState.initiativeName;
+        document.getElementById("q3-reason").value       = formState.reason;
+        document.getElementById("q4-contribution").value = formState.corporateContribution;
+        document.getElementById("q6-starting-point").value = formState.startingPoint;
+        document.getElementById("q8-confidence").value   = formState.confidencePercent;
+
+        renderList(document.getElementById("q2-list"),  formState.specificResults);
+        renderList(document.getElementById("q5a-list"), formState.consequencesAchieving);
+        renderList(document.getElementById("q5b-list"), formState.consequencesNotAchieving);
+        renderList(document.getElementById("q7-list"),  formState.stakeholders);
+        renderList(document.getElementById("q9-list"),  formState.obstacles);
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // INIT
+      // ─────────────────────────────────────────────────────────────────────
+      renderForm();
+    </script>
   </body>
 </html>
