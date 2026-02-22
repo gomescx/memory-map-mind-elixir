@@ -197,9 +197,59 @@
         margin-bottom: 10px;
       }
 
+      /* ── Schema version warning banner (T-002.02) ─────────────────────── */
+      #version-warning {
+        display: none;   /* shown only when an unrecognised version is loaded */
+        align-items: flex-start;
+        gap: 16px;
+        padding: 14px 24px;
+        background: #fffbeb;
+        border-bottom: 2px solid #f59e0b;
+        color: #92400e;
+        font-size: 14px;
+      }
+
+      #version-warning.visible { display: flex; }
+
+      #version-warning p {
+        flex: 1;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      #version-warning strong {
+        color: #78350f;
+      }
+
+      .btn-warning-proceed,
+      .btn-warning-abort {
+        flex-shrink: 0;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s;
+      }
+
+      .btn-warning-proceed {
+        background: #f59e0b;
+        color: #fff;
+        border: 1px solid #d97706;
+      }
+      .btn-warning-proceed:hover { background: #d97706; }
+
+      .btn-warning-abort {
+        background: transparent;
+        color: #92400e;
+        border: 1px solid #d97706;
+      }
+      .btn-warning-abort:hover { background: #fef3c7; }
+
       @media (max-width: 600px) {
         .dual-list { flex-direction: column; gap: 16px; }
         #toolbar { flex-wrap: wrap; }
+        #version-warning { flex-direction: column; }
       }
     </style>
   </head>
@@ -210,6 +260,20 @@
       <button id="btn-print" type="button">Print / Export PDF</button>
       <button id="btn-export-text" type="button">Export Text</button>
     </header>
+
+    <!-- Schema version warning banner (T-002.02) — hidden until needed -->
+    <div id="version-warning" role="alert" aria-live="assertive">
+      <p>
+        <strong>Unknown file version.</strong>
+        This file uses version <strong id="version-warning-number"></strong>, which
+        this tool does not recognise (expected <code>1.0</code>).
+        The file may have been created by a newer version of the tool.
+        You can proceed anyway (data may be incomplete) or abort and keep the
+        current form state.
+      </p>
+      <button type="button" class="btn-warning-proceed" id="btn-version-proceed">Proceed</button>
+      <button type="button" class="btn-warning-abort"   id="btn-version-abort">Abort</button>
+    </div>
 
     <main>
       <form id="coer-form" novalidate>
@@ -624,13 +688,35 @@
 
       // ─────────────────────────────────────────────────────────────────────
       // SCHEMA VERSION WARNING  (T-002.02)
-      // Placeholder — expanded in T-002.02 to show an inline warning banner.
+      // Shows an inline warning when an unrecognised envelope version is loaded.
+      // The user can Proceed (attempt the load) or Abort (keep current state).
       // ─────────────────────────────────────────────────────────────────────
 
+      // Holds the pending parsed JSON while the user decides Proceed / Abort.
+      var pendingVersionJson = null;
+
       function showVersionWarning(version, json) {
-        // Stub: treat unknown version as a proceed (will be replaced by T-002.02).
-        applyLoad(json);
+        pendingVersionJson = json;
+        document.getElementById("version-warning-number").textContent = version;
+        document.getElementById("version-warning").classList.add("visible");
+        // Shift focus to the warning so screen-reader users are notified.
+        document.getElementById("btn-version-abort").focus();
       }
+
+      function hideVersionWarning() {
+        document.getElementById("version-warning").classList.remove("visible");
+        pendingVersionJson = null;
+      }
+
+      document.getElementById("btn-version-proceed").addEventListener("click", function () {
+        var json = pendingVersionJson;
+        hideVersionWarning();
+        if (json) { applyLoad(json); }
+      });
+
+      document.getElementById("btn-version-abort").addEventListener("click", function () {
+        hideVersionWarning();
+      });
 
       // ─────────────────────────────────────────────────────────────────────
       // INIT

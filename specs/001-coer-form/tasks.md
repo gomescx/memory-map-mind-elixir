@@ -235,7 +235,7 @@
   > - Load completes and form is interactive in under 3 seconds (measure with DevTools Performance tab)  
   > **Manual Verification**: Save a fully filled form → refresh page → Load → verify every field matches original → inspect Q9 item order matches saved order
 
-- [ ] T-002.02 [P] [US2] Implement schema version warning — on load, detect unrecognized `effectivenessToolkit.version`; show inline warning with "Proceed" and "Abort" options in `tools/coer/index.html`
+- [x] T-002.02 [P] [US2] Implement schema version warning — on load, detect unrecognized `effectivenessToolkit.version`; show inline warning with "Proceed" and "Abort" options in `tools/coer/index.html`
 
   > **Source**: spec.md §Edge Cases "File format conflict"; data-model.md §Validation Rules ("warn if unrecognized version")  
   > **AC**:  
