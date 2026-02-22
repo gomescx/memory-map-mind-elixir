@@ -340,7 +340,7 @@
 
 **Purpose**: Security hardening, accessibility, edge case validation, and final manual sign-off.
 
-- [ ] T-004.01 [P] Implement HTML-escaping for all user inputs rendered via `innerHTML` — create `escapeHtml(str)` helper and apply to every list item render in `tools/coer/index.html`
+- [x] T-004.01 [P] Implement HTML-escaping for all user inputs rendered via `innerHTML` — create `escapeHtml(str)` helper and apply to every list item render in `tools/coer/index.html`
 
   > **Source**: research.md §R5 "Gotchas — Must HTML-escape user input before injecting via innerHTML to prevent XSS"  
   > **AC**:  
@@ -352,7 +352,7 @@
   > - Adding `<b>bold</b>` as Q2 item renders as literal text (no bold formatting in DOM)  
   > **Manual Verification**: Type `<img src=x onerror=alert('xss')>` as a Q2 list item → click Add → item appears as literal text → no alert fires; save → load → item still displays as literal text
 
-- [ ] T-004.02 [P] Implement accessibility — semantic HTML5 landmarks, `aria-label` on icon-only buttons, `for`/`id` label association, keyboard navigation for bullet list add/remove in `tools/coer/index.html`
+- [x] T-004.02 [P] Implement accessibility — semantic HTML5 landmarks, `aria-label` on icon-only buttons, `for`/`id` label association, keyboard navigation for bullet list add/remove in `tools/coer/index.html`
 
   > **Source**: Constitution §UI/UX Guardrails — "Support keyboard navigation and semantic HTML for assistive technologies"  
   > **AC**:  
@@ -366,7 +366,7 @@
   > - After "+ Add item" click, `document.activeElement` is the new input  
   > **Manual Verification**: Open tool → press Tab repeatedly from Q1 → confirm all 9 Q inputs and all list controls reached without mouse → add Q2 item with keyboard (Tab to Add button, press Enter) → confirm focus jumps to new input → check DevTools Accessibility tree for toolbar button labels
 
-- [ ] T-004.03 Validate all 6 edge case behaviours — implement any missing guards in `tools/coer/index.html`
+- [x] T-004.03 Validate all 6 edge case behaviours — implement any missing guards in `tools/coer/index.html`
 
   > **Source**: spec.md §Edge Cases (all 6 items)  
   > **AC**:  
