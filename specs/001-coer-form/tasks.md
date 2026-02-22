@@ -312,7 +312,7 @@
   > - PDF output (manual verification) shows clean layout matching professional document standard  
   > **Manual Verification**: Fill all 9 questions → click Print/Export PDF → print dialog opens → Save as PDF → open PDF → verify: initiative name heading, all 9 answers, `lastModified` subtitle, footer, zero form controls visible
 
-- [ ] T-003.03 [US3] Implement "Export Text" button — build markdown string from `formState`, download as `.md` file via `saveFileToDownload()` in `tools/coer/index.html`
+- [x] T-003.03 [US3] Implement "Export Text" button — build markdown string from `formState`, download as `.md` file via `saveFileToDownload()` in `tools/coer/index.html`
 
   > **Source**: FR-US3.02, FR-US3.04, FR-US3.05, FR-US3.06; spec.md US3 Acceptance Scenarios 2, 3, 4; contracts/project-file-schema.md §Contract 3; SC-US3.02  
   > **AC**:  
