@@ -95,7 +95,7 @@ After completing or reviewing a COER, the coach or client wants to produce a cle
 - **FR-US1.09**: The saved `coer` object MUST include a `lastModified` field in ISO 8601 format set to the current date-time at time of save.
 - **FR-US1.10**: The project file MUST use the envelope structure: `{ "effectivenessToolkit": { "version": "1.0", "lastModified": "...", "initiatives": [...] } }`.
 - **FR-US1.11**: If no project file is currently open, saving MUST prompt the user to choose a file location and filename (browser file save dialog).
-- **FR-US1.12**: The saved filename MUST include a timestamp in DD-MM-YYYY format, following the pattern `{sanitized-initiative-name}-coer-{YYYY}-{MM}-{DD}.json`, consistent with the Memory Map filename convention.
+- **FR-US1.12**: The saved filename MUST include a timestamp in YYYY-MM-DD format, following the pattern `{sanitized-initiative-name}-coer-{YYYY}-{MM}-{DD}.json`, consistent with the Memory Map filename convention.
 ### Functional Requirements — US2: Load and Edit
 
 - **FR-US2.01**: The tool MUST allow the user to load an existing project JSON file from their local file system.

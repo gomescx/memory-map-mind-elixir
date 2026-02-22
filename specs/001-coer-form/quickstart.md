@@ -22,7 +22,7 @@ No build step. No installation. No server.
 
 - Click **"Save"** (or the save button in the toolbar).
 - The browser downloads a `.json` project file.
-- Choose a location and filename (e.g., `my-project yyyy-mm-dd.json`).
+- Choose a location and filename (e.g., `my-project-coer-2026-02-15.json`).
 - The file contains the complete `effectivenessToolkit` envelope with your initiative and COER data.
 
 ## 4. Load an Existing Project File
