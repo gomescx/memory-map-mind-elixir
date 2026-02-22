@@ -574,6 +574,65 @@
       });
 
       // ─────────────────────────────────────────────────────────────────────
+      // LOAD BUTTON  (T-002.01)
+      // Reads a .json file, deserializes into formState, re-renders the form.
+      // ─────────────────────────────────────────────────────────────────────
+
+      // applyLoad() is the shared entry point used by the load button AND the
+      // schema-warning "Proceed" path (T-002.02).  It assumes the JSON is
+      // already parsed and validated as an effectivenessToolkit envelope.
+      function applyLoad(json) {
+        try {
+          deserializeFromProjectFile(json);
+          renderForm();
+        } catch (err) {
+          alert("Failed to load file: " + err.message);
+        }
+      }
+
+      document.getElementById("btn-load").addEventListener("click", function () {
+        loadFileFromInput(function (content) {
+          var json;
+          try {
+            json = JSON.parse(content);
+          } catch (_) {
+            alert("Invalid JSON file — could not parse.");
+            return;
+          }
+
+          // Validate top-level envelope before doing anything.
+          if (
+            !json.effectivenessToolkit ||
+            !Array.isArray(json.effectivenessToolkit.initiatives) ||
+            json.effectivenessToolkit.initiatives.length === 0
+          ) {
+            alert("File does not appear to be a valid COER project file.");
+            return;
+          }
+
+          var version = json.effectivenessToolkit.version;
+
+          // Unknown version → delegate to schema-warning handler (T-002.02).
+          if (version !== "1.0") {
+            showVersionWarning(version, json);
+            return;
+          }
+
+          applyLoad(json);
+        });
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
+      // SCHEMA VERSION WARNING  (T-002.02)
+      // Placeholder — expanded in T-002.02 to show an inline warning banner.
+      // ─────────────────────────────────────────────────────────────────────
+
+      function showVersionWarning(version, json) {
+        // Stub: treat unknown version as a proceed (will be replaced by T-002.02).
+        applyLoad(json);
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
       // INIT
       // ─────────────────────────────────────────────────────────────────────
       renderForm();

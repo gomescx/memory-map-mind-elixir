@@ -222,7 +222,7 @@
 
 **Independent Test**: Save a project file with all 9 answers. Reload the page, click Load, select the file — form populates. Edit Q3. Click Save. Open new file — Q3 updated, `lastModified` updated, all other fields unchanged.
 
-- [ ] T-002.01 [US2] Implement the Load button — `<input type="file" accept=".json">` triggers `loadFileFromInput()`, calls `deserializeFromProjectFile()`, populates `formState`, calls `renderForm()` in `tools/coer/index.html`
+- [x] T-002.01 [US2] Implement the Load button — `<input type="file" accept=".json">` triggers `loadFileFromInput()`, calls `deserializeFromProjectFile()`, populates `formState`, calls `renderForm()` in `tools/coer/index.html`
 
   > **Source**: FR-US2.01, FR-US2.02; spec.md US2 Acceptance Scenario 1; SC-US2.01  
   > **AC**:  
