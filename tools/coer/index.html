@@ -200,6 +200,46 @@
       }
 
       // ─────────────────────────────────────────────────────────────────────
+      // FILE I/O  (T-000.06)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Trigger a browser file download of `content` (string) as `filename`.
+      // Uses Blob + hidden <a download> — works from file:// with no CORS issues.
+      function saveFileToDownload(content, filename, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = filename;
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Open a file picker (JSON files only) and call `callback(fileContentString)`
+      // once the user selects a file. Re-uses the hidden #file-input element.
+      function loadFileFromInput(callback) {
+        const input = document.getElementById("file-input");
+        // Remove any previous listener to avoid stacking handlers.
+        const handler = function () {
+          const file = input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            callback(event.target.result);
+          };
+          reader.readAsText(file);
+          // Reset so the same file can be reloaded if needed.
+          input.value = "";
+          input.removeEventListener("change", handler);
+        };
+        input.addEventListener("change", handler);
+        input.click();
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
       // RENDER  (T-000.03)
       // ─────────────────────────────────────────────────────────────────────
 
