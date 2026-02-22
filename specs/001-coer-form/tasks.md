@@ -199,7 +199,7 @@
   > - `lastModified` matches `/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/`  
   > **Manual Verification**: Fill all 9 questions → click Save → open JSON in VS Code → validate structure against data-model.md canonical example → load file back in tool → compare every field with originally entered values
 
-- [ ] T-001.08 [P] [US1] Implement baseline CSS — page layout, toolbar (Save/Load/Print/Export buttons), form layout (question sections, label typography), bullet list controls — all inline in `tools/coer/index.html`
+- [x] T-001.08 [P] [US1] Implement baseline CSS — page layout, toolbar (Save/Load/Print/Export buttons), form layout (question sections, label typography), bullet list controls — all inline in `tools/coer/index.html`
 
   > **Source**: SC-US1.03; Constitution §UI/UX Guardrails — "Low Friction", "Immediately usable with minimal instruction"; plan.md §Performance Goals ("Form renders instantly")  
   > **AC**:  
