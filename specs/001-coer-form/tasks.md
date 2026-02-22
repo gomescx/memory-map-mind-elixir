@@ -285,7 +285,7 @@
 
 **Independent Test**: Open a saved COER, click "Print / Export PDF" — print preview shows clean document with no form controls and correct footer. Click "Export Text" — `.md` file downloads with all 9 questions as headings and answers as text, no JSON syntax.
 
-- [ ] T-003.01 [US3] Implement `@media print` CSS — hide all interactive controls, render questions and answers as static text, add print footer in `tools/coer/index.html`
+- [x] T-003.01 [US3] Implement `@media print` CSS — hide all interactive controls, render questions and answers as static text, add print footer in `tools/coer/index.html`
 
   > **Source**: FR-US3.03, FR-US3.04, FR-US3.05, FR-US3.06; research.md §R3  
   > **AC**:  

@@ -251,6 +251,97 @@
         #toolbar { flex-wrap: wrap; }
         #version-warning { flex-direction: column; }
       }
+
+      /* ── Print-only elements (T-003.01) ──────────────────────────────── */
+      #print-header  { display: none; }
+      #print-footer  { display: none; }
+      .print-value   { display: none; }
+
+      /* ── @media print (T-003.01) ─────────────────────────────────── */
+      @media print {
+        *, *::before, *::after {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        /* Hide all interactive chrome */
+        #toolbar,
+        #version-warning,
+        #file-input  { display: none !important; }
+
+        /* Hide form controls; show static print-value instead */
+        input[type="text"],
+        textarea,
+        .btn-add,
+        .btn-remove,
+        .list-item   { display: none !important; }
+
+        .print-value { display: block; }
+
+        /* Show print header and footer */
+        #print-header {
+          display: block;
+          padding: 0 0 20px;
+          border-bottom: 2px solid #333;
+          margin-bottom: 24px;
+        }
+
+        #print-header h1 {
+          font-size: 22px;
+          font-weight: 700;
+          margin-bottom: 6px;
+        }
+
+        #print-header p {
+          font-size: 13px;
+          color: #555;
+          margin: 2px 0;
+        }
+
+        #print-footer {
+          display: block;
+          margin-top: 40px;
+          padding-top: 12px;
+          border-top: 1px solid #ccc;
+          font-size: 11px;
+          color: #666;
+          font-style: italic;
+        }
+
+        /* Clean up question cards for paper */
+        .question {
+          border: none;
+          box-shadow: none;
+          border-bottom: 1px solid #e0e0e0;
+          border-radius: 0;
+          padding: 14px 0;
+          margin-bottom: 0;
+          page-break-inside: avoid;
+        }
+
+        .question > label {
+          font-size: 11px;
+          color: #555;
+        }
+
+        .dual-list { gap: 32px; }
+
+        .print-value ul {
+          margin: 4px 0 0 16px;
+          padding: 0;
+        }
+
+        .print-value li {
+          list-style: disc;
+          margin-bottom: 2px;
+        }
+
+        main {
+          max-width: 100%;
+          margin: 0;
+          padding: 0 16px 32px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -260,6 +351,13 @@
       <button id="btn-print" type="button">Print / Export PDF</button>
       <button id="btn-export-text" type="button">Export Text</button>
     </header>
+
+    <!-- Print-only header (T-003.01) — hidden on screen, visible on print -->
+    <div id="print-header" aria-hidden="true">
+      <h1>Clarity of End Result (COER)</h1>
+      <p><strong>Initiative:</strong> <span id="print-initiative"></span></p>
+      <p><strong>Last Modified:</strong> <span id="print-last-modified"></span></p>
+    </div>
 
     <!-- Schema version warning banner (T-002.02) — hidden until needed -->
     <div id="version-warning" role="alert" aria-live="assertive">
@@ -281,22 +379,26 @@
         <section class="question" id="section-q1">
           <label for="q1-name">Q1 — Initiative name</label>
           <input type="text" id="q1-name" autocomplete="off" />
+          <div class="print-value" id="q1-print"></div>
         </section>
 
         <section class="question" id="section-q2">
           <label>Q2 — What are the specific results you want to achieve, and by when?</label>
           <ul id="q2-list" class="bullet-list" data-field="specificResults"></ul>
           <button type="button" class="btn-add" data-target="q2-list">+ Add item</button>
+          <div class="print-value" id="q2-print"></div>
         </section>
 
         <section class="question" id="section-q3">
           <label for="q3-reason">Q3 — Why do you want to achieve it?</label>
           <textarea id="q3-reason" rows="4"></textarea>
+          <div class="print-value" id="q3-print"></div>
         </section>
 
         <section class="question" id="section-q4">
           <label for="q4-contribution">Q4 — How will it contribute to corporate goals?</label>
           <textarea id="q4-contribution" rows="4"></textarea>
+          <div class="print-value" id="q4-print"></div>
         </section>
 
         <section class="question" id="section-q5">
@@ -306,11 +408,13 @@
               <h3>Achieving</h3>
               <ul id="q5a-list" class="bullet-list" data-field="consequencesAchieving"></ul>
               <button type="button" class="btn-add" data-target="q5a-list">+ Add item</button>
+              <div class="print-value" id="q5a-print"></div>
             </div>
             <div class="dual-list-col">
               <h3>Not Achieving</h3>
               <ul id="q5b-list" class="bullet-list" data-field="consequencesNotAchieving"></ul>
               <button type="button" class="btn-add" data-target="q5b-list">+ Add item</button>
+              <div class="print-value" id="q5b-print"></div>
             </div>
           </div>
         </section>
@@ -318,26 +422,36 @@
         <section class="question" id="section-q6">
           <label for="q6-starting-point">Q6 — Where are you now? (starting point)</label>
           <textarea id="q6-starting-point" rows="4"></textarea>
+          <div class="print-value" id="q6-print"></div>
         </section>
 
         <section class="question" id="section-q7">
           <label>Q7 — Who else needs to be involved?</label>
           <ul id="q7-list" class="bullet-list" data-field="stakeholders"></ul>
           <button type="button" class="btn-add" data-target="q7-list">+ Add item</button>
+          <div class="print-value" id="q7-print"></div>
         </section>
 
         <section class="question" id="section-q8">
           <label for="q8-confidence">Q8 — How confident are you? (%)</label>
           <input type="text" id="q8-confidence" autocomplete="off" />
+          <div class="print-value" id="q8-print"></div>
         </section>
 
         <section class="question" id="section-q9">
           <label>Q9 — What obstacles might get in the way?</label>
           <ul id="q9-list" class="bullet-list" data-field="obstacles"></ul>
           <button type="button" class="btn-add" data-target="q9-list">+ Add item</button>
+          <div class="print-value" id="q9-print"></div>
         </section>
 
       </form>
+
+      <!-- Print-only footer (T-003.01) — hidden on screen, visible on print -->
+      <div id="print-footer" aria-hidden="true">
+        <em>Generated by the Effectiveness Suite app — visit
+        <a href="https://claudio.coach">https://claudio.coach</a> for access</em>
+      </div>
     </main>
 
     <!-- Hidden file input used by loadFileFromInput() -->
@@ -545,7 +659,80 @@
         renderList(document.getElementById("q5b-list"), formState.consequencesNotAchieving);
         renderList(document.getElementById("q7-list"),  formState.stakeholders);
         renderList(document.getElementById("q9-list"),  formState.obstacles);
+
+        // Keep print-view in sync whenever the form is re-rendered.
+        populatePrintView();
       }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // PRINT VIEW  (T-003.01)
+      // Populates .print-value containers from current formState so the
+      // @media print stylesheet can display static text with no form controls.
+      // Called by renderForm() and by window.onbeforeprint.
+      // ─────────────────────────────────────────────────────────────────────
+
+      var EMPTY_ANSWER = "(Not yet answered)";
+
+      // Render an array of strings as a <ul> inside a print-value container.
+      // Empty arrays: leave the container empty (heading still visible).
+      function renderPrintList(id, items) {
+        var el = document.getElementById(id);
+        if (!items || items.length === 0) {
+          el.innerHTML = "";
+          return;
+        }
+        el.innerHTML =
+          "<ul>" +
+          items.map(function (item) {
+            return "<li>" + escapeHtml(item || "") + "</li>";
+          }).join("") +
+          "</ul>";
+      }
+
+      // Render a plain text value, using EMPTY_ANSWER if blank.
+      function renderPrintText(id, value) {
+        document.getElementById(id).textContent = value || EMPTY_ANSWER;
+      }
+
+      function populatePrintView() {
+        // Header metadata
+        var name = formState.initiativeName || "(Unnamed initiative)";
+        document.getElementById("print-initiative").textContent = name;
+
+        var lastMod = "";
+        if (
+          loadedProjectFile &&
+          loadedProjectFile.effectivenessToolkit &&
+          Array.isArray(loadedProjectFile.effectivenessToolkit.initiatives) &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0] &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0].coer
+        ) {
+          lastMod = loadedProjectFile.effectivenessToolkit.initiatives[0].coer.lastModified;
+        }
+        document.getElementById("print-last-modified").textContent =
+          lastMod ? new Date(lastMod).toLocaleString() : "(Not yet saved)";
+
+        // Text fields
+        renderPrintText("q1-print", formState.initiativeName);
+        renderPrintText("q3-print", formState.reason);
+        renderPrintText("q4-print", formState.corporateContribution);
+        renderPrintText("q6-print", formState.startingPoint);
+        renderPrintText("q8-print", formState.confidencePercent);
+
+        // List fields
+        renderPrintList("q2-print",  formState.specificResults);
+        renderPrintList("q5a-print", formState.consequencesAchieving);
+        renderPrintList("q5b-print", formState.consequencesNotAchieving);
+        renderPrintList("q7-print",  formState.stakeholders);
+        renderPrintList("q9-print",  formState.obstacles);
+      }
+
+      // Flush any in-progress typed values before the browser renders the
+      // print preview (handles changes made since last renderForm call).
+      window.addEventListener("beforeprint", function () {
+        readFormStateFromDOM();
+        populatePrintView();
+      });
 
       // ─────────────────────────────────────────────────────────────────────
       // READ FROM DOM  (T-001.02 / T-001.05)
