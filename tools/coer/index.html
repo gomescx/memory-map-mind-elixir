@@ -359,6 +359,23 @@
       });
 
       // ─────────────────────────────────────────────────────────────────────
+      // SAVE BUTTON  (T-001.07)
+      // ─────────────────────────────────────────────────────────────────────
+
+      document.getElementById("btn-save").addEventListener("click", function () {
+        // Flush all current DOM values into formState before serializing.
+        readFormStateFromDOM();
+
+        var json = JSON.stringify(serializeToProjectFile(), null, 2);
+
+        // Build a safe filename from the initiative name (falls back to "coer").
+        var rawName = formState.initiativeName.trim() || "coer";
+        // Strip characters not allowed in most file systems.
+        var safeName = rawName.replace(/[/\\?%*:|"<>]/g, "-").slice(0, 100);
+        saveFileToDownload(json, safeName + ".json", "application/json");
+      });
+
+      // ─────────────────────────────────────────────────────────────────────
       // INIT
       // ─────────────────────────────────────────────────────────────────────
       renderForm();

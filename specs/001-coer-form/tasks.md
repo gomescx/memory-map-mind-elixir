@@ -182,7 +182,7 @@
   > - Empty Q9 produces `"obstacles": []` in serialized JSON  
   > **Manual Verification**: Add 3 obstacles → Save → open JSON in text editor → `obstacles` key has array of 3 strings → delete all items → Save → `obstacles` key has `[]`
 
-- [ ] T-001.07 [US1] Implement the Save button — read DOM into `formState`, call `serializeToProjectFile()`, download via `saveFileToDownload()` in `tools/coer/index.html`
+- [x] T-001.07 [US1] Implement the Save button — read DOM into `formState`, call `serializeToProjectFile()`, download via `saveFileToDownload()` in `tools/coer/index.html`
 
   > **Source**: FR-US1.08, FR-US1.09, FR-US1.10, FR-US1.11; spec.md US1 Acceptance Scenarios 5–6; SC-US1.01, SC-US1.02  
   > **AC**:  
