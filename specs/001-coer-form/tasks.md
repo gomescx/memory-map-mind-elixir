@@ -107,7 +107,7 @@
 
 **Independent Test**: Open `tools/coer/index.html` in a browser, fill in all 9 questions, click Save, open the downloaded JSON — all answers are present in the correct envelope structure with a valid `lastModified` timestamp.
 
-- [ ] T-001.01 [US1] Implement Q1 initiative name — single-line `<input type="text">` for `formState.initiativeName` in `tools/coer/index.html`
+- [x] T-001.01 [US1] Implement Q1 initiative name — single-line `<input type="text">` for `formState.initiativeName` in `tools/coer/index.html`
 
   > **Source**: FR-US1.02; spec.md US1 Acceptance Scenario 1  
   > **AC**:  
@@ -119,7 +119,7 @@
   > - `formState.initiativeName` matches Q1 input value after `readFormStateFromDOM()`  
   > **Manual Verification**: Type "Improve Onboarding (Q1 test / 2026)" → tab away → inspect `formState.initiativeName` in console → matches typed value exactly
 
-- [ ] T-001.02 [P] [US1] Implement Q3, Q4, Q6 as `<textarea>` elements for `formState.reason`, `formState.corporateContribution`, `formState.startingPoint` in `tools/coer/index.html`
+- [x] T-001.02 [P] [US1] Implement Q3, Q4, Q6 as `<textarea>` elements for `formState.reason`, `formState.corporateContribution`, `formState.startingPoint` in `tools/coer/index.html`
 
   > **Source**: FR-US1.04; spec.md §Requirements FR-US1.04  
   > **AC**:  
@@ -130,7 +130,7 @@
   > - Content of each textarea round-trips through serialize/deserialize without change  
   > **Manual Verification**: Type 3 lines (Enter between each) in Q3 → save → load → Q3 shows same 3 lines
 
-- [ ] T-001.03 [P] [US1] Implement Q2 (specific results) and Q7 (stakeholders) as dynamic bullet list components with add/remove in `tools/coer/index.html`
+- [x] T-001.03 [P] [US1] Implement Q2 (specific results) and Q7 (stakeholders) as dynamic bullet list components with add/remove in `tools/coer/index.html`
 
   > **Source**: FR-US1.03; spec.md US1 Acceptance Scenario 2; research.md §R5  
   > **AC**:  
@@ -145,7 +145,7 @@
   > - Item containing `<b>bold</b>` renders as literal text, not as HTML  
   > **Manual Verification**: Add 3 items to Q2 ("R1", "R2", "R3") → remove "R2" → verify "R1" and "R3" remain → remove both remaining → verify "+ Add item" still present
 
-- [ ] T-001.04 [US1] Implement Q5 dual-list component — two independent dynamic bullet lists "Achieving" and "Not Achieving" for `formState.consequencesAchieving` and `formState.consequencesNotAchieving` in `tools/coer/index.html`
+- [x] T-001.04 [US1] Implement Q5 dual-list component — two independent dynamic bullet lists "Achieving" and "Not Achieving" for `formState.consequencesAchieving` and `formState.consequencesNotAchieving` in `tools/coer/index.html`
 
   > **Source**: FR-US1.05; spec.md US1 Acceptance Scenario 3  
   > **AC**:  
@@ -158,7 +158,7 @@
   > - Adding to one list does not change the other array's length  
   > **Manual Verification**: Add "Benefit 1" to Achieving, "Risk 1" to Not Achieving → remove "Benefit 1" → "Risk 1" unchanged → inspect `formState` in console → confirms two separate arrays
 
-- [ ] T-001.05 [P] [US1] Implement Q8 confidence percent as a single-line `<input type="text">` for `formState.confidencePercent` in `tools/coer/index.html`
+- [x] T-001.05 [P] [US1] Implement Q8 confidence percent as a single-line `<input type="text">` for `formState.confidencePercent` in `tools/coer/index.html`
 
   > **Source**: FR-US1.06; spec.md §Key Entities ("stored as text per agreed data format")  
   > **AC**:  
@@ -170,7 +170,7 @@
   > - Serialized JSON contains `"confidencePercent": "65"` not `"confidencePercent": 65`  
   > **Manual Verification**: Type "~70%" → inspect `formState.confidencePercent` in console → value is string `"~70%"`
 
-- [ ] T-001.06 [US1] Implement Q9 obstacles as a dynamic bullet list where each item is stored as a separate string in `formState.obstacles` in `tools/coer/index.html`
+- [x] T-001.06 [US1] Implement Q9 obstacles as a dynamic bullet list where each item is stored as a separate string in `formState.obstacles` in `tools/coer/index.html`
 
   > **Source**: FR-US1.07; spec.md US1 Acceptance Scenario 4  
   > **AC**:  
