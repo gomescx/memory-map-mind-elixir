@@ -18,7 +18,7 @@
 
 **Purpose**: Create the repository structure and skeleton files. No user-visible behaviour yet.
 
-- [ ] T-000.01 Create directory `tools/coer/` and skeleton file `tools/coer/index.html` with valid HTML5 boilerplate (doctype, meta charset, viewport, title "COER — Clarity of End Result", empty `<body>`)
+- [x] T-000.01 Create directory `tools/coer/` and skeleton file `tools/coer/index.html` with valid HTML5 boilerplate (doctype, meta charset, viewport, title "COER — Clarity of End Result", empty `<body>`)
 
   > **Source**: plan.md §Project Structure  
   > **AC**:  
@@ -30,7 +30,7 @@
   > - Page loads with no console errors in all 4 target browsers  
   > **Manual Verification**: Double-click `tools/coer/index.html` in Finder → opens in default browser → blank page with correct title, zero console errors
 
-- [ ] T-000.02 Create `tests/manual/coer-test-scenarios.md` with the 9 validation checks from quickstart.md §7, each formatted as a test scenario with Status: `[ ] PENDING`
+- [x] T-000.02 Create `tests/manual/coer-test-scenarios.md` with the 9 validation checks from quickstart.md §7, each formatted as a test scenario with Status: `[ ] PENDING`
 
   > **Source**: Constitution §VII Testing Standards; quickstart.md §7 Validation Checks  
   > **AC**:  
