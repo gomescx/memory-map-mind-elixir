@@ -246,6 +246,20 @@
       }
       .btn-warning-abort:hover { background: #fef3c7; }
 
+      /* ── Visually-hidden utility (T-004.02) ──────────────────────────── */
+      /* Hides content visually while keeping it in the accessibility tree. */
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
       @media (max-width: 600px) {
         .dual-list { flex-direction: column; gap: 16px; }
         #toolbar { flex-wrap: wrap; }
@@ -345,7 +359,7 @@
     </style>
   </head>
   <body>
-    <header id="toolbar">
+    <header id="toolbar" role="toolbar" aria-label="Document actions">
       <button id="btn-save" type="button">Save</button>
       <button id="btn-load" type="button">Load</button>
       <button id="btn-print" type="button">Print / Export PDF</button>
@@ -374,7 +388,8 @@
     </div>
 
     <main>
-      <form id="coer-form" novalidate>
+      <h1 class="visually-hidden">COER — Clarity of End Result</h1>
+      <form id="coer-form" novalidate aria-label="COER form">
 
         <section class="question" id="section-q1">
           <label for="q1-name">Q1 — Initiative name</label>
@@ -383,9 +398,9 @@
         </section>
 
         <section class="question" id="section-q2">
-          <label>Q2 — What are the specific results you want to achieve, and by when?</label>
-          <ul id="q2-list" class="bullet-list" data-field="specificResults"></ul>
-          <button type="button" class="btn-add" data-target="q2-list">+ Add item</button>
+          <label id="q2-label">Q2 — What are the specific results you want to achieve, and by when?</label>
+          <ul id="q2-list" class="bullet-list" data-field="specificResults" aria-labelledby="q2-label"></ul>
+          <button type="button" class="btn-add" data-target="q2-list" aria-label="Add specific result">+ Add item</button>
           <div class="print-value" id="q2-print"></div>
         </section>
 
@@ -402,18 +417,18 @@
         </section>
 
         <section class="question" id="section-q5">
-          <label>Q5 — What are the consequences?</label>
+          <label id="q5-label">Q5 — What are the consequences?</label>
           <div class="dual-list">
-            <div class="dual-list-col">
-              <h3>Achieving</h3>
-              <ul id="q5a-list" class="bullet-list" data-field="consequencesAchieving"></ul>
-              <button type="button" class="btn-add" data-target="q5a-list">+ Add item</button>
+            <div class="dual-list-col" role="group" aria-labelledby="q5a-heading">
+              <h3 id="q5a-heading">Achieving</h3>
+              <ul id="q5a-list" class="bullet-list" data-field="consequencesAchieving" aria-labelledby="q5a-heading"></ul>
+              <button type="button" class="btn-add" data-target="q5a-list" aria-label="Add achieving consequence">+ Add item</button>
               <div class="print-value" id="q5a-print"></div>
             </div>
-            <div class="dual-list-col">
-              <h3>Not Achieving</h3>
-              <ul id="q5b-list" class="bullet-list" data-field="consequencesNotAchieving"></ul>
-              <button type="button" class="btn-add" data-target="q5b-list">+ Add item</button>
+            <div class="dual-list-col" role="group" aria-labelledby="q5b-heading">
+              <h3 id="q5b-heading">Not Achieving</h3>
+              <ul id="q5b-list" class="bullet-list" data-field="consequencesNotAchieving" aria-labelledby="q5b-heading"></ul>
+              <button type="button" class="btn-add" data-target="q5b-list" aria-label="Add not-achieving consequence">+ Add item</button>
               <div class="print-value" id="q5b-print"></div>
             </div>
           </div>
@@ -426,9 +441,9 @@
         </section>
 
         <section class="question" id="section-q7">
-          <label>Q7 — Who else needs to be involved?</label>
-          <ul id="q7-list" class="bullet-list" data-field="stakeholders"></ul>
-          <button type="button" class="btn-add" data-target="q7-list">+ Add item</button>
+          <label id="q7-label">Q7 — Who else needs to be involved?</label>
+          <ul id="q7-list" class="bullet-list" data-field="stakeholders" aria-labelledby="q7-label"></ul>
+          <button type="button" class="btn-add" data-target="q7-list" aria-label="Add stakeholder">+ Add item</button>
           <div class="print-value" id="q7-print"></div>
         </section>
 
@@ -439,9 +454,9 @@
         </section>
 
         <section class="question" id="section-q9">
-          <label>Q9 — What obstacles might get in the way?</label>
-          <ul id="q9-list" class="bullet-list" data-field="obstacles"></ul>
-          <button type="button" class="btn-add" data-target="q9-list">+ Add item</button>
+          <label id="q9-label">Q9 — What obstacles might get in the way?</label>
+          <ul id="q9-list" class="bullet-list" data-field="obstacles" aria-labelledby="q9-label"></ul>
+          <button type="button" class="btn-add" data-target="q9-list" aria-label="Add obstacle">+ Add item</button>
           <div class="print-value" id="q9-print"></div>
         </section>
 
