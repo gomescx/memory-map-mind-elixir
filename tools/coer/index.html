@@ -101,6 +101,80 @@
         obstacles:                []    // Q9  → coer.obstacles
       };
 
+      // Holds the full parsed JSON of the last loaded file so round-trip
+      // preservation can write back non-COER fields unchanged (T-002.03).
+      let loadedProjectFile = null;
+
+      // ─────────────────────────────────────────────────────────────────────
+      // SERIALIZATION  (T-000.04)
+      // ─────────────────────────────────────────────────────────────────────
+
+      // Build the effectivenessToolkit envelope from current formState.
+      // If a file was loaded, preserves all non-COER fields (round-trip safe).
+      function serializeToProjectFile() {
+        const now = new Date().toISOString();
+
+        // Start from loaded initiative (preserves sob, memoryMap, etc.) or
+        // create a fresh one with a new UUID.
+        const baseInitiative =
+          loadedProjectFile &&
+          loadedProjectFile.effectivenessToolkit &&
+          Array.isArray(loadedProjectFile.effectivenessToolkit.initiatives) &&
+          loadedProjectFile.effectivenessToolkit.initiatives[0]
+            ? JSON.parse(JSON.stringify(loadedProjectFile.effectivenessToolkit.initiatives[0]))
+            : { id: generateUUID() };
+
+        baseInitiative.name = formState.initiativeName;
+        baseInitiative.coer = {
+          lastModified:             now,
+          specificResults:          formState.specificResults.slice(),
+          reason:                   formState.reason,
+          corporateContribution:    formState.corporateContribution,
+          consequencesAchieving:    formState.consequencesAchieving.slice(),
+          consequencesNotAchieving: formState.consequencesNotAchieving.slice(),
+          startingPoint:            formState.startingPoint,
+          stakeholders:             formState.stakeholders.slice(),
+          confidencePercent:        formState.confidencePercent,
+          obstacles:                formState.obstacles.slice()
+        };
+
+        if (loadedProjectFile) {
+          const output = JSON.parse(JSON.stringify(loadedProjectFile));
+          output.effectivenessToolkit.lastModified      = now;
+          output.effectivenessToolkit.initiatives[0]    = baseInitiative;
+          return output;
+        }
+
+        return {
+          effectivenessToolkit: {
+            version:      "1.0",
+            lastModified: now,
+            initiatives:  [baseInitiative]
+          }
+        };
+      }
+
+      // Extract the first initiative's coer section from a parsed JSON object
+      // into formState, then store the full file for round-trip preservation.
+      function deserializeFromProjectFile(json) {
+        const initiative = json.effectivenessToolkit.initiatives[0];
+        const coer = initiative.coer || {};
+
+        formState.initiativeName           = initiative.name                       || "";
+        formState.specificResults          = (coer.specificResults          || []).slice();
+        formState.reason                   =  coer.reason                          || "";
+        formState.corporateContribution    =  coer.corporateContribution           || "";
+        formState.consequencesAchieving    = (coer.consequencesAchieving    || []).slice();
+        formState.consequencesNotAchieving = (coer.consequencesNotAchieving || []).slice();
+        formState.startingPoint            =  coer.startingPoint                   || "";
+        formState.stakeholders             = (coer.stakeholders             || []).slice();
+        formState.confidencePercent        =  coer.confidencePercent               || "";
+        formState.obstacles                = (coer.obstacles                || []).slice();
+
+        loadedProjectFile = json;
+        return formState;
+      }
+
       // ─────────────────────────────────────────────────────────────────────
       // RENDER  (T-000.03)
       // ─────────────────────────────────────────────────────────────────────
