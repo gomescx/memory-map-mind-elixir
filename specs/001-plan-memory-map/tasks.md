@@ -395,6 +395,109 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
+- [ ] T064 [US8] Remove Priority column from table view
+
+**Acceptance Criteria**:
+- **Given** the table view is displayed with nodes that have Priority values set
+- **When** the user views the table
+- **Then** no "Priority" column appears in the table header or any row
+- **And** no Priority data is shown or editable in table view
+- **And** all other columns render correctly without the Priority column
+
+**Tests Required**:
+- [ ] Unit: `test_table_does_not_render_priority_column()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_table_columns_match_spec_order()` in `tests/unit/ui/table-view.spec.ts`
+
+---
+
+- [ ] T065 [P] [US8] Implement Elapsed Time bidirectional date calculator with weekend exclusion
+
+**Acceptance Criteria**:
+- **Given** the "Exclude weekends" checkbox is checked (default) and a node has Start Date = "01-Jan-2026" and Due Date = "09-Jan-2026"
+- **When** the table renders the Elapsed Time cell
+- **Then** Elapsed Time shows "6" (6 business days: Thu, Fri, Mon, Tue, Wed, Thu) and remains editable
+- **Given** the "Exclude weekends" checkbox is unchecked and the same node
+- **When** the table renders the Elapsed Time cell
+- **Then** Elapsed Time shows "8" (8 calendar days) and remains editable
+- **Given** a node with Start Date = "05-Jan-2026" and no Due Date, and the user types "10" into Elapsed Time
+- **When** the edit saves (weekends excluded)
+- **Then** Due Date is auto-calculated and displays as the date 10 business days after 05-Jan-2026
+- **Given** a node with Due Date = "31-Jan-2026" and no Start Date, and the user types "5" into Elapsed Time
+- **When** the edit saves
+- **Then** Start Date is auto-calculated as 5 business days before 31-Jan-2026
+- **Given** a node with both dates set and the user edits Elapsed Time to "20"
+- **When** the edit saves
+- **Then** Due Date recalculates as Start Date + 20 business days (Start Date is the anchor)
+- **Given** the "Exclude weekends" checkbox is checked and the user selects a Saturday as a Start Date
+- **When** the date picker closes
+- **Then** an inline validation error appears: "Start Date cannot be a weekend"
+
+**Tests Required**:
+- [ ] Unit: `test_elapsed_business_days_calculated_when_both_dates_set()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_elapsed_calendar_days_when_weekends_unchecked()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_due_date_calculated_from_start_plus_elapsed()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_start_date_calculated_from_due_minus_elapsed()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_weekend_date_rejected_when_checkbox_checked()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [ ] Unit: `test_elapsed_recalculates_on_date_change()` in `tests/unit/ui/table-view.spec.ts`
+
+---
+
+- [ ] T066 [P] [US8] Validate Due Date cannot be earlier than Start Date
+
+**Acceptance Criteria**:
+- **Given** a node with Start Date = "15-Feb-2026"
+- **When** the user edits the Due Date cell and selects "10-Feb-2026" (before Start Date)
+- **Then** an inline error appears: "Due Date cannot be before Start Date"
+- **And** the invalid date is NOT saved to the data model
+- **And** the cell reverts to its previous value when the user clicks away
+- **Given** the user then selects "20-Feb-2026" (after Start Date)
+- **When** the edit saves
+- **Then** the error disappears and "20-Feb-2026" saves successfully
+
+**Tests Required**:
+- [ ] Unit: `test_due_date_rejects_date_before_start_date()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [ ] Unit: `test_due_date_shows_validation_error_message()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [ ] Unit: `test_valid_due_date_saves_without_error()` in `tests/unit/ui/editable-date-cell.spec.ts`
+
+---
+
+- [ ] T067 [P] [US8] Align table column names and order with HTML file export
+
+**Acceptance Criteria**:
+- **Given** the table view is displayed
+- **When** the user reads the column headers left to right
+- **Then** the column names and order match AS-008.1 exactly
+- **And** no column named "Priority" exists
+- **Given** the HTML file export is downloaded and opened
+- **When** the user compares column names to the table view
+- **Then** all data column names match exactly (same terminology)
+
+**Tests Required**:
+- [ ] Unit: `test_table_column_headers_match_html_export()` in `tests/unit/ui/table-view.spec.ts`
+- [ ] Unit: `test_table_column_order_is_correct()` in `tests/unit/ui/table-view.spec.ts`
+
+---
+
+- [ ] T068 [P] [US8] Display dates in DD-MMM-YYYY format in table view
+
+**Acceptance Criteria**:
+- **Given** a node with Start Date stored as "2026-02-26" (ISO format)
+- **When** the table view renders the Start Date cell
+- **Then** the cell displays "26-Feb-2026"
+- **Given** a node with Due Date stored as "2026-03-15"
+- **When** the table view renders the Due Date cell
+- **Then** the cell displays "15-Mar-2026"
+- **Given** the user opens the date picker to edit a date cell
+- **When** the date picker is visible
+- **Then** the browser native picker may display in its own format (no constraint)
+- **And** after the user selects a date and closes the picker, the cell reverts to DD-MMM-YYYY display
+
+**Tests Required**:
+- [ ] Unit: `test_date_cell_displays_dd_mmm_yyyy_format()` in `tests/unit/ui/editable-date-cell.spec.ts`
+- [ ] Unit: `test_date_formatter_converts_iso_to_dd_mmm_yyyy()` in `tests/unit/utils/date-format.spec.ts`
+
+---
+
 **Checkpoint**: User Story 8 independently functional - table view provides overview, filtering, reordering, and inline editing fully synchronized with mindmap view
 
 ---

@@ -331,7 +331,6 @@ The following are **explicitly excluded** from the MVP per `.specify/memory/cons
 - System MUST allow inline editing of:
   - Node name/title (text input, max 200 chars)
   - Status (dropdown matching US1 values: Not Started, In Progress, Completed, Blocked, Deferred)
-  - Priority (dropdown: Low, Medium, High, Critical)
   - Due Date (date picker)
   - Assignee (text input)
   - Estimated Hours (number input, 0-9999)
@@ -360,13 +359,79 @@ The following are **explicitly excluded** from the MVP per `.specify/memory/cons
 
 ---
 
+### FR-008.07: Elapsed Time — Bidirectional Date Calculation
+- Elapsed Time represents the duration in days between Start Date and Due Date
+- System MUST support bidirectional calculation using whichever two of the three
+  values (Start Date, Due Date, Elapsed Time) are available:
+  - **Start Date + Due Date both set** → Elapsed Time is auto-calculated
+    (user may still override by typing a different value, which then recalculates Due Date)
+  - **Start Date + Elapsed Time set, Due Date absent** → Due Date is auto-calculated
+    as Start Date + Elapsed Time
+  - **Due Date + Elapsed Time set, Start Date absent** → Start Date is auto-calculated
+    as Due Date − Elapsed Time
+  - **All three set** (user edits Elapsed Time when both dates exist) → Due Date
+    is recalculated as Start Date + Elapsed Time (Start Date is the fixed anchor)
+  - **No dates set** → Elapsed Time is manually editable; no calculation occurs
+- System MUST provide an "Exclude weekends" checkbox visible in the table view
+  header or filter bar (default state: **checked**):
+  - **When checked**: Elapsed Time counts only Monday–Friday (business days);
+    Saturdays and Sundays are skipped in all date arithmetic
+  - **When checked**: Start Date and Due Date MUST NOT fall on Saturday or Sunday;
+    system MUST show a validation error if the user selects a weekend date
+  - **When unchecked**: all calendar days are counted; no weekend restriction on
+    date selection
+- The checkbox state persists for the current session
+
+**Rationale**: Project timelines typically exclude weekends. The bidirectional
+calculator removes manual effort — entering any two of the three values produces
+the third. Auto-calculation from Start + Due Date eliminates transcription errors.
+
+---
+
+### FR-008.08: Due Date / Start Date Order Validation
+- System MUST prevent saving a Due Date that is earlier than an existing Start Date
+- System MUST prevent saving a Start Date that is later than an existing Due Date
+- Inline validation error MUST appear: "Due Date cannot be before Start Date"
+- Invalid value MUST NOT be saved; cell MUST revert to previous value on blur
+- Applies in both table view inline editing and the planning attributes side panel
+
+**Rationale**: Closes the edge case documented in this spec ("What happens when a
+user sets a Start Date after the Due Date?") with a hard validation rule. Extends
+FR-014 to the table view specifically.
+
+---
+
+### FR-008.09: Table Column Alignment with HTML Export
+- Table view column names and order MUST match the HTML file export.
+  See AS-008.1 for the authoritative column list.
+- "Priority" column is removed (governed by FR-008.05 update)
+- Empty/unset values still display as "--"
+
+**Rationale**: Using two different vocabularies for the same data confuses users
+comparing the table view and the HTML file export. A single shared language
+removes that friction.
+
+---
+
+### FR-008.10: Date Display Format in Table View
+- Date fields in table view (Start Date, Due Date) MUST display in
+  DD-MMM-YYYY format (e.g., 26-Feb-2026)
+- Internal data storage remains ISO 8601 (YYYY-MM-DD); only the display changes
+- The date picker input for editing may use the browser's native format
+- This applies to table cells only; the planning side panel is not in scope here
+
+**Rationale**: DD-MMM-YYYY eliminates month/day ambiguity (is "03/04" March 4th
+or April 3rd?) and is immediately readable by non-technical users.
+
+---
+
 ## Acceptance Scenarios
 
 ### AS-008.1: Switch from Mindmap to Table View
 **Given** user is viewing mindmap with 15 nodes across 3 depth levels
 **When** user clicks "Table View" toggle button
 **Then** system displays table showing all 15 nodes in depth-first order
-**And** table includes columns: Sequence, Name, Status, Priority, Due Date, Assignee, Est. Hours, Inv. Hours, Depth
+**And** table includes columns: Sequence, Title, Start Date, Due Date, Invested Time, Elapsed Time, Assignee, Status, Depth
 **And** all current attribute values are visible in table cells
 **And** mindmap remains accessible via toggle button
 
@@ -395,16 +460,16 @@ The following are **explicitly excluded** from the MVP per `.specify/memory/cons
 ---
 
 ### AS-008.4: Edit Node Name and Attributes in Table
-**Given** node "User Research" with Status="Not Started", Priority="High", Due Date=empty
-**When** user double-clicks the Name cell and changes text to "Customer Discovery"
+**Given** node "User Research" with Status="Not Started", Due Date=empty
+**When** user double-clicks the Title cell and changes text to "Customer Discovery"
 **And** presses Enter
 **Then** table shows "Customer Discovery" immediately
 **When** user clicks into Status cell and selects "In Progress" from dropdown
 **Then** Status cell shows "In Progress" after selection
 **When** user clicks into Due Date cell and selects 2026-03-15 from date picker
-**Then** Due Date cell shows "2026-03-15"
+**Then** Due Date cell shows "15-Mar-2026"
 **When** user toggles to mindmap view
-**Then** node displays "Customer Discovery", Status badge "In Progress", and due date "2026-03-15" on hover
+**Then** node displays "Customer Discovery", Status badge "In Progress", and due date "15-Mar-2026" on hover
 
 ---
 
@@ -414,9 +479,9 @@ The following are **explicitly excluded** from the MVP per `.specify/memory/cons
 **And** renames node "Research" to "User Research" via mindmap edit dialog
 **And** toggles back to table view
 **Then** table immediately shows "User Research" in Name column
-**When** user edits Priority from "High" to "Medium" in table
+**When** user edits Status from "Not Started" to "In Progress" in table
 **And** toggles to mindmap view
-**Then** node shows Priority badge "Medium" (or equivalent visual indicator)
+**Then** node shows Status badge "In Progress" (or equivalent visual indicator)
 
 ---
 
