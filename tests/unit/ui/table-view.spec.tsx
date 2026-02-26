@@ -152,7 +152,7 @@ describe('TableView', () => {
 
     expect(screen.getByText('Important Task')).toBeTruthy();
     expect(screen.getByText('Completed')).toBeTruthy();
-    expect(screen.getByText('2026-03-20')).toBeTruthy();
+    expect(screen.getByText('20-Mar-2026')).toBeTruthy();
     expect(screen.getByText('Alice')).toBeTruthy();
     expect(screen.getByText('10')).toBeTruthy();
   });

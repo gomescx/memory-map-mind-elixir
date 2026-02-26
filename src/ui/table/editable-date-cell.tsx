@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { formatDateDDMMMYYYY } from "@/utils/date-format";
 import "./editable-date-cell.css";
 
 interface EditableDateCellProps {
@@ -46,7 +47,7 @@ export function EditableDateCell({
     setIsEditing(false);
   };
 
-  const displayValue = value || placeholder;
+  const displayValue = formatDateDDMMMYYYY(value) ?? placeholder;
 
   return (
     <td className="editable-date-cell" onClick={handleClick}>

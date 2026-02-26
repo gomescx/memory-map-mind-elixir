@@ -5,6 +5,7 @@
  */
 
 import type { ExportRow } from './flatten';
+import { formatDateDDMMMYYYY } from '@/utils/date-format';
 
 /**
  * Escapes HTML special characters to prevent injection/rendering issues
@@ -26,21 +27,6 @@ function escapeHTML(text: string | null | undefined): string {
 }
 
 /**
- * Formats a date from YYYY-MM-DD to DD-MM-YYYY
- */
-function formatDate(date: string | null | undefined): string {
-  if (!date) return '';
-  
-  const match = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (match) {
-    const [, year, month, day] = match;
-    return `${day}-${month}-${year}`;
-  }
-  
-  return date;
-}
-
-/**
  * Formats a cell value for display in the table
  * Shows empty string for null values
  */
@@ -50,7 +36,7 @@ function formatCellValue(value: string | number | null | undefined, isDate: bool
   }
 
   if (isDate && typeof value === 'string') {
-    return escapeHTML(formatDate(value));
+    return escapeHTML(formatDateDDMMMYYYY(value) ?? value);
   }
 
   return escapeHTML(String(value));
@@ -167,8 +153,8 @@ function createTotalsRow(rows: ExportRow[]): string {
     `<td><strong>TOTALS</strong></td>`,
     `<td><strong>${escapeHTML(totals.depthCounts)}</strong></td>`,
     `<td><strong>Nodes per level: ${escapeHTML(totals.depthCounts)}</strong></td>`,
-    `<td><strong>${escapeHTML(formatDate(totals.minStartDate))}</strong></td>`,
-    `<td><strong>${escapeHTML(formatDate(totals.maxDueDate))}</strong></td>`,
+    `<td><strong>${escapeHTML(formatDateDDMMMYYYY(totals.minStartDate) ?? '')}</strong></td>`,
+    `<td><strong>${escapeHTML(formatDateDDMMMYYYY(totals.maxDueDate) ?? '')}</strong></td>`,
     `<td><strong>${totals.totalInvestedTime}</strong></td>`,
     `<td><strong>${totals.totalElapsedTime}</strong></td>`,
     `<td><strong>${totals.uniqueAssignees}</strong></td>`,
