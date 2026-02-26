@@ -13,7 +13,7 @@ const mockStore = {
   getMindElixirInstance: vi.fn(),
   selectedNodeId: null,
   setSelectedNodeId: vi.fn(),
-  depthFilter: undefined,
+  depthFilter: undefined as number | undefined,
   setDepthFilter: vi.fn(),
   getNode: vi.fn(),
   updateNodePlan: vi.fn(),

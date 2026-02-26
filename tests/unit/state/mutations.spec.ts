@@ -3,7 +3,7 @@
  * Tests: src/state/tree/mutations.ts
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   moveNodeToPosition,
   type MoveResult,

@@ -2,14 +2,22 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: '/memory-map-mind-elixir/',
+  base: command === 'serve'
+    ? '/'
+    : '/memory-map-mind-elixir/',
   build: {
     target: 'ES2020',
     minify: 'terser',
     rollupOptions: {
+      input: {
+        'memory-map': path.resolve(__dirname, 'tools/memory-map/index.html'),
+      },
       output: {
+        assetFileNames: 'tools/memory-map/assets/[name]-[hash].[ext]',
+        chunkFileNames: 'tools/memory-map/assets/[name]-[hash].js',
+        entryFileNames: 'tools/memory-map/assets/[name]-[hash].js',
         manualChunks: {
           vendor: ['mind-elixir'],
         },
@@ -35,4 +43,4 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './tests/setup.ts',
   },
-});
+}));
