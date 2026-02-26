@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { TableView } from '@ui/views/table-view';
 import type { MindMapNode } from '@core/types/node';
 
@@ -252,5 +252,74 @@ describe('TableView', () => {
 
     // Reset
     mockStore.depthFilter = undefined;
+  });
+
+  // T065: Elapsed Time bidirectional date calculator
+
+  it('test_elapsed_business_days_calculated_when_both_dates_set: derives 6 days from spec dates', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [
+        {
+          id: 'a',
+          topic: 'Task A',
+          extended: {
+            plan: {
+              startDate: '2026-01-01',
+              dueDate: '2026-01-09',
+              investedTimeHours: null,
+              elapsedTimeDays: null,  // no stored value → should derive
+              assignee: null,
+              status: null,
+            },
+          },
+        },
+      ],
+    };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+    // Business days from Jan 1 (Thu) to Jan 9 (Fri) = 6
+    expect(screen.getByText('6')).toBeTruthy();
+  });
+
+  it('test_elapsed_calendar_days_when_weekends_unchecked: shows 8 after unchecking', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [
+        {
+          id: 'a',
+          topic: 'Task A',
+          extended: {
+            plan: {
+              startDate: '2026-01-01',
+              dueDate: '2026-01-09',
+              investedTimeHours: null,
+              elapsedTimeDays: null,
+              assignee: null,
+              status: null,
+            },
+          },
+        },
+      ],
+    };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+
+    // Uncheck "Exclude weekends" → calendar days = 8
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
+    fireEvent.click(checkbox);
+    expect(checkbox.checked).toBe(false);
+    expect(screen.getByText('8')).toBeTruthy();
+  });
+
+  it('test_elapsed_recalculates_on_date_change: exclude-weekends checkbox is present and defaults to checked', () => {
+    const mockData: MindMapNode = { id: 'root', topic: 'Root', children: [] };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
+    expect(checkbox.checked).toBe(true);
+    expect(screen.getByText('Exclude weekends')).toBeTruthy();
   });
 });

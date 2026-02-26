@@ -29,6 +29,7 @@ import { EditableTextCell } from '@ui/table/editable-text-cell';
 import { EditableSelectCell } from '@ui/table/editable-select-cell';
 import { EditableDateCell } from '@ui/table/editable-date-cell';
 import { EditableNumberCell } from '@ui/table/editable-number-cell';
+import { deriveElapsedDays, deriveDueDate, deriveStartDate } from '@/utils/date-calculations';
 import './table-view.css';
 
 const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed'];
@@ -36,6 +37,7 @@ const STATUS_OPTIONS = ['Not Started', 'In Progress', 'Completed'];
 interface SortableRowProps {
   flatNode: FlatNode;
   index: number;
+  excludeWeekends: boolean;
   onUpdateNodeTopic: (nodeId: string, topic: string) => void;
   onUpdateAssignee: (nodeId: string, assignee: string) => void;
   onUpdateStatus: (nodeId: string, status: string) => void;
@@ -48,6 +50,7 @@ interface SortableRowProps {
 function SortableRow({ 
   flatNode, 
   index, 
+  excludeWeekends,
   onUpdateNodeTopic,
   onUpdateAssignee,
   onUpdateStatus,
@@ -74,6 +77,12 @@ function SortableRow({
   const plan = getNodePlanAttributes(flatNode.node);
   const titleIndent = flatNode.depth * 20;
 
+  // Derive elapsed time for display if not manually stored
+  const displayedElapsedDays =
+    plan.elapsedTimeDays !== null && plan.elapsedTimeDays !== undefined
+      ? plan.elapsedTimeDays
+      : deriveElapsedDays(plan.startDate, plan.dueDate, excludeWeekends);
+
   return (
     <tr ref={setNodeRef} style={style} className={isDragging ? 'dragging' : ''}>
       <td>
@@ -95,6 +104,7 @@ function SortableRow({
         value={plan.startDate}
         onSave={(newValue) => onUpdateStartDate(flatNode.id, newValue)}
         placeholder="--"
+        validateNoWeekends={excludeWeekends}
       />
       <EditableDateCell
         value={plan.dueDate}
@@ -108,7 +118,7 @@ function SortableRow({
         placeholder="--"
       />
       <EditableNumberCell
-        value={plan.elapsedTimeDays}
+        value={displayedElapsedDays}
         onSave={(newValue) => onUpdateElapsedTime(flatNode.id, newValue)}
         placeholder="--"
       />
@@ -134,8 +144,29 @@ export const TableView: React.FC = () => {
   const { getMindElixirInstance, depthFilter, updateNodeSequence, updateNodePlan } = useAppStore();
   const [items, setItems] = useState<FlatNode[]>([]);
   const [refreshTick, setRefreshTick] = useState(0);
+  const [excludeWeekends, setExcludeWeekends] = useState(true);
 
   const forceRefresh = () => setRefreshTick((t) => t + 1);
+
+  /** Read the current plan attributes for a node directly from the ME data tree */
+  const getCurrentPlan = (nodeId: string) => {
+    const meInstance = getMindElixirInstance();
+    if (!meInstance) return null;
+    const data = meInstance.getData();
+    const findNode = (node: any): any => {
+      if (node.id === nodeId) return node;
+      if (node.children) {
+        for (const child of node.children) {
+          const found = findNode(child);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    const found = data?.nodeData ? findNode(data.nodeData) : null;
+    if (!found) return null;
+    return getNodePlanAttributes(found);
+  };
 
   // Get flattened nodes in depth-first order; re-runs whenever data changes
   useEffect(() => {
@@ -219,7 +250,18 @@ export const TableView: React.FC = () => {
   };
 
   const handleUpdateStartDate = (nodeId: string, newStartDate: string | null) => {
+    const currentPlan = getCurrentPlan(nodeId);
     updateNodePlan(nodeId, { startDate: newStartDate });
+
+    if (newStartDate && currentPlan?.dueDate) {
+      // Both dates present → recalculate elapsed
+      const elapsed = deriveElapsedDays(newStartDate, currentPlan.dueDate, excludeWeekends);
+      if (elapsed !== null) updateNodePlan(nodeId, { elapsedTimeDays: elapsed });
+    } else if (newStartDate && currentPlan?.elapsedTimeDays != null) {
+      // Start date + elapsed → derive due date
+      const due = deriveDueDate(newStartDate, currentPlan.elapsedTimeDays, excludeWeekends);
+      if (due) updateNodePlan(nodeId, { dueDate: due });
+    }
     forceRefresh();
   };
 
@@ -229,7 +271,18 @@ export const TableView: React.FC = () => {
   };
 
   const handleUpdateElapsedTime = (nodeId: string, days: number | null) => {
+    const currentPlan = getCurrentPlan(nodeId);
     updateNodePlan(nodeId, { elapsedTimeDays: days });
+
+    if (days != null && currentPlan?.startDate) {
+      // Start date is the anchor → derive due date
+      const due = deriveDueDate(currentPlan.startDate, days, excludeWeekends);
+      if (due) updateNodePlan(nodeId, { dueDate: due });
+    } else if (days != null && currentPlan?.dueDate) {
+      // No start date → derive start date from due
+      const start = deriveStartDate(currentPlan.dueDate, days, excludeWeekends);
+      if (start) updateNodePlan(nodeId, { startDate: start });
+    }
     forceRefresh();
   };
 
@@ -244,12 +297,33 @@ export const TableView: React.FC = () => {
   };
 
   const handleUpdateDueDate = (nodeId: string, newDueDate: string | null) => {
+    const currentPlan = getCurrentPlan(nodeId);
     updateNodePlan(nodeId, { dueDate: newDueDate });
+
+    if (newDueDate && currentPlan?.startDate) {
+      // Both dates present → recalculate elapsed
+      const elapsed = deriveElapsedDays(currentPlan.startDate, newDueDate, excludeWeekends);
+      if (elapsed !== null) updateNodePlan(nodeId, { elapsedTimeDays: elapsed });
+    } else if (newDueDate && currentPlan?.elapsedTimeDays != null) {
+      // Due date + elapsed → derive start date
+      const start = deriveStartDate(newDueDate, currentPlan.elapsedTimeDays, excludeWeekends);
+      if (start) updateNodePlan(nodeId, { startDate: start });
+    }
     forceRefresh();
   };
 
   return (
     <div className="table-view">
+      <div className="table-view__controls">
+        <label className="table-view__weekend-toggle">
+          <input
+            type="checkbox"
+            checked={excludeWeekends}
+            onChange={(e) => setExcludeWeekends(e.target.checked)}
+          />
+          &nbsp;Exclude weekends
+        </label>
+      </div>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -298,6 +372,7 @@ export const TableView: React.FC = () => {
                     key={flatNode.id}
                     flatNode={flatNode}
                     index={index}
+                    excludeWeekends={excludeWeekends}
                     onUpdateNodeTopic={handleUpdateNodeTopic}
                     onUpdateStartDate={handleUpdateStartDate}
                     onUpdateDueDate={handleUpdateDueDate}

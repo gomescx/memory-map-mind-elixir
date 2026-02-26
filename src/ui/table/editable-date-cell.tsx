@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { formatDateDDMMMYYYY } from "@/utils/date-format";
+import { isWeekend } from "@/utils/date-calculations";
 import "./editable-date-cell.css";
 
 interface EditableDateCellProps {
@@ -8,6 +9,11 @@ interface EditableDateCellProps {
   placeholder?: string;
   /** If provided, the selected date must not be earlier than this ISO date */
   startDate?: string | null;
+  /**
+   * When true, selecting a Saturday or Sunday produces a validation error.
+   * Error message reads "Start Date cannot be a weekend".
+   */
+  validateNoWeekends?: boolean;
 }
 
 export function EditableDateCell({
@@ -15,6 +21,7 @@ export function EditableDateCell({
   onSave,
   placeholder = "--",
   startDate,
+  validateNoWeekends = false,
 }: EditableDateCellProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -39,6 +46,12 @@ export function EditableDateCell({
       onSave(null);
       setIsEditing(false);
       return;
+    }
+
+    // Validate: weekend dates are rejected when validateNoWeekends is active
+    if (validateNoWeekends && isWeekend(newValue)) {
+      setValidationError("Start Date cannot be a weekend");
+      return; // keep editing open; do not save
     }
 
     // Validate: due date must not be before startDate

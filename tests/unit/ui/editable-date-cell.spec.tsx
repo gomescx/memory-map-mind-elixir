@@ -147,4 +147,39 @@ describe('EditableDateCell', () => {
     expect(mockOnSave).toHaveBeenCalledWith('2026-02-20');
     expect(screen.queryByRole('alert')).toBeNull();
   });
+
+  // T065: Weekend validation when excludeWeekends is active
+  it('test_weekend_date_rejected_when_checkbox_checked: Saturday produces error', () => {
+    render(
+      <EditableDateCell value={null} onSave={mockOnSave} validateNoWeekends={true} />
+    );
+    fireEvent.click(screen.getByText('--'));
+    const inputEl = document.querySelector('input[type="date"]') as HTMLInputElement;
+    // 2026-01-03 is a Saturday
+    fireEvent.change(inputEl, { target: { value: '2026-01-03' } });
+    expect(mockOnSave).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert').textContent).toBe('Start Date cannot be a weekend');
+  });
+
+  it('weekend validation allows weekday when validateNoWeekends is true', () => {
+    render(
+      <EditableDateCell value={null} onSave={mockOnSave} validateNoWeekends={true} />
+    );
+    fireEvent.click(screen.getByText('--'));
+    const inputEl = document.querySelector('input[type="date"]') as HTMLInputElement;
+    // 2026-01-05 is a Monday
+    fireEvent.change(inputEl, { target: { value: '2026-01-05' } });
+    expect(mockOnSave).toHaveBeenCalledWith('2026-01-05');
+  });
+
+  it('weekend validation is skipped when validateNoWeekends is false', () => {
+    render(
+      <EditableDateCell value={null} onSave={mockOnSave} validateNoWeekends={false} />
+    );
+    fireEvent.click(screen.getByText('--'));
+    const inputEl = document.querySelector('input[type="date"]') as HTMLInputElement;
+    // Saturday – should save without error when validateNoWeekends=false
+    fireEvent.change(inputEl, { target: { value: '2026-01-03' } });
+    expect(mockOnSave).toHaveBeenCalledWith('2026-01-03');
+  });
 });
