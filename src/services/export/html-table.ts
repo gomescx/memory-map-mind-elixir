@@ -50,16 +50,16 @@ function createTableRow(row: ExportRow): string {
   const indentStyle = `padding-left: ${row.depth * 20}px;`;
 
   const cells = [
-    `<td>${escapeHTML(row.id)}</td>`,
-    `<td>${row.depth}</td>`,
-    `<td style="${indentStyle}">${escapeHTML(row.title)}</td>`,
-    `<td>${formatCellValue(row.startDate, true)}</td>`,
-    `<td>${formatCellValue(row.dueDate, true)}</td>`,
-    `<td>${formatCellValue(row.investedTimeHours)}</td>`,
-    `<td>${formatCellValue(row.elapsedTimeDays)}</td>`,
-    `<td>${formatCellValue(row.assignee)}</td>`,
-    `<td>${formatCellValue(row.status)}</td>`,
-    `<td>${escapeHTML(row.parentPath)}</td>`,
+    `<td data-col="0">${escapeHTML(row.id)}</td>`,
+    `<td data-col="1">${row.depth}</td>`,
+    `<td data-col="2" style="${indentStyle}">${escapeHTML(row.title)}</td>`,
+    `<td data-col="3">${formatCellValue(row.startDate, true)}</td>`,
+    `<td data-col="4">${formatCellValue(row.dueDate, true)}</td>`,
+    `<td data-col="5">${formatCellValue(row.investedTimeHours)}</td>`,
+    `<td data-col="6">${formatCellValue(row.elapsedTimeDays)}</td>`,
+    `<td data-col="7">${formatCellValue(row.assignee)}</td>`,
+    `<td data-col="8">${formatCellValue(row.status)}</td>`,
+    `<td data-col="9">${escapeHTML(row.parentPath)}</td>`,
   ];
 
   return `<tr>\n    ${cells.join('\n    ')}\n  </tr>`;
@@ -150,16 +150,16 @@ function createTotalsRow(rows: ExportRow[]): string {
   const totals = calculateTotals(rows);
 
   const cells = [
-    `<td><strong>TOTALS</strong></td>`,
-    `<td><strong>${escapeHTML(totals.depthCounts)}</strong></td>`,
-    `<td><strong>Nodes per level: ${escapeHTML(totals.depthCounts)}</strong></td>`,
-    `<td><strong>${escapeHTML(formatDateDDMMMYYYY(totals.minStartDate) ?? '')}</strong></td>`,
-    `<td><strong>${escapeHTML(formatDateDDMMMYYYY(totals.maxDueDate) ?? '')}</strong></td>`,
-    `<td><strong>${totals.totalInvestedTime}</strong></td>`,
-    `<td><strong>${totals.totalElapsedTime}</strong></td>`,
-    `<td><strong>${totals.uniqueAssignees}</strong></td>`,
-    `<td><strong>${escapeHTML(totals.statusCounts)}</strong></td>`,
-    `<td></td>`,
+    `<td data-col="0"><strong>TOTALS</strong></td>`,
+    `<td data-col="1"><strong>${escapeHTML(totals.depthCounts)}</strong></td>`,
+    `<td data-col="2"><strong>Nodes per level: ${escapeHTML(totals.depthCounts)}</strong></td>`,
+    `<td data-col="3"><strong>${escapeHTML(formatDateDDMMMYYYY(totals.minStartDate) ?? '')}</strong></td>`,
+    `<td data-col="4"><strong>${escapeHTML(formatDateDDMMMYYYY(totals.maxDueDate) ?? '')}</strong></td>`,
+    `<td data-col="5"><strong>${totals.totalInvestedTime}</strong></td>`,
+    `<td data-col="6"><strong>${totals.totalElapsedTime}</strong></td>`,
+    `<td data-col="7"><strong>${totals.uniqueAssignees}</strong></td>`,
+    `<td data-col="8"><strong>${escapeHTML(totals.statusCounts)}</strong></td>`,
+    `<td data-col="9"></td>`,
   ];
 
   return `<tr style="background-color: #e8f4f8; font-weight: bold;">\n    ${cells.join('\n    ')}\n  </tr>`;
@@ -168,6 +168,8 @@ function createTotalsRow(rows: ExportRow[]): string {
 /**
  * Generates a complete HTML document with a formatted table
  * Includes CSS for better presentation and Word compatibility
+ * Includes an interactive "Filter Columns" panel that allows users to
+ * show/hide individual columns; hidden columns are listed below the table.
  *
  * @param rows - Array of ExportRow objects
  * @param title - Optional title for the document and table
@@ -188,11 +190,18 @@ export function generateHTMLTable(rows: ExportRow[], title: string = 'Action Pla
   ];
 
   const headerRow = `<tr>\n    ${headerCells
-    .map((cell) => `<th>${escapeHTML(cell)}</th>`)
+    .map((cell, index) => `<th data-col="${index}">${escapeHTML(cell)}</th>`)
     .join('\n    ')}\n  </tr>`;
 
   const dataRows = rows.map(createTableRow).join('\n');
   const totalsRow = createTotalsRow(rows);
+
+  const filterCheckboxes = headerCells
+    .map(
+      (name, index) =>
+        `<label class="filter-label"><input type="checkbox" class="col-toggle" data-col-index="${index}" data-col-name="${escapeHTML(name)}" checked onchange="updateColumnVisibility()"> ${escapeHTML(name)}</label>`
+    )
+    .join('\n        ');
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -235,6 +244,55 @@ export function generateHTMLTable(rows: ExportRow[], title: string = 'Action Pla
     tr:hover {
       background-color: #f0f0f0;
     }
+    .filter-controls {
+      margin-bottom: 10px;
+    }
+    .filter-btn {
+      background-color: #34495e;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .filter-btn:hover {
+      background-color: #2c3e50;
+    }
+    .filter-panel {
+      margin-top: 10px;
+      padding: 12px 16px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    .filter-hint {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: #555;
+    }
+    .filter-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+    }
+    .filter-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .hidden-columns-note {
+      margin-top: 16px;
+      padding: 10px 14px;
+      background-color: #fff8e1;
+      border-left: 4px solid #f39c12;
+      font-size: 13px;
+      color: #555;
+    }
     .footer {
       margin-top: 30px;
       font-size: 12px;
@@ -246,6 +304,15 @@ export function generateHTMLTable(rows: ExportRow[], title: string = 'Action Pla
 </head>
 <body>
   <h1>${escapeHTML(title)}</h1>
+  <div class="filter-controls">
+    <button class="filter-btn" onclick="toggleFilterPanel()" title="Select which columns to show or hide in the table">🔧 Filter Columns</button>
+    <div id="column-filter-panel" style="display:none;" class="filter-panel">
+      <p class="filter-hint">Check to show a column; uncheck to hide it.</p>
+      <div class="filter-checkboxes">
+        ${filterCheckboxes}
+      </div>
+    </div>
+  </div>
   <table>
     <thead>
       ${headerRow}
@@ -255,9 +322,47 @@ export function generateHTMLTable(rows: ExportRow[], title: string = 'Action Pla
       ${totalsRow}
     </tbody>
   </table>
+  <div id="hidden-columns-section" class="hidden-columns-note" style="display:none;">
+    <strong>Hidden columns:</strong> <span id="hidden-columns-list"></span>
+  </div>
   <div class="footer">
     <p>Generated from Memory Map Action Planner</p>
   </div>
+  <script>
+    function toggleFilterPanel() {
+      var panel = document.getElementById('column-filter-panel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateColumnVisibility() {
+      var checkboxes = document.querySelectorAll('.col-toggle');
+      var hiddenColumns = [];
+
+      checkboxes.forEach(function(checkbox) {
+        var colIndex = checkbox.getAttribute('data-col-index');
+        var colName = checkbox.getAttribute('data-col-name');
+        var visible = checkbox.checked;
+
+        document.querySelectorAll('[data-col="' + colIndex + '"]').forEach(function(cell) {
+          cell.style.display = visible ? '' : 'none';
+        });
+
+        if (!visible) {
+          hiddenColumns.push(colName);
+        }
+      });
+
+      var hiddenSection = document.getElementById('hidden-columns-section');
+      var hiddenList = document.getElementById('hidden-columns-list');
+
+      if (hiddenColumns.length > 0) {
+        hiddenSection.style.display = 'block';
+        hiddenList.textContent = hiddenColumns.join(', ');
+      } else {
+        hiddenSection.style.display = 'none';
+      }
+    }
+  </script>
 </body>
 </html>`;
 
