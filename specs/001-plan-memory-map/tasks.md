@@ -395,7 +395,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T064 [US8] Remove Priority column from table view
+- [X] T064 [US8] Remove Priority column from table view
 
 **Acceptance Criteria**:
 - **Given** the table view is displayed with nodes that have Priority values set
@@ -410,7 +410,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T065 [P] [US8] Implement Elapsed Time bidirectional date calculator with weekend exclusion
+- [X] T065 [P] [US8] Implement Elapsed Time bidirectional date calculator with weekend exclusion
 
 **Acceptance Criteria**:
 - **Given** the "Exclude weekends" checkbox is checked (default) and a node has Start Date = "01-Jan-2026" and Due Date = "09-Jan-2026"
@@ -442,7 +442,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T066 [P] [US8] Validate Due Date cannot be earlier than Start Date
+- [X] T066 [P] [US8] Validate Due Date cannot be earlier than Start Date
 
 **Acceptance Criteria**:
 - **Given** a node with Start Date = "15-Feb-2026"
@@ -461,7 +461,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T067 [P] [US8] Align table column names and order with HTML file export
+- [X] T067 [P] [US8] Align table column names and order with HTML file export
 
 **Acceptance Criteria**:
 - **Given** the table view is displayed
@@ -478,7 +478,7 @@ description: "Task list for Memory Map Action Planner MVP"
 
 ---
 
-- [ ] T068 [P] [US8] Display dates in DD-MMM-YYYY format in table view
+- [X] T068 [P] [US8] Display dates in DD-MMM-YYYY format in table view
 
 **Acceptance Criteria**:
 - **Given** a node with Start Date stored as "2026-02-26" (ISO format)
