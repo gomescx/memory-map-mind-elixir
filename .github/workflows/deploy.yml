@@ -5,6 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -22,6 +23,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,13 +38,19 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Verify expected entry points
+        run: |
+          test -f dist/index.html
+          test -f dist/tools/memory-map/index.html
+          test -f dist/tools/coer/index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: build
     environment:
       name: github-pages
