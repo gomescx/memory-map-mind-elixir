@@ -67,12 +67,38 @@ describe('TableView', () => {
     expect(screen.getByText('Sequence')).toBeTruthy();
     expect(screen.getByText('Name')).toBeTruthy();
     expect(screen.getByText('Status')).toBeTruthy();
-    expect(screen.getByText('Priority')).toBeTruthy();
     expect(screen.getByText('Due Date')).toBeTruthy();
     expect(screen.getByText('Assignee')).toBeTruthy();
     expect(screen.getByText('Est. Hours')).toBeTruthy();
     expect(screen.getByText('Inv. Hours')).toBeTruthy();
     expect(screen.getByText('Depth')).toBeTruthy();
+  });
+
+  it('test_table_does_not_render_priority_column: priority column is absent', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [{ id: 'a', topic: 'Task A' }],
+    };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+
+    expect(screen.queryByText('Priority')).toBeNull();
+  });
+
+  it('test_table_columns_match_spec_order: columns do not include Priority', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [{ id: 'a', topic: 'Task A' }],
+    };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+
+    const headers = screen.getAllByRole('columnheader').map((h) => h.textContent);
+    expect(headers).not.toContain('Priority');
+    expect(headers).toContain('Sequence');
+    expect(headers).toContain('Status');
   });
 
   it('displays all nodes in depth-first order', () => {

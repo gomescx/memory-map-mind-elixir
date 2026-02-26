@@ -96,7 +96,6 @@ function SortableRow({
         onSave={(newValue) => onUpdateStartDate(flatNode.id, newValue)}
         placeholder="--"
       />
-      <td>--</td>
       <EditableDateCell
         value={plan.dueDate}
         onSave={(newValue) => onUpdateDueDate(flatNode.id, newValue)}
@@ -262,7 +261,6 @@ export const TableView: React.FC = () => {
               <th>Sequence</th>
               <th>Name</th>
               <th>Start Date</th>
-              <th>Priority</th>
               <th>Due Date</th>
               <th>Est. Hours</th>
               <th>Inv. Hours</th>
@@ -285,7 +283,7 @@ export const TableView: React.FC = () => {
                 if (isEmpty) {
                   return (
                     <tr>
-                      <td colSpan={11} style={{ textAlign: 'center', padding: '24px', color: '#888' }}>
+                      <td colSpan={10} style={{ textAlign: 'center', padding: '24px', color: '#888' }}>
                         {depthFilter !== undefined
                           ? 'No nodes at this depth level.'
                           : 'No nodes to display. Add nodes in mindmap view.'}
