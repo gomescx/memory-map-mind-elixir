@@ -135,13 +135,12 @@ function SortableRow({
         onSave={(newValue) => onUpdateStatus(flatNode.id, newValue)}
         placeholder="--"
       />
-      <td>{flatNode.depth}</td>
     </tr>
   );
 }
 
 export const TableView: React.FC = () => {
-  const { getMindElixirInstance, depthFilter, updateNodeSequence, updateNodePlan } = useAppStore();
+  const { getMindElixirInstance, updateNodeSequence, updateNodePlan } = useAppStore();
   const [items, setItems] = useState<FlatNode[]>([]);
   const [refreshTick, setRefreshTick] = useState(0);
   const [excludeWeekends, setExcludeWeekends] = useState(true);
@@ -177,9 +176,9 @@ export const TableView: React.FC = () => {
     if (!data || !data.nodeData) return;
 
     const rootData: MindMapNode = data.nodeData;
-    const flattened = flattenByDepth(rootData, depthFilter);
+    const flattened = flattenByDepth(rootData, undefined);
     setItems(flattened);
-  }, [getMindElixirInstance, depthFilter, refreshTick]);
+  }, [getMindElixirInstance, refreshTick]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -341,7 +340,6 @@ export const TableView: React.FC = () => {
               <th>Elapsed Time</th>
               <th>Assignee</th>
               <th>Status</th>
-              <th>Depth</th>
             </tr>
           </thead>
           <tbody>
@@ -350,18 +348,16 @@ export const TableView: React.FC = () => {
               strategy={verticalListSortingStrategy}
             >
               {(() => {
-                // Empty state: no non-root nodes, or depth filter returns nothing
+                // Empty state: no non-root nodes
                 const isEmpty =
                   items.length === 0 ||
-                  (depthFilter === undefined && items.every((n) => n.depth === 0));
+                  items.every((n) => n.depth === 0);
 
                 if (isEmpty) {
                   return (
                     <tr>
-                      <td colSpan={10} style={{ textAlign: 'center', padding: '24px', color: '#888' }}>
-                        {depthFilter !== undefined
-                          ? 'No nodes at this depth level.'
-                          : 'No nodes to display. Add nodes in mindmap view.'}
+                      <td colSpan={9} style={{ textAlign: 'center', padding: '24px', color: '#888' }}>
+                        No nodes to display. Add nodes in mindmap view.
                       </td>
                     </tr>
                   );

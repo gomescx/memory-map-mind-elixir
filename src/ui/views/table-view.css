@@ -34,6 +34,10 @@
   color: #333;
 }
 
+.mind-map-table thead th {
+  color: white;
+}
+
 .mind-map-table th {
   font-weight: 600;
   text-transform: uppercase;

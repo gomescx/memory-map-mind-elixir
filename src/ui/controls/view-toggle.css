@@ -1,32 +1,42 @@
 /**
- * View toggle button styles
+ * View toggle segmented control styles
  */
 
-.view-toggle-button {
-  padding: 7px 13px;
-  background: var(--color-brand);
-  color: white;
-  border: 1px solid var(--color-brand);
+.view-toggle-tabs {
+  display: flex;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  cursor: pointer;
+  overflow: hidden;
+  background: var(--color-bg-app);
+}
+
+.view-toggle-tab {
+  padding: 7px 13px;
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: var(--shadow-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
   white-space: nowrap;
 }
 
-.view-toggle-button:hover {
-  background: var(--color-brand-dark);
-  border-color: var(--color-brand-dark);
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+.view-toggle-tab:first-child {
+  border-right: 1px solid var(--color-border);
 }
 
-.view-toggle-button:active {
-  box-shadow: none;
+.view-toggle-tab--active {
+  background: var(--color-brand);
+  color: white;
 }
 
-.view-toggle-button:focus-visible {
+.view-toggle-tab:hover:not(.view-toggle-tab--active) {
+  background: var(--color-brand-light);
+  color: var(--color-brand-dark);
+}
+
+.view-toggle-tab:focus-visible {
   outline: 2px solid var(--color-border-focus);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }

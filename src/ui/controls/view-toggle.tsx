@@ -1,6 +1,6 @@
 /**
- * View toggle button component
- * Switches between mindmap and table views
+ * View toggle segmented control component
+ * Switches between mindmap and action plan (table) views
  */
 
 import React from 'react';
@@ -10,17 +10,24 @@ import './view-toggle.css';
 export const ViewToggle: React.FC = () => {
   const { currentView, setCurrentView } = useAppStore();
 
-  const handleToggle = () => {
-    setCurrentView(currentView === 'mindmap' ? 'table' : 'mindmap');
-  };
-
   return (
-    <button
-      className="view-toggle-button"
-      onClick={handleToggle}
-      aria-label={`Switch to ${currentView === 'mindmap' ? 'table' : 'mindmap'} view`}
-    >
-      {currentView === 'mindmap' ? '📊 Table View' : '🗺️ Mindmap View'}
-    </button>
+    <div className="view-toggle-tabs" role="tablist" aria-label="Switch view">
+      <button
+        role="tab"
+        aria-selected={currentView === 'mindmap'}
+        className={`view-toggle-tab${currentView === 'mindmap' ? ' view-toggle-tab--active' : ''}`}
+        onClick={() => setCurrentView('mindmap')}
+      >
+        🗺️ Mindmap View
+      </button>
+      <button
+        role="tab"
+        aria-selected={currentView === 'table'}
+        className={`view-toggle-tab${currentView === 'table' ? ' view-toggle-tab--active' : ''}`}
+        onClick={() => setCurrentView('table')}
+      >
+        📊 Action Plan View
+      </button>
+    </div>
   );
 };
