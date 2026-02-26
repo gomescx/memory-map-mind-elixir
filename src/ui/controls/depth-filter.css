@@ -25,11 +25,11 @@
 }
 
 .depth-select:hover {
-  border-color: var(--primary-color, #3a9dff);
+  border-color: var(--primary-color, var(--color-brand));
 }
 
 .depth-select:focus {
-  outline: 2px solid var(--primary-color, #3a9dff);
+  outline: 2px solid var(--primary-color, var(--color-brand));
   outline-offset: 2px;
-  border-color: var(--primary-color, #3a9dff);
+  border-color: var(--primary-color, var(--color-brand));
 }

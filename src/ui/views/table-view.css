@@ -19,7 +19,7 @@
 }
 
 .mind-map-table thead {
-  background: var(--primary-color, #3a9dff);
+  background: var(--color-brand);
   color: white;
   position: sticky;
   top: 0;

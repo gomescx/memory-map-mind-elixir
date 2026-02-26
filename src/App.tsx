@@ -360,46 +360,56 @@ function MindMapApp(): JSX.Element {
     <div className="app-container">
       <div className="toolbar">
         <div className="toolbar-top-row">
+          <div className="toolbar-brand">
             <h1>Memory Map Action Planner</h1>
-            <p className="toolbar-tagline"><em>"From messy ideas to clear action — in minutes."</em></p>
+            <p className="toolbar-tagline">From messy ideas to clear action — in minutes.</p>
+          </div>
           <div className="toolbar-actions">
-            <button 
-              className="toolbar-button" 
-              onClick={handleSave} 
-              title="Save map (Ctrl+S)"
-            >
-              💾 Save
-            </button>
-            <button 
-              className="toolbar-button" 
-              onClick={handleLoad} 
-              title="Load map (Ctrl+O)"
-            >
-              📂 Load
-            </button>
-            <button 
-              className="toolbar-button" 
-              onClick={handleReset} 
-              title="Reset map"
-            >
-              🔄 Reset
-            </button>
-            <button 
-              className="toolbar-button" 
-              onClick={handleExportCSV} 
-              title="Export as CSV"
-            >
-              📊 CSV
-            </button>
-            <button 
-              className="toolbar-button" 
-              onClick={handleExportHTML} 
-              title="Export as HTML table (Ctrl+E for both)"
-            >
-              📄 HTML
-            </button>
-            <ViewToggle />
-            {currentView === 'table' && <DepthFilter />}
+            <div className="button-group">
+              <button
+                className="toolbar-button"
+                onClick={handleSave}
+                title="Save map (Ctrl+S)"
+              >
+                💾 Save
+              </button>
+              <button
+                className="toolbar-button"
+                onClick={handleLoad}
+                title="Load map (Ctrl+O)"
+              >
+                📂 Load
+              </button>
+              <button
+                className="toolbar-button toolbar-button--reset"
+                onClick={handleReset}
+                title="Reset map"
+              >
+                🔄 Reset
+              </button>
+            </div>
+            <div className="button-group-separator" aria-hidden="true" />
+            <div className="button-group">
+              <button
+                className="toolbar-button"
+                onClick={handleExportCSV}
+                title="Export as CSV"
+              >
+                📊 CSV
+              </button>
+              <button
+                className="toolbar-button"
+                onClick={handleExportHTML}
+                title="Export as HTML table (Ctrl+E for both)"
+              >
+                📄 HTML
+              </button>
+            </div>
+            <div className="button-group-separator" aria-hidden="true" />
+            <div className="button-group">
+              <ViewToggle />
+              {currentView === 'table' && <DepthFilter />}
+            </div>
           </div>
         </div>
         <div className="toolbar-bottom-row">

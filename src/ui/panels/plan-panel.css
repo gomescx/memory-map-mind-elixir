@@ -2,9 +2,9 @@
   position: relative;
   width: 360px;
   height: 100%;
-  background: white;
-  border-left: 1px solid #ccc;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-surface);
+  border-left: 1px solid var(--color-border);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -15,38 +15,39 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #e0e0e0;
-  background: #f8f8f8;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-app);
 }
 
 .plan-panel-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .close-button {
   background: transparent;
   border: none;
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
   padding: 4px 8px;
-  color: #666;
+  color: var(--color-text-muted);
   line-height: 1;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background 0.15s;
 }
 
 .close-button:hover {
-  color: #333;
-  background: #e0e0e0;
-  border-radius: 4px;
+  color: var(--color-text-primary);
+  background: var(--color-border);
 }
 
 .plan-panel-empty {
   padding: 24px;
   text-align: center;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .plan-panel-content {
@@ -56,12 +57,14 @@
 }
 
 .selected-node-info {
-  padding: 12px;
-  background: #f0f0f0;
-  border-radius: 4px;
+  padding: 10px 12px;
+  background: var(--color-brand-light);
+  border-radius: var(--radius-md);
   margin-bottom: 16px;
   font-size: 14px;
+  color: var(--color-brand-dark);
   word-break: break-word;
+  border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .plan-form {
@@ -73,54 +76,58 @@
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .form-field label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #333;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
 }
 
 .form-field input,
 .form-field select {
-  padding: 8px;
+  padding: 8px 10px;
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   width: 100%;
   box-sizing: border-box;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .form-field input:focus,
 .form-field select:focus {
   outline: none;
-  border-color: #4a90e2;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .field-hint {
   font-size: 11px;
-  color: #666;
-  font-style: italic;
+  color: var(--color-text-muted);
 }
 
 .validation-error {
-  padding: 10px;
-  background: #f8d7da;
-  color: #721c24;
-  border-radius: 4px;
+  padding: 10px 12px;
+  background: #fef2f2;
+  color: #991b1b;
+  border-radius: var(--radius-md);
   font-size: 13px;
-  border: 1px solid #f5c6cb;
+  border: 1px solid #fecaca;
 }
 
 .validation-warning {
-  padding: 10px;
-  background: #fff3cd;
-  color: #856404;
-  border-radius: 4px;
+  padding: 10px 12px;
+  background: #fffbeb;
+  color: #92400e;
+  border-radius: var(--radius-md);
   font-size: 13px;
-  border: 1px solid #ffeeba;
+  border: 1px solid #fde68a;
 }
 
 .form-actions {
@@ -132,29 +139,31 @@
 .btn-primary,
 .btn-secondary {
   flex: 1;
-  padding: 10px 16px;
+  padding: 9px 16px;
   font-size: 14px;
   font-weight: 500;
-  border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .btn-primary {
-  background: #4a90e2;
+  background: var(--color-brand);
   color: white;
+  border: 1px solid var(--color-brand);
 }
 
 .btn-primary:hover {
-  background: #357ab8;
+  background: var(--color-brand-dark);
+  border-color: var(--color-brand-dark);
 }
 
 .btn-secondary {
-  background: #e0e0e0;
-  color: #333;
+  background: var(--color-bg-app);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
 }
 
 .btn-secondary:hover {
-  background: #d0d0d0;
+  background: var(--color-border);
 }
