@@ -18,7 +18,7 @@
 **Purpose**: Create the one new directory required before any file moves or content creation can happen.  
 **Blocks**: Phase 2 (T-000.2 requires the target directory to exist).
 
-- [ ] T-000.1 Create `tools/memory-map/` directory in repository root
+- [X] T-000.1 Create `tools/memory-map/` directory in repository root
 
   **FR/SC**: AD-001 (plan.md), FR-US2.1  
   **Acceptance Criteria**:  
@@ -39,7 +39,7 @@
 
 **⚠️ CRITICAL**: T-000.3 depends on T-000.2 completing first (vite.config.ts must reference the new path).
 
-- [ ] T-000.2 Move root `index.html` to `tools/memory-map/index.html` via `git mv` — `tools/memory-map/index.html`
+- [X] T-000.2 Move root `index.html` to `tools/memory-map/index.html` via `git mv` — `tools/memory-map/index.html`
 
   **FR/SC**: FR-US2.1, AD-001 (plan.md), R-001 (research.md), R-005 (research.md), SC-004  
   **Acceptance Criteria**:  
@@ -61,7 +61,7 @@
   - Open `tools/memory-map/index.html` in an editor and confirm `<script type="module" src="/src/main.tsx">` is present and unchanged  
   - Run `git status` and confirm the move shows as a rename, not a new file + delete
 
-- [ ] T-000.3 Update `vite.config.ts` — functional `defineConfig`, conditional `base`, and `rollupOptions.input` — `vite.config.ts`
+- [X] T-000.3 Update `vite.config.ts` — functional `defineConfig`, conditional `base`, and `rollupOptions.input` — `vite.config.ts`
 
   **FR/SC**: FR-US2.1, FR-US2.3, AD-002 (plan.md), R-001 (research.md), R-002 (research.md), data-model.md §Vite Configuration  
   **Changes required**:  
@@ -113,7 +113,7 @@
 
 **Independent Test**: Open `http://localhost:4173/memory-map-mind-elixir/` after `npx vite preview`. Page title reads "Effectiveness Toolkit"; at least two clickable links are visible; clicking "Memory Map Action Planner" navigates to `/memory-map-mind-elixir/tools/memory-map/`.
 
-- [ ] T-001.1 [US1] Create `public/index.html` — static launcher with suite header and two active tool links — `public/index.html`
+- [X] T-001.1 [US1] Create `public/index.html` — static launcher with suite header and two active tool links — `public/index.html`
 
   **FR/SC**: FR-US1.1, FR-US1.2, FR-US1.3, FR-US1.5, FR-US1.6, FR-US1.7, SC-001, SC-004, AD-003, data-model.md §Tool Registry  
   **Content requirements**:  
@@ -242,7 +242,7 @@
 
 **Independent Test**: Open the launcher page and scroll through the tool list. Confirm three entries exist that are not clickable links and each is labelled "Coming Soon" or equivalent.
 
-- [ ] T-004.1 [US4] Add three coming-soon placeholder entries to `public/index.html` — `public/index.html`
+- [X] T-004.1 [US4] Add three coming-soon placeholder entries to `public/index.html` — `public/index.html`
 
   **FR/SC**: FR-US1.4, data-model.md §Tool Registry (rows 3–5)  
   **Content requirements**:  
