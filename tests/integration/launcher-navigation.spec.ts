@@ -10,7 +10,6 @@ import { test, expect } from '@playwright/test';
 
 // Use the baseURL from playwright.config.ts (set via the webServer.port).
 // Empty string makes page.goto('/…') resolve relative to baseURL.
-const PREVIEW_BASE = '';
 
 test.describe('Suite Launcher → Memory Map navigation', () => {
   test('clicking Memory Map card from launcher renders the app', async ({ page }) => {
