@@ -65,12 +65,12 @@ describe('TableView', () => {
 
     // Check column headers exist
     expect(screen.getByText('Sequence')).toBeTruthy();
-    expect(screen.getByText('Name')).toBeTruthy();
+    expect(screen.getByText('Title')).toBeTruthy();
     expect(screen.getByText('Status')).toBeTruthy();
     expect(screen.getByText('Due Date')).toBeTruthy();
     expect(screen.getByText('Assignee')).toBeTruthy();
-    expect(screen.getByText('Est. Hours')).toBeTruthy();
-    expect(screen.getByText('Inv. Hours')).toBeTruthy();
+    expect(screen.getByText('Invested Time')).toBeTruthy();
+    expect(screen.getByText('Elapsed Time')).toBeTruthy();
     expect(screen.getByText('Depth')).toBeTruthy();
   });
 
@@ -99,6 +99,52 @@ describe('TableView', () => {
     expect(headers).not.toContain('Priority');
     expect(headers).toContain('Sequence');
     expect(headers).toContain('Status');
+  });
+
+  it('test_table_column_headers_match_html_export: column names use same terminology as export', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [{ id: 'a', topic: 'Task A' }],
+    };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+
+    // These names appear in both the table view and the HTML export
+    expect(screen.getByText('Invested Time')).toBeTruthy();
+    expect(screen.getByText('Elapsed Time')).toBeTruthy();
+  });
+
+  it('test_table_column_order_is_correct: AS-008.1 column order is respected', () => {
+    const mockData: MindMapNode = {
+      id: 'root',
+      topic: 'Root',
+      children: [{ id: 'a', topic: 'Task A' }],
+    };
+    mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
+    render(<TableView />);
+
+    const headers = screen.getAllByRole('columnheader').map((h) => h.textContent?.trim());
+    const titleIdx = headers.indexOf('Title');
+    const startDateIdx = headers.indexOf('Start Date');
+    const dueDateIdx = headers.indexOf('Due Date');
+    const investedIdx = headers.indexOf('Invested Time');
+    const elapsedIdx = headers.indexOf('Elapsed Time');
+    const assigneeIdx = headers.indexOf('Assignee');
+    const statusIdx = headers.indexOf('Status');
+    const depthIdx = headers.indexOf('Depth');
+
+    // AS-008.1: Sequence, Title, Start Date, Due Date, Invested Time, Elapsed Time, Assignee, Status, Depth
+    expect(titleIdx).toBeLessThan(startDateIdx);
+    expect(startDateIdx).toBeLessThan(dueDateIdx);
+    expect(dueDateIdx).toBeLessThan(investedIdx);
+    expect(investedIdx).toBeLessThan(elapsedIdx);
+    expect(elapsedIdx).toBeLessThan(assigneeIdx);
+    expect(assigneeIdx).toBeLessThan(statusIdx);
+    expect(statusIdx).toBeLessThan(depthIdx);
+    expect(headers).not.toContain('Priority');
+    expect(headers).not.toContain('Est. Hours');
+    expect(headers).not.toContain('Inv. Hours');
   });
 
   it('displays all nodes in depth-first order', () => {

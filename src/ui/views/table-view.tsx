@@ -259,11 +259,11 @@ export const TableView: React.FC = () => {
             <tr>
               <th style={{ width: '40px' }}>⋮</th>
               <th>Sequence</th>
-              <th>Name</th>
+              <th>Title</th>
               <th>Start Date</th>
               <th>Due Date</th>
-              <th>Est. Hours</th>
-              <th>Inv. Hours</th>
+              <th>Invested Time</th>
+              <th>Elapsed Time</th>
               <th>Assignee</th>
               <th>Status</th>
               <th>Depth</th>
