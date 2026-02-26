@@ -115,4 +115,36 @@ describe('EditableDateCell', () => {
     // Display reverts to DD-MMM-YYYY
     expect(screen.getByText('15-Mar-2026')).toBeTruthy();
   });
+
+  // T066: Validate Due Date cannot be earlier than Start Date
+  it('test_due_date_rejects_date_before_start_date: does not call onSave', () => {
+    render(
+      <EditableDateCell value={null} onSave={mockOnSave} startDate="2026-02-15" />
+    );
+    fireEvent.click(screen.getByText('--'));
+    const inputEl = document.querySelector('input[type="date"]') as HTMLInputElement;
+    fireEvent.change(inputEl, { target: { value: '2026-02-10' } });
+    expect(mockOnSave).not.toHaveBeenCalled();
+  });
+
+  it('test_due_date_shows_validation_error_message: error text appears for earlier date', () => {
+    render(
+      <EditableDateCell value={null} onSave={mockOnSave} startDate="2026-02-15" />
+    );
+    fireEvent.click(screen.getByText('--'));
+    const inputEl = document.querySelector('input[type="date"]') as HTMLInputElement;
+    fireEvent.change(inputEl, { target: { value: '2026-02-10' } });
+    expect(screen.getByRole('alert').textContent).toBe('Due Date cannot be before Start Date');
+  });
+
+  it('test_valid_due_date_saves_without_error: valid date saves successfully', () => {
+    render(
+      <EditableDateCell value={null} onSave={mockOnSave} startDate="2026-02-15" />
+    );
+    fireEvent.click(screen.getByText('--'));
+    const inputEl = document.querySelector('input[type="date"]') as HTMLInputElement;
+    fireEvent.change(inputEl, { target: { value: '2026-02-20' } });
+    expect(mockOnSave).toHaveBeenCalledWith('2026-02-20');
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
 });

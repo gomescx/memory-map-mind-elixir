@@ -29,6 +29,14 @@
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
+.editable-date-cell__error {
+  display: block;
+  color: #dc2626;
+  font-size: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
 .editable-date-cell__input::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }

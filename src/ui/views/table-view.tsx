@@ -100,6 +100,7 @@ function SortableRow({
         value={plan.dueDate}
         onSave={(newValue) => onUpdateDueDate(flatNode.id, newValue)}
         placeholder="--"
+        startDate={plan.startDate}
       />
       <EditableNumberCell
         value={plan.investedTimeHours}
