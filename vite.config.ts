@@ -93,7 +93,7 @@ export default defineConfig(({ command }) => ({
   },
   server: {
     port: 5173,
-    open: true,
+    open: '/index.html',
   },
   test: {
     globals: true,

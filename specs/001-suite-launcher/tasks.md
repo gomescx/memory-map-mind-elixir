@@ -120,8 +120,8 @@
   - `<title>Effectiveness Toolkit</title>`  
   - Visible heading: "Effectiveness Toolkit" (or "PEP Effectiveness Toolkit")  
   - Brief suite description (1–2 sentences)  
-  - `<a href="./tools/memory-map/">Memory Map Action Planner</a>` with one-line description: "Visualise priorities as a mind map with planning attributes"  
-  - `<a href="./tools/coer/">COER Form</a>` with one-line description: "Define clarity of end result for each initiative"  
+  - `<a href="./tools/memory-map/">Memory Map Action Planner</a>` with one-line description: "Brainstorm a plan using memory map and create an action plan"  
+  - `<a href="./tools/coer/">COER Form</a>` with one-line description: "Define Clarity Of End Result (COER) for each initiative"  
   - No `<link>` to external stylesheets; no `<script>` tags of any kind  
   - Inline or embedded `<style>` block for all visual presentation  
   - `class="tool-card"` on active tool container elements (per data-model.md)  
@@ -246,9 +246,9 @@
 
   **FR/SC**: FR-US1.4, data-model.md §Tool Registry (rows 3–5)  
   **Content requirements**:  
-  - Entry 1: "Strength of Belief" — description: "Assess confidence in achieving each goal"  
+  - Entry 1: "Strength of Belief" — description: "Increase COER confidence by dealing with obstacles"  
   - Entry 2: "Prioritization / TMM" — description: "Rank initiatives using the Time Management Matrix"  
-  - Entry 3: "Impact Map" — description: "Map outcomes to deliverables with measurable impact"  
+  - Entry 3: "Impact Map" — description: "Reduce the impact of obstacles you cannot resolve"  
   - Each entry uses `class="tool-card coming-soon"` (per data-model.md)  
   - Each entry has a visible "Coming Soon" label (or equivalent text)  
   - No `<a href>` on any placeholder entry — no hyperlinks whatsoever  

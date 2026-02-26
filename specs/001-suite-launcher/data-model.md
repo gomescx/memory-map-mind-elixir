@@ -27,7 +27,7 @@ Each tool displayed on the launcher page is described by the following fields. T
 | Field | Exact HTML Attribute/Element | Example Value |
 |-------|------------------------------|---------------|
 | `name` | `<h2>` or `<a>` text content | `"Memory Map Action Planner"` |
-| `description` | `<p>` text content | `"Visualise priorities as a mind map with planning attributes"` |
+| `description` | `<p>` text content | `"Brainstorm a plan using memory map and create an action plan"` |
 | `href` | `<a href="...">` attribute | `"./tools/memory-map/"` |
 | `status` | CSS class on container element | `class="tool-card"` or `class="tool-card coming-soon"` |
 
@@ -35,11 +35,11 @@ Each tool displayed on the launcher page is described by the following fields. T
 
 | `name` | `description` | `href` | `status` |
 |---------|---------------|---------|----------|
-| Memory Map Action Planner | Visualise priorities as a mind map with planning attributes | `./tools/memory-map/` | `available` |
-| COER Form | Define clarity of end result for each initiative | `./tools/coer/` | `available` |
-| Strength of Belief | Assess confidence in achieving each goal | — | `coming-soon` |
+| Memory Map Action Planner | Brainstorm a plan using memory map and create an action plan | `./tools/memory-map/` | `available` |
+| COER Form | Define Clarity Of End Result (COER) for each initiative | `./tools/coer/` | `available` |
+| Strength of Belief | Increase COER confidence by dealing with obstacles | — | `coming-soon` |
 | Prioritization / TMM | Rank initiatives using the Time Management Matrix | — | `coming-soon` |
-| Impact Map | Map outcomes to deliverables with measurable impact | — | `coming-soon` |
+| Impact Map | Reduce the impact of obstacles you cannot resolve | — | `coming-soon` |
 
 > **Note**: Descriptions are indicative. Final copy to be refined during implementation. The table serves as the canonical reference for exactly which tools appear and in what order.
 
