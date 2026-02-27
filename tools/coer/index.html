@@ -40,39 +40,80 @@
         top: 0;
         z-index: 100;
         display: flex;
-        gap: 8px;
-        align-items: center;
-        padding: 10px 24px;
+        flex-direction: column;
+        gap: 0;
         background: var(--color-surface);
         border-bottom: 1px solid var(--color-border);
         box-shadow: var(--shadow-sm);
       }
 
+      .toolbar-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 24px;
+        gap: 16px;
+      }
+
+      .toolbar-brand h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--color-label);
+        letter-spacing: -0.02em;
+      }
+
+      .toolbar-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .toolbar-bottom-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 6px 24px 8px;
+        border-top: 1px solid var(--color-border);
+        gap: 16px;
+      }
+
+      .toolbar-link {
+        font-size: 11px;
+        color: var(--color-primary);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+
+      .toolbar-link:hover {
+        color: var(--color-primary-hover);
+        text-decoration: underline;
+      }
+
+      .toolbar-link--home {
+        margin-right: auto;
+      }
+
       #toolbar button {
-        padding: 7px 16px;
-        font-size: 14px;
+        padding: 7px 13px;
+        font-size: 13px;
         font-weight: 500;
         border-radius: var(--radius);
         cursor: pointer;
-        border: 1px solid transparent;
-        transition: background 0.15s, border-color 0.15s;
-      }
-
-      #btn-save {
-        background: var(--color-primary);
-        color: #fff;
-        border-color: var(--color-primary);
-      }
-      #btn-save:hover { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
-
-      #btn-load, #btn-print, #btn-export-text {
-        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        background: transparent;
         color: var(--color-label);
-        border-color: var(--color-border);
+        transition: background 0.15s, border-color 0.15s;
+        white-space: nowrap;
       }
-      #btn-load:hover, #btn-print:hover, #btn-export-text:hover {
+
+      #toolbar button:hover {
         background: #f0f0f0;
         border-color: #bbb;
+      }
+
+      #toolbar button:active {
+        background: #e8e8e8;
       }
 
       /* ── Page content ──────────────────────────────────────────────────── */
@@ -360,10 +401,21 @@
   </head>
   <body>
     <header id="toolbar" role="toolbar" aria-label="Document actions">
-      <button id="btn-save" type="button">Save</button>
-      <button id="btn-load" type="button">Load</button>
-      <button id="btn-print" type="button">Print / Export PDF</button>
-      <button id="btn-export-text" type="button">Export Text</button>
+      <div class="toolbar-top-row">
+        <div class="toolbar-brand">
+          <h1>Clarity Of End Result</h1>
+        </div>
+        <div class="toolbar-actions">
+          <button id="btn-save" type="button">💾 Save</button>
+          <button id="btn-load" type="button">📂 Load</button>
+          <button id="btn-print" type="button">🖨️ Print / Export PDF</button>
+          <button id="btn-export-text" type="button">📄 Export Text</button>
+        </div>
+      </div>
+      <div class="toolbar-bottom-row">
+        <a href="../../index.html" class="toolbar-link toolbar-link--home" title="Back to Effectiveness Toolkit">← Effectiveness Toolkit</a>
+        <a href="https://claudio.coach" target="_blank" rel="noopener noreferrer" class="toolbar-link">Visit claudio.coach for more resources</a>
+      </div>
     </header>
 
     <!-- Print-only header (T-003.01) — hidden on screen, visible on print -->
@@ -388,7 +440,6 @@
     </div>
 
     <main>
-      <h1 class="visually-hidden">COER — Clarity of End Result</h1>
       <form id="coer-form" novalidate aria-label="COER form">
 
         <section class="question" id="section-q1">
