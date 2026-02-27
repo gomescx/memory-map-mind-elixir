@@ -95,30 +95,25 @@
       }
 
       #toolbar button {
-        padding: 7px 16px;
-        font-size: 14px;
+        padding: 7px 13px;
+        font-size: 13px;
         font-weight: 500;
         border-radius: var(--radius);
         cursor: pointer;
-        border: 1px solid transparent;
-        transition: background 0.15s, border-color 0.15s;
-      }
-
-      #btn-save {
-        background: var(--color-primary);
-        color: #fff;
-        border-color: var(--color-primary);
-      }
-      #btn-save:hover { background: var(--color-primary-hover); border-color: var(--color-primary-hover); }
-
-      #btn-load, #btn-print, #btn-export-text {
-        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        background: transparent;
         color: var(--color-label);
-        border-color: var(--color-border);
+        transition: background 0.15s, border-color 0.15s;
+        white-space: nowrap;
       }
-      #btn-load:hover, #btn-print:hover, #btn-export-text:hover {
+
+      #toolbar button:hover {
         background: #f0f0f0;
         border-color: #bbb;
+      }
+
+      #toolbar button:active {
+        background: #e8e8e8;
       }
 
       /* ── Page content ──────────────────────────────────────────────────── */
@@ -411,10 +406,10 @@
           <h1>Clarity Of End Result</h1>
         </div>
         <div class="toolbar-actions">
-          <button id="btn-save" type="button">Save</button>
-          <button id="btn-load" type="button">Load</button>
-          <button id="btn-print" type="button">Print / Export PDF</button>
-          <button id="btn-export-text" type="button">Export Text</button>
+          <button id="btn-save" type="button">💾 Save</button>
+          <button id="btn-load" type="button">📂 Load</button>
+          <button id="btn-print" type="button">🖨️ Print / Export PDF</button>
+          <button id="btn-export-text" type="button">📄 Export Text</button>
         </div>
       </div>
       <div class="toolbar-bottom-row">
