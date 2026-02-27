@@ -11,7 +11,6 @@ import { saveMapToFile, loadMapFromFile, resetMapToRoot } from '@ui/actions/map-
 import { exportToCSV, exportToHTML } from '@ui/actions/export-map';
 import { TableView } from '@ui/views/table-view';
 import { ViewToggle } from '@ui/controls/view-toggle';
-import { DepthFilter } from '@ui/controls/depth-filter';
 import './App.css';
 
 /**
@@ -361,7 +360,7 @@ function MindMapApp(): JSX.Element {
       <div className="toolbar">
         <div className="toolbar-top-row">
           <div className="toolbar-brand">
-            <h1>Memory Map Action Planner</h1>
+            <h1>Memory Map - Action Plan Tool</h1>
             <p className="toolbar-tagline">From messy ideas to clear action — in minutes.</p>
           </div>
           <div className="toolbar-actions">
@@ -408,11 +407,17 @@ function MindMapApp(): JSX.Element {
             <div className="button-group-separator" aria-hidden="true" />
             <div className="button-group">
               <ViewToggle />
-              {currentView === 'table' && <DepthFilter />}
             </div>
           </div>
         </div>
         <div className="toolbar-bottom-row">
+          <a 
+            href={`${import.meta.env.BASE_URL}index.html`}
+            className="toolbar-link toolbar-link--home"
+            title="Back to Effectiveness Toolkit"
+          >
+            ← Effectiveness Toolkit
+          </a>
           <a 
             href="https://claudio.coach" 
             target="_blank" 
@@ -422,7 +427,9 @@ function MindMapApp(): JSX.Element {
             Visit claudio.coach for more resources
           </a>
           <span className="toolbar-hint">
-            Ctrl+S (save) • Ctrl+O (load) • Tab (child) • Enter (sibling) • Alt+↑/↓ (reorder) • Ctrl+P (plan)
+            {currentView === 'table'
+              ? 'Ctrl+S (save) • Ctrl+O (load) • Double-click (edit cell)'
+              : 'Ctrl+S (save) • Ctrl+O (load) • Tab (child) • Enter (sibling) • Alt+↑/↓ (reorder)'}
           </span>
         </div>
       </div>

@@ -71,7 +71,7 @@ describe('TableView', () => {
     expect(screen.getByText('Assignee')).toBeTruthy();
     expect(screen.getByText('Invested Time')).toBeTruthy();
     expect(screen.getByText('Elapsed Time')).toBeTruthy();
-    expect(screen.getByText('Depth')).toBeTruthy();
+    expect(screen.queryByText('Depth')).toBeNull();
   });
 
   it('test_table_does_not_render_priority_column: priority column is absent', () => {
@@ -132,16 +132,15 @@ describe('TableView', () => {
     const elapsedIdx = headers.indexOf('Elapsed Time');
     const assigneeIdx = headers.indexOf('Assignee');
     const statusIdx = headers.indexOf('Status');
-    const depthIdx = headers.indexOf('Depth');
 
-    // AS-008.1: Sequence, Title, Start Date, Due Date, Invested Time, Elapsed Time, Assignee, Status, Depth
+    // AS-008.1: Sequence, Title, Start Date, Due Date, Invested Time, Elapsed Time, Assignee, Status
     expect(titleIdx).toBeLessThan(startDateIdx);
     expect(startDateIdx).toBeLessThan(dueDateIdx);
     expect(dueDateIdx).toBeLessThan(investedIdx);
     expect(investedIdx).toBeLessThan(elapsedIdx);
     expect(elapsedIdx).toBeLessThan(assigneeIdx);
     expect(assigneeIdx).toBeLessThan(statusIdx);
-    expect(statusIdx).toBeLessThan(depthIdx);
+    expect(headers).not.toContain('Depth');
     expect(headers).not.toContain('Priority');
     expect(headers).not.toContain('Est. Hours');
     expect(headers).not.toContain('Inv. Hours');
@@ -233,25 +232,18 @@ describe('TableView', () => {
     expect(screen.getByText('No nodes to display. Add nodes in mindmap view.')).toBeTruthy();
   });
 
-  it('test_table_shows_no_results_for_empty_filter: shows message when depth filter returns no nodes', () => {
+  it('test_table_shows_no_results_for_empty_filter: shows empty state when map has only root node', () => {
     const mockData: MindMapNode = {
       id: 'root',
       topic: 'Root',
-      children: [
-        { id: 'a', topic: 'Depth 1 node' },
-      ],
+      // No children
     };
 
-    // Set depth filter to 3 (no nodes at depth 3)
-    mockStore.depthFilter = 3;
     mockStore.getMindElixirInstance.mockReturnValue({ getData: () => ({ nodeData: mockData }) });
 
     render(<TableView />);
 
-    expect(screen.getByText('No nodes at this depth level.')).toBeTruthy();
-
-    // Reset
-    mockStore.depthFilter = undefined;
+    expect(screen.getByText('No nodes to display. Add nodes in mindmap view.')).toBeTruthy();
   });
 
   // T065: Elapsed Time bidirectional date calculator

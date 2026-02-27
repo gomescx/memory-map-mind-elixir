@@ -119,13 +119,16 @@
   font-size: 11px;
   color: var(--color-brand);
   text-decoration: none;
-  margin-right: auto;
   transition: color 0.15s;
 }
 
 .toolbar-link:hover {
   color: var(--color-brand-dark);
   text-decoration: underline;
+}
+
+.toolbar-link--home {
+  margin-right: auto;
 }
 
 .toolbar-hint {
