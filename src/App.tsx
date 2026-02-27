@@ -412,7 +412,7 @@ function MindMapApp(): JSX.Element {
         </div>
         <div className="toolbar-bottom-row">
           <a 
-            href="/"
+            href={`${import.meta.env.BASE_URL}index.html`}
             className="toolbar-link toolbar-link--home"
             title="Back to Effectiveness Toolkit"
           >

@@ -11,18 +11,16 @@ export const ViewToggle: React.FC = () => {
   const { currentView, setCurrentView } = useAppStore();
 
   return (
-    <div className="view-toggle-tabs" role="tablist" aria-label="Switch view">
+    <div className="view-toggle-tabs" role="group" aria-label="Switch view">
       <button
-        role="tab"
-        aria-selected={currentView === 'mindmap'}
+        aria-pressed={currentView === 'mindmap'}
         className={`view-toggle-tab${currentView === 'mindmap' ? ' view-toggle-tab--active' : ''}`}
         onClick={() => setCurrentView('mindmap')}
       >
         🗺️ Mindmap View
       </button>
       <button
-        role="tab"
-        aria-selected={currentView === 'table'}
+        aria-pressed={currentView === 'table'}
         className={`view-toggle-tab${currentView === 'table' ? ' view-toggle-tab--active' : ''}`}
         onClick={() => setCurrentView('table')}
       >

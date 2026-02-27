@@ -39,54 +39,65 @@ describe('ViewToggle', () => {
     mockStore.currentView = 'mindmap';
   });
 
-  it('renders toggle button with Mindmap View label when in table view', () => {
-    mockStore.currentView = 'table';
+  it('renders both tabs regardless of current view', () => {
     render(<ViewToggle />);
     expect(screen.getByText(/Mindmap View/i)).toBeTruthy();
+    expect(screen.getByText(/Action Plan View/i)).toBeTruthy();
   });
 
-  it('renders toggle button with Table View label when in mindmap view', () => {
+  it('marks Mindmap View tab as active when in mindmap view', () => {
     mockStore.currentView = 'mindmap';
     render(<ViewToggle />);
-    expect(screen.getByText(/Table View/i)).toBeTruthy();
+    const mindmapBtn = screen.getByText(/Mindmap View/i).closest('button');
+    expect(mindmapBtn?.getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('calls setCurrentView when toggle button is clicked', () => {
+  it('marks Action Plan View tab as active when in table view', () => {
+    mockStore.currentView = 'table';
+    render(<ViewToggle />);
+    const actionPlanBtn = screen.getByText(/Action Plan View/i).closest('button');
+    expect(actionPlanBtn?.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('calls setCurrentView with "table" when Action Plan View tab is clicked', () => {
     mockStore.currentView = 'mindmap';
     render(<ViewToggle />);
-    
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
+
+    const actionPlanBtn = screen.getByText(/Action Plan View/i).closest('button')!;
+    fireEvent.click(actionPlanBtn);
 
     expect(mockStore.setCurrentView).toHaveBeenCalledWith('table');
   });
 
-  it('switches from table to mindmap view when clicked', () => {
+  it('calls setCurrentView with "mindmap" when Mindmap View tab is clicked from table view', () => {
     mockStore.currentView = 'table';
     render(<ViewToggle />);
-    
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
+
+    const mindmapBtn = screen.getByText(/Mindmap View/i).closest('button')!;
+    fireEvent.click(mindmapBtn);
 
     expect(mockStore.setCurrentView).toHaveBeenCalledWith('mindmap');
   });
 
   it('persists view state when toggling back and forth', () => {
     const { rerender } = render(<ViewToggle />);
-    
-    // Initially in mindmap view
-    expect(screen.getByText(/Table View/i)).toBeTruthy();
-    
-    // Click to switch to table
-    const button = screen.getByRole('button');
-    fireEvent.click(button);
+
+    // Initially in mindmap view — mindmap tab active
+    const mindmapBtn = () => screen.getByText(/Mindmap View/i).closest('button')!;
+    const actionPlanBtn = () => screen.getByText(/Action Plan View/i).closest('button')!;
+    expect(mindmapBtn().getAttribute('aria-pressed')).toBe('true');
+    expect(actionPlanBtn().getAttribute('aria-pressed')).toBe('false');
+
+    // Click to switch to table view
+    fireEvent.click(actionPlanBtn());
     expect(mockStore.setCurrentView).toHaveBeenCalledWith('table');
-    
+
     // Update mock state and rerender
     mockStore.currentView = 'table';
     rerender(<ViewToggle />);
-    
-    // Button should now show "Mindmap View"
-    expect(screen.getByText(/Mindmap View/i)).toBeTruthy();
+
+    // Action Plan tab should now be active
+    expect(actionPlanBtn().getAttribute('aria-pressed')).toBe('true');
+    expect(mindmapBtn().getAttribute('aria-pressed')).toBe('false');
   });
 });
