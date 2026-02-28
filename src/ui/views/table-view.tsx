@@ -336,8 +336,8 @@ export const TableView: React.FC = () => {
               <th>Title</th>
               <th>Start Date</th>
               <th>Due Date</th>
-              <th>Invested Time</th>
-              <th>Elapsed Time</th>
+              <th>Invested Times (hrs)</th>
+              <th>Elapsed Time (days)</th>
               <th>Assignee</th>
               <th>Status</th>
             </tr>
